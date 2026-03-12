@@ -1,0 +1,3667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meghalaya Serenity — E-Learning Tablet</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Nunito:wght@300;400;600;700;800&family=Noto+Sans:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cloud-white: #F7F4EF;
+    --pine-green: #2D5016;
+    --pine-mid: #3D7022;
+    --pine-light: #5A9E3A;
+    --pine-pale: #A8CC8A;
+    --stone-grey: #7B8D8A;
+    --stone-light: #C4CECA;
+    --turmeric: #D4A017;
+    --turmeric-light: #F0C040;
+    --mist-bg: #EEF2EF;
+    --forest-dark: #1A2E10;
+    --earth-brown: #6B4C2A;
+    --sky-blue: #7BAFC4;
+    --orchid-pink: #C4648A;
+    --text-dark: #1E2820;
+    --text-mid: #4A5E48;
+    --text-light: #7A8E78;
+    --card-bg: rgba(255,255,255,0.85);
+    --shadow: 0 8px 32px rgba(45,80,22,0.12);
+    --shadow-lg: 0 16px 48px rgba(45,80,22,0.18);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--mist-bg);
+    color: var(--text-dark);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  .screen { display: none; min-height: 100vh; }
+  .screen.active { display: block; }
+
+  .bg-mist {
+    background: linear-gradient(160deg, #EEF2EF 0%, #DDE8D8 40%, #C8DCC0 100%);
+    position: relative;
+  }
+  .bg-mist::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%232D5016' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ===== SPLASH / ONBOARDING ===== */
+  #splash {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: linear-gradient(160deg, #1A2E10 0%, #2D5016 50%, #3D7022 100%);
+    position: relative;
+    overflow: hidden;
+  }
+  #splash::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 30% 20%, rgba(90,158,58,0.2) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 80%, rgba(212,160,23,0.15) 0%, transparent 50%);
+  }
+  .splash-mist {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 200px;
+    background: linear-gradient(to top, rgba(238,242,239,0.3) 0%, transparent 100%);
+  }
+  .splash-logo {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    animation: fadeUp 1.2s ease both;
+  }
+  .splash-emblem {
+    width: 100px; height: 100px;
+    background: rgba(255,255,255,0.12);
+    border: 2px solid rgba(212,160,23,0.6);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 48px;
+    margin: 0 auto 24px;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 0 40px rgba(212,160,23,0.3);
+    animation: pulse-glow 3s ease-in-out infinite;
+  }
+  @keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 40px rgba(212,160,23,0.3); }
+    50% { box-shadow: 0 0 60px rgba(212,160,23,0.5); }
+  }
+  .splash-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 36px;
+    color: var(--cloud-white);
+    letter-spacing: 2px;
+    line-height: 1.2;
+  }
+  .splash-subtitle {
+    font-size: 14px;
+    color: var(--turmeric-light);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-top: 8px;
+  }
+  .splash-tagline {
+    color: rgba(255,255,255,0.6);
+    font-size: 14px;
+    margin-top: 16px;
+    font-style: italic;
+  }
+  .path-selector {
+    position: relative; z-index: 2;
+    margin-top: 36px;
+    text-align: center;
+    animation: fadeUp 0.8s ease both;
+    width: 100%;
+    max-width: 720px;
+    padding: 0 24px;
+  }
+  .path-label {
+    color: rgba(255,255,255,0.7);
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  /* Grade selector on splash */
+  .grade-splash {
+    display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;
+    margin-bottom: 28px;
+  }
+  .grade-splash-btn {
+    background: rgba(255,255,255,0.1);
+    border: 2px solid rgba(255,255,255,0.2);
+    border-radius: 50px;
+    padding: 10px 22px;
+    cursor: pointer;
+    color: white;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    transition: all 0.25s ease;
+  }
+  .grade-splash-btn:hover, .grade-splash-btn.selected {
+    background: rgba(212,160,23,0.3);
+    border-color: var(--turmeric-light);
+  }
+
+  .path-cards {
+    display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;
+  }
+  .path-card {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 16px;
+    padding: 20px 24px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(8px);
+    min-width: 140px;
+    color: white;
+  }
+  .path-card:hover, .path-card.selected {
+    background: rgba(212,160,23,0.25);
+    border-color: var(--turmeric-light);
+    transform: translateY(-4px);
+  }
+  .path-card .path-icon { font-size: 32px; margin-bottom: 8px; }
+  .path-card .path-name { font-weight: 700; font-size: 14px; }
+  .path-card .path-desc { font-size: 11px; opacity: 0.7; margin-top: 4px; }
+  .start-btn {
+    margin-top: 28px;
+    background: linear-gradient(135deg, var(--turmeric), var(--turmeric-light));
+    color: var(--forest-dark);
+    border: none;
+    padding: 16px 48px;
+    border-radius: 50px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 16px;
+    font-weight: 800;
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 24px rgba(212,160,23,0.4);
+  }
+  .start-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(212,160,23,0.5); }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ===== MAIN APP LAYOUT ===== */
+  #app { display: none; min-height: 100vh; flex-direction: column; }
+  #app.active { display: flex; }
+
+  /* ===== TOP NAV ===== */
+  .top-nav {
+    background: rgba(247,244,239,0.97);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(45,80,22,0.1);
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 16px rgba(45,80,22,0.08);
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .nav-logo {
+    display: flex; align-items: center; gap: 10px;
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+    color: var(--pine-green);
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .nav-logo span { font-size: 22px; }
+  .nav-center {
+    display: flex; gap: 4px;
+    background: rgba(45,80,22,0.08);
+    border-radius: 50px;
+    padding: 4px;
+  }
+  .nav-tab {
+    padding: 7px 14px;
+    border-radius: 50px;
+    border: none;
+    background: transparent;
+    font-family: 'Nunito', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-mid);
+    cursor: pointer;
+    transition: all 0.25s ease;
+    white-space: nowrap;
+  }
+  .nav-tab.active {
+    background: var(--pine-green);
+    color: white;
+    box-shadow: 0 2px 8px rgba(45,80,22,0.3);
+  }
+  .nav-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+  .vine-progress {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 12px; color: var(--pine-mid); font-weight: 700;
+  }
+  .vine-bar {
+    width: 80px; height: 8px;
+    background: rgba(45,80,22,0.15);
+    border-radius: 50px;
+    overflow: hidden;
+  }
+  .vine-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--pine-light), var(--turmeric));
+    border-radius: 50px;
+    transition: width 0.8s ease;
+  }
+
+  /* Lang dropdown in nav */
+  .lang-nav-wrap { position: relative; }
+  .lang-nav-btn {
+    background: var(--turmeric);
+    color: var(--forest-dark);
+    border: none;
+    padding: 8px 14px;
+    border-radius: 50px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 12px;
+    font-weight: 800;
+    cursor: pointer;
+    display: flex; align-items: center; gap: 6px;
+    transition: all 0.2s ease;
+  }
+  .lang-nav-btn:hover { background: var(--turmeric-light); }
+  .lang-nav-popup {
+    position: absolute;
+    top: calc(100% + 8px); right: 0;
+    background: var(--cloud-white);
+    border-radius: 14px;
+    padding: 6px;
+    box-shadow: var(--shadow-lg);
+    display: none;
+    flex-direction: column; gap: 2px;
+    border: 1px solid rgba(45,80,22,0.1);
+    min-width: 160px;
+    z-index: 999;
+  }
+  .lang-nav-popup.open { display: flex; }
+  .lang-nav-opt {
+    background: transparent; border: none;
+    padding: 9px 14px; border-radius: 8px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 13px; font-weight: 700;
+    cursor: pointer; text-align: left;
+    transition: background 0.15s;
+  }
+  .lang-nav-opt:hover, .lang-nav-opt.active { background: rgba(45,80,22,0.08); color: var(--pine-green); }
+
+  /* ===== MAIN CONTENT AREA ===== */
+  .main-content {
+    flex: 1;
+    padding: 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  /* ===== SECTION PANELS ===== */
+  .panel { display: none; }
+  .panel.active { display: block; animation: fadeUp 0.4s ease both; }
+
+  /* ===== HOME PANEL ===== */
+  .welcome-banner {
+    background: linear-gradient(135deg, var(--pine-green) 0%, var(--pine-mid) 60%, var(--pine-light) 100%);
+    border-radius: 24px;
+    padding: 32px;
+    color: white;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 28px;
+  }
+  .welcome-banner::after {
+    content: '🌿';
+    position: absolute;
+    right: 32px; top: 50%;
+    transform: translateY(-50%);
+    font-size: 80px;
+    opacity: 0.3;
+  }
+  .welcome-banner h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px; line-height: 1.3;
+    margin-bottom: 8px;
+  }
+  .welcome-banner p { opacity: 0.85; font-size: 14px; }
+  .badge-row {
+    display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap;
+  }
+  .badge {
+    background: rgba(255,255,255,0.2);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 50px;
+    padding: 4px 12px;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .section-heading {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    color: var(--pine-green);
+    margin-bottom: 16px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .section-heading::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(45,80,22,0.2), transparent);
+  }
+
+  .subjects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .subject-card {
+    background: var(--card-bg);
+    border-radius: 20px;
+    padding: 24px 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(45,80,22,0.08);
+    box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
+  }
+  .subject-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: var(--card-accent, var(--pine-light));
+  }
+  .subject-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
+  .subject-icon { font-size: 36px; margin-bottom: 12px; }
+  .subject-name { font-weight: 800; font-size: 15px; color: var(--text-dark); }
+  .subject-sub { font-size: 12px; color: var(--text-light); margin-top: 4px; }
+  .subject-progress { margin-top: 12px; }
+  .mini-bar { height: 4px; background: rgba(45,80,22,0.1); border-radius: 50px; overflow: hidden; }
+  .mini-fill { height: 100%; background: var(--card-accent, var(--pine-light)); border-radius: 50px; }
+  .mini-label { font-size: 10px; color: var(--text-light); margin-top: 4px; font-weight: 600; }
+
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+  .stat-card {
+    background: var(--card-bg);
+    border-radius: 16px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(45,80,22,0.06);
+  }
+  .stat-value { font-size: 28px; font-weight: 800; color: var(--pine-green); }
+  .stat-label { font-size: 11px; color: var(--text-light); text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
+  .stat-emoji { font-size: 20px; margin-bottom: 8px; }
+
+  /* ===== SUBJECTS PANEL ===== */
+  .subject-detail {
+    background: var(--card-bg);
+    border-radius: 24px;
+    padding: 32px;
+    box-shadow: var(--shadow);
+  }
+  .lesson-list { display: flex; flex-direction: column; gap: 12px; }
+  .lesson-item {
+    background: rgba(45,80,22,0.04);
+    border-radius: 14px;
+    padding: 16px 20px;
+    display: flex; align-items: center; gap: 16px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    border: 1px solid transparent;
+  }
+  .lesson-item:hover { background: rgba(45,80,22,0.08); border-color: rgba(45,80,22,0.15); }
+  .lesson-item.completed { border-color: var(--pine-pale); }
+  .lesson-num {
+    width: 36px; height: 36px;
+    background: var(--pine-green);
+    color: white;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 14px;
+    flex-shrink: 0;
+  }
+  .lesson-num.done { background: var(--turmeric); }
+  .lesson-info { flex: 1; }
+  .lesson-title { font-weight: 700; font-size: 14px; }
+  .lesson-meta { font-size: 12px; color: var(--text-light); margin-top: 2px; }
+  .lesson-action {
+    background: var(--pine-green);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 50px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .lesson-action:hover { background: var(--pine-mid); }
+
+  /* ===== LESSON MODULE (Video + Quiz) ===== */
+  .lesson-module-overlay {
+    position: fixed; inset: 0;
+    background: rgba(26,46,16,0.75);
+    backdrop-filter: blur(6px);
+    z-index: 200;
+    display: none;
+    align-items: center; justify-content: center;
+    padding: 20px;
+  }
+  .lesson-module-overlay.open { display: flex; }
+  .lesson-module-box {
+    background: var(--cloud-white);
+    border-radius: 28px;
+    width: 100%; max-width: 700px;
+    box-shadow: 0 32px 80px rgba(0,0,0,0.3);
+    animation: fadeUp 0.4s ease;
+    max-height: 90vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  }
+  .lm-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 22px 28px 0;
+  }
+  .lm-title { font-family: 'Playfair Display', serif; font-size: 20px; color: var(--pine-green); }
+  .lm-close {
+    background: rgba(45,80,22,0.1); border: none; border-radius: 50%;
+    width: 36px; height: 36px; font-size: 16px; cursor: pointer;
+    transition: all 0.2s; flex-shrink: 0;
+  }
+  .lm-close:hover { background: rgba(45,80,22,0.2); }
+
+  /* Section tabs inside lesson module */
+  .lm-tabs {
+    display: flex; gap: 4px;
+    background: rgba(45,80,22,0.07);
+    border-radius: 50px;
+    padding: 4px;
+    margin: 16px 28px 0;
+    width: fit-content;
+  }
+  .lm-tab {
+    padding: 8px 18px; border-radius: 50px; border: none;
+    font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 700;
+    cursor: pointer; transition: all 0.2s; color: var(--text-mid); background: transparent;
+  }
+  .lm-tab.active { background: var(--pine-green); color: white; }
+
+  .lm-section { display: none; padding: 20px 28px 28px; }
+  .lm-section.active { display: block; }
+
+  /* Video embed area */
+  .video-embed-wrap {
+    background: #000;
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 */
+    height: 0;
+    margin-bottom: 16px;
+  }
+  .video-embed-wrap iframe {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    border: none;
+  }
+  .video-info {
+    background: rgba(45,80,22,0.06);
+    border-radius: 14px;
+    padding: 16px 18px;
+    font-size: 14px;
+    color: var(--text-mid);
+    line-height: 1.7;
+  }
+  .video-info strong { color: var(--pine-green); }
+
+  /* Quiz section */
+  .quiz-progress-bar {
+    background: rgba(45,80,22,0.1);
+    border-radius: 50px;
+    height: 6px;
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+  .quiz-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--pine-light), var(--turmeric));
+    border-radius: 50px;
+    transition: width 0.5s ease;
+  }
+  .quiz-counter {
+    font-size: 12px; color: var(--text-light); font-weight: 700;
+    margin-bottom: 12px;
+  }
+  .quiz-question { font-size: 17px; font-weight: 700; margin-bottom: 18px; line-height: 1.5; color: var(--text-dark); }
+  .quiz-options { display: flex; flex-direction: column; gap: 10px; }
+  .quiz-opt {
+    background: rgba(45,80,22,0.06);
+    border: 2px solid transparent;
+    border-radius: 12px;
+    padding: 14px 18px;
+    cursor: pointer;
+    font-family: 'Nunito', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: left;
+    transition: all 0.2s ease;
+  }
+  .quiz-opt:hover:not(:disabled) { border-color: var(--pine-light); background: rgba(90,158,58,0.1); }
+  .quiz-opt.correct { border-color: var(--pine-light); background: rgba(90,158,58,0.15); color: var(--pine-green); }
+  .quiz-opt.wrong { border-color: #e05050; background: rgba(224,80,80,0.1); color: #c04040; }
+  .quiz-opt:disabled { cursor: default; }
+  .quiz-style-tag {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(212,160,23,0.12);
+    border: 1px solid rgba(212,160,23,0.3);
+    border-radius: 50px;
+    padding: 4px 12px;
+    font-size: 11px; font-weight: 700;
+    color: var(--earth-brown);
+    margin-bottom: 16px;
+  }
+  .quiz-next-btn {
+    margin-top: 16px;
+    background: var(--pine-green);
+    color: white;
+    border: none;
+    padding: 12px 28px;
+    border-radius: 50px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 14px; font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: none;
+  }
+  .quiz-next-btn.visible { display: inline-flex; align-items: center; gap: 8px; }
+  .quiz-next-btn:hover { background: var(--pine-mid); }
+  .quiz-complete {
+    text-align: center;
+    padding: 20px;
+    display: none;
+  }
+  .quiz-complete.show { display: block; }
+  .quiz-complete .qc-icon { font-size: 56px; margin-bottom: 12px; }
+  .quiz-complete h3 { font-family: 'Playfair Display', serif; font-size: 22px; color: var(--pine-green); margin-bottom: 8px; }
+  .quiz-complete p { color: var(--text-mid); font-size: 14px; line-height: 1.6; }
+
+  /* ===== ORAL TRADITIONS PANEL ===== */
+  .story-card {
+    background: var(--card-bg);
+    border-radius: 24px;
+    padding: 28px;
+    box-shadow: var(--shadow);
+    margin-bottom: 16px;
+    display: flex; gap: 20px; align-items: flex-start;
+  }
+  .story-avatar {
+    width: 72px; height: 72px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--pine-green), var(--pine-light));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 36px;
+    flex-shrink: 0;
+    box-shadow: 0 4px 16px rgba(45,80,22,0.2);
+  }
+  .story-content { flex: 1; }
+  .story-elder { font-weight: 800; font-size: 15px; color: var(--pine-green); }
+  .story-topic { font-size: 12px; color: var(--text-light); margin-top: 2px; }
+  .story-excerpt { margin-top: 10px; font-size: 14px; color: var(--text-mid); line-height: 1.7; font-style: italic; }
+  .story-actions { display: flex; gap: 10px; margin-top: 14px; }
+  .play-btn {
+    background: var(--pine-green);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 50px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 13px; font-weight: 700;
+    cursor: pointer;
+    display: flex; align-items: center; gap: 8px;
+    transition: all 0.2s ease;
+  }
+  .play-btn:hover { background: var(--pine-mid); transform: translateY(-1px); }
+  .play-btn.playing { background: var(--turmeric); color: var(--forest-dark); }
+
+  /* ===== PROGRESS PANEL ===== */
+  .progress-hero {
+    background: linear-gradient(135deg, var(--turmeric) 0%, var(--turmeric-light) 100%);
+    border-radius: 24px;
+    padding: 32px;
+    margin-bottom: 24px;
+    color: var(--forest-dark);
+  }
+  .progress-hero h2 { font-family: 'Playfair Display', serif; font-size: 24px; }
+  .orchid-row { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap; }
+  .orchid-item {
+    background: rgba(255,255,255,0.5);
+    border-radius: 12px;
+    padding: 10px 14px;
+    text-align: center;
+    min-width: 80px;
+  }
+  .orchid-item .orchid-emoji { font-size: 28px; }
+  .orchid-item .orchid-label { font-size: 10px; font-weight: 700; margin-top: 4px; }
+
+  .progress-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+  }
+  .progress-card {
+    background: var(--card-bg);
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: var(--shadow);
+  }
+  .progress-card-title { font-weight: 800; font-size: 15px; margin-bottom: 12px; color: var(--text-dark); }
+  .progress-bar-row { margin-bottom: 10px; }
+  .progress-bar-label {
+    display: flex; justify-content: space-between;
+    font-size: 12px; margin-bottom: 4px;
+    color: var(--text-mid); font-weight: 600;
+  }
+  .progress-bar { height: 8px; background: rgba(45,80,22,0.1); border-radius: 50px; overflow: hidden; }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--pine-light), var(--turmeric));
+    border-radius: 50px;
+    transition: width 1s ease;
+  }
+
+  .leaderboard-item {
+    display: flex; align-items: center; gap: 14px;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(45,80,22,0.06);
+  }
+  .lb-rank { font-weight: 800; font-size: 18px; width: 32px; text-align: center; color: var(--stone-grey); }
+  .lb-rank.gold { color: var(--turmeric); }
+  .lb-rank.silver { color: var(--stone-grey); }
+  .lb-rank.bronze { color: var(--earth-brown); }
+  .lb-avatar { font-size: 28px; }
+  .lb-name { font-weight: 700; flex: 1; }
+  .lb-village { font-size: 12px; color: var(--text-light); }
+  .lb-score { font-weight: 800; color: var(--pine-green); }
+
+  /* ===== ROOT BRIDGE PROGRESS ===== */
+  .root-bridge {
+    background: var(--card-bg);
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: var(--shadow);
+    margin-bottom: 24px;
+    text-align: center;
+  }
+  .bridge-title { font-family: 'Playfair Display', serif; font-size: 16px; color: var(--pine-green); margin-bottom: 16px; }
+  .bridge-svg { width: 100%; height: 80px; }
+  .bridge-milestones {
+    display: flex; justify-content: space-between;
+    margin-top: 8px;
+    font-size: 11px; color: var(--text-light); font-weight: 600;
+  }
+
+  /* Audio visualizer */
+  .audio-bar { display: flex; align-items: flex-end; gap: 3px; height: 32px; margin: 0 4px; }
+  .audio-wave {
+    width: 4px; background: var(--pine-light);
+    border-radius: 2px;
+    animation: wave 0.8s ease-in-out infinite;
+  }
+  .audio-wave:nth-child(2) { animation-delay: 0.1s; }
+  .audio-wave:nth-child(3) { animation-delay: 0.2s; }
+  .audio-wave:nth-child(4) { animation-delay: 0.3s; }
+  .audio-wave:nth-child(5) { animation-delay: 0.4s; }
+  @keyframes wave { 0%, 100% { height: 8px; } 50% { height: 28px; } }
+
+  /* Mode toggle */
+  .mode-toggle {
+    display: flex; gap: 8px;
+    background: rgba(45,80,22,0.08);
+    border-radius: 50px;
+    padding: 4px;
+    margin-bottom: 20px;
+    width: fit-content;
+  }
+  .mode-btn {
+    padding: 8px 16px; border-radius: 50px; border: none;
+    font-family: 'Nunito', sans-serif;
+    font-size: 12px; font-weight: 700;
+    cursor: pointer; transition: all 0.2s ease;
+    color: var(--text-mid); background: transparent;
+  }
+  .mode-btn.active { background: var(--pine-green); color: white; }
+
+  /* Subject filter */
+  .filter-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+  .filter-chip {
+    background: rgba(45,80,22,0.08);
+    border: 1px solid transparent;
+    border-radius: 50px;
+    padding: 8px 16px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 12px; font-weight: 700;
+    cursor: pointer; transition: all 0.2s; color: var(--text-mid);
+  }
+  .filter-chip.active { background: var(--pine-green); color: white; }
+
+  /* Grade selector (on subjects page) */
+  .grade-selector { display: flex; gap: 8px; align-items: center; margin-bottom: 20px; flex-wrap: wrap; }
+  .grade-btn {
+    background: rgba(45,80,22,0.06);
+    border: 1px solid rgba(45,80,22,0.15);
+    border-radius: 50px;
+    padding: 7px 16px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 13px; font-weight: 700;
+    cursor: pointer; transition: all 0.2s; color: var(--text-mid);
+  }
+  .grade-btn.active { background: var(--pine-green); color: white; border-color: var(--pine-green); }
+
+  /* Math styles */
+  .math-problem {
+    background: rgba(45,80,22,0.05);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-left: 4px solid var(--pine-light);
+  }
+  .math-problem h4 { font-size: 15px; color: var(--pine-green); margin-bottom: 12px; }
+  .equation { font-size: 14px; color: var(--text-mid); line-height: 1.7; margin-bottom: 14px; }
+  .math-input { display: flex; gap: 10px; align-items: center; }
+  .math-answer {
+    padding: 10px 14px; border-radius: 10px;
+    border: 2px solid rgba(45,80,22,0.2);
+    font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 700;
+    width: 140px; outline: none;
+    transition: border-color 0.2s;
+  }
+  .math-answer:focus { border-color: var(--pine-light); }
+  .check-btn {
+    background: var(--pine-green); color: white;
+    border: none; border-radius: 10px;
+    padding: 10px 18px;
+    font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .check-btn:hover { background: var(--pine-mid); }
+
+  /* Weaving grid */
+  .weaving-grid {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 3px;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .weave-cell {
+    aspect-ratio: 1;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: transform 0.1s;
+  }
+  .weave-cell:hover { transform: scale(1.1); }
+
+  /* ===== GAME PANEL HERO ===== */
+  .game-hero {
+    background: linear-gradient(135deg, #1A2E10, #3D7022);
+    border-radius: 24px;
+    padding: 28px 32px;
+    color: white;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .game-hero::before {
+    content: '🌿🌱🍃';
+    position: absolute; right: 24px; top: 50%;
+    transform: translateY(-50%);
+    font-size: 60px; opacity: 0.15;
+    letter-spacing: 8px;
+  }
+  .game-hero h2 { font-family: 'Playfair Display', serif; font-size: 24px; margin-bottom: 6px; }
+  .game-hero p { opacity: 0.8; font-size: 13px; }
+  .game-metrics { display: flex; gap: 12px; margin-top: 16px; flex-wrap: wrap; }
+  .metric-pill {
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 50px;
+    padding: 7px 14px;
+    font-size: 12px; font-weight: 700;
+    display: flex; align-items: center; gap: 6px;
+  }
+
+  /* ===== GAME CARDS GRID ===== */
+  .gc-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin-top: 8px;
+  }
+  @media (max-width: 700px) { .gc-grid { grid-template-columns: 1fr; } }
+
+  .gc-card {
+    background: var(--card-bg);
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+  }
+  .gc-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-lg);
+    border-color: rgba(45,80,22,0.2);
+  }
+
+  /* Art header for each card */
+  .gc-art {
+    height: 130px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .gc-art-1 { background: linear-gradient(135deg,#2D5016 0%,#5A9E3A 100%); }
+  .gc-art-2 { background: linear-gradient(135deg,#6B4C2A 0%,#D4A017 100%); }
+  .gc-art-3 { background: linear-gradient(135deg,#1A4A6B 0%,#7BAFC4 100%); }
+  .gc-art-4 { background: linear-gradient(135deg,#1A2E10 0%,#3D7022 70%,#A8CC8A 100%); }
+
+  .gc-art-bg {
+    font-size: 72px;
+    opacity: 0.18;
+    position: absolute;
+    right: 16px;
+    bottom: -8px;
+    line-height: 1;
+  }
+  .gc-art-icons {
+    position: absolute;
+    inset: 0;
+  }
+  .gc-art-icons span {
+    position: absolute;
+    font-size: 26px;
+    animation: floatIcon 3s ease-in-out infinite;
+  }
+  @keyframes floatIcon {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  .gc-body {
+    padding: 20px 22px 22px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .gc-num {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    color: var(--text-light);
+    text-transform: uppercase;
+  }
+  .gc-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+    color: var(--text-dark);
+    line-height: 1.3;
+  }
+  .gc-sub {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--pine-mid);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .gc-desc {
+    font-size: 13px;
+    color: var(--text-mid);
+    line-height: 1.6;
+    margin-top: 4px;
+    flex: 1;
+  }
+  .gc-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: 6px;
+  }
+  .gc-tag {
+    font-size: 10px;
+    font-weight: 700;
+    border-radius: 50px;
+    padding: 3px 10px;
+  }
+  .gc-tag-green { background: rgba(90,158,58,0.12); color: var(--pine-mid); }
+  .gc-tag-blue  { background: rgba(123,175,196,0.15); color: #1A4A6B; }
+  .gc-tag-gold  { background: rgba(212,160,23,0.12); color: var(--earth-brown); }
+
+  .gc-play-btn {
+    margin-top: 12px;
+    background: var(--pine-green);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    padding: 11px 22px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: all 0.2s;
+    align-self: flex-start;
+  }
+  .gc-play-btn:hover { background: var(--pine-mid); transform: scale(1.03); }
+
+  /* ===== GAME OVERLAY ===== */
+  .game-overlay {
+    position: fixed; inset: 0;
+    background: rgba(26,46,16,0.82);
+    backdrop-filter: blur(8px);
+    z-index: 210;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+  }
+  .game-overlay.open { display: flex; }
+
+  .game-box {
+    background: var(--cloud-white);
+    border-radius: 28px;
+    width: 100%;
+    max-width: 720px;
+    max-height: 92vh;
+    overflow-y: auto;
+    box-shadow: 0 32px 80px rgba(0,0,0,0.35);
+    animation: fadeUp 0.35s ease;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .gb-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px 0;
+  }
+  .gb-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    color: var(--pine-green);
+  }
+  .gb-close {
+    background: rgba(45,80,22,0.1);
+    border: none; border-radius: 50%;
+    width: 36px; height: 36px;
+    font-size: 16px; cursor: pointer;
+    transition: 0.2s; flex-shrink: 0;
+  }
+  .gb-close:hover { background: rgba(45,80,22,0.2); }
+
+  /* Phases inside game box */
+  .gb-phase { display: none; padding: 20px 24px 28px; }
+  .gb-phase.active { display: block; }
+
+  /* Instructions phase */
+  .instr-banner {
+    border-radius: 16px;
+    padding: 20px 22px;
+    margin-bottom: 16px;
+    color: white;
+    position: relative;
+    overflow: hidden;
+  }
+  .instr-banner h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    margin-bottom: 6px;
+  }
+  .instr-banner p { font-size: 13px; opacity: 0.9; line-height: 1.6; }
+  .instr-steps {
+    background: rgba(45,80,22,0.05);
+    border-radius: 14px;
+    padding: 16px 18px;
+    margin-bottom: 16px;
+  }
+  .instr-step {
+    display: flex; gap: 12px; align-items: flex-start;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(45,80,22,0.07);
+    font-size: 13px; color: var(--text-mid); line-height: 1.5;
+  }
+  .instr-step:last-child { border-bottom: none; }
+  .instr-step-num {
+    width: 24px; height: 24px;
+    background: var(--pine-green);
+    color: white;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 800;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .start-game-btn {
+    background: linear-gradient(135deg, var(--turmeric), var(--turmeric-light));
+    color: var(--forest-dark);
+    border: none;
+    border-radius: 50px;
+    padding: 14px 36px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 15px;
+    font-weight: 800;
+    cursor: pointer;
+    display: block;
+    margin: 0 auto;
+    transition: 0.2s;
+    box-shadow: 0 6px 20px rgba(212,160,23,0.35);
+  }
+  .start-game-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(212,160,23,0.4); }
+
+  /* ---- GAME 1: Cleanliness ---- */
+  .village-scene {
+    background: linear-gradient(180deg,#87CEEB 0%,#A8E6CF 45%,#5A9E3A 100%);
+    border-radius: 16px;
+    height: 180px;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 14px;
+    cursor: default;
+  }
+  .vs-obj { position: absolute; font-size: 22px; user-select:none; }
+  .vs-trash { position: absolute; font-size: 18px; cursor: pointer; transition: opacity 0.3s; }
+  .vs-trash:hover { transform: scale(1.2); }
+
+  .meter-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+  .meter-box {
+    background: rgba(45,80,22,0.06);
+    border-radius: 12px;
+    padding: 12px 14px;
+  }
+  .meter-label { font-size: 11px; font-weight: 700; color: var(--text-light); margin-bottom: 6px; text-transform:uppercase; }
+  .meter-bar { height: 10px; background: rgba(45,80,22,0.12); border-radius: 50px; overflow: hidden; }
+  .meter-fill { height: 100%; border-radius: 50px; transition: width 0.5s ease; }
+  .meter-val { font-size: 13px; font-weight: 800; margin-top: 4px; color: var(--text-dark); }
+
+  .action-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .action-btn {
+    background: var(--card-bg);
+    border: 2px solid rgba(45,80,22,0.15);
+    border-radius: 12px;
+    padding: 10px 14px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 13px; font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .action-btn:hover { border-color: var(--pine-light); background: rgba(90,158,58,0.08); transform: translateY(-1px); }
+  .action-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+  .action-btn .ab-cost { font-size: 10px; color: var(--text-light); font-weight: 600; }
+
+  .game-log {
+    background: rgba(45,80,22,0.04);
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 12px;
+    color: var(--text-mid);
+    min-height: 36px;
+    line-height: 1.5;
+    margin-bottom: 10px;
+  }
+  .budget-bar {
+    display: flex; align-items: center; gap: 10px;
+    background: rgba(212,160,23,0.1);
+    border-radius: 10px;
+    padding: 10px 14px;
+    margin-bottom: 12px;
+    font-size: 13px; font-weight: 700;
+  }
+
+  /* ---- GAME 2: Handicrafts ---- */
+  .bamboo-choice { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+  .bamboo-opt {
+    border-radius: 14px;
+    padding: 16px;
+    border: 3px solid transparent;
+    cursor: pointer;
+    transition: 0.2s;
+    text-align: center;
+  }
+  .bamboo-opt:hover { transform: translateY(-3px); }
+  .bamboo-opt.selected { border-color: var(--turmeric); }
+  .bamboo-opt .bo-icon { font-size: 36px; margin-bottom: 8px; }
+  .bamboo-opt .bo-name { font-weight: 800; font-size: 14px; }
+  .bamboo-opt .bo-desc { font-size: 11px; color: var(--text-light); margin-top: 4px; line-height: 1.4; }
+  .bamboo-opt .bo-cost { font-size: 12px; font-weight: 800; margin-top: 8px; }
+
+  .weave-stage {
+    background: rgba(45,80,22,0.04);
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 14px;
+    text-align: center;
+  }
+  .weave-grid-game {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 4px;
+    max-width: 340px;
+    margin: 12px auto;
+  }
+  .wc { height: 20px; border-radius: 3px; cursor: pointer; transition: 0.1s; background: #ddd; }
+  .wc:hover { opacity: 0.7; }
+  .wc.filled { background: var(--pine-green); }
+  .wc.filled-2 { background: var(--turmeric); }
+
+  .price-stage { margin-bottom: 14px; }
+  .price-display {
+    background: linear-gradient(135deg,rgba(45,80,22,0.08),rgba(212,160,23,0.06));
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 12px;
+  }
+  .price-display .pd-row {
+    display: flex; justify-content: space-between;
+    font-size: 13px; color: var(--text-mid); padding: 4px 0;
+    border-bottom: 1px solid rgba(45,80,22,0.07);
+  }
+  .price-display .pd-row:last-child { border-bottom: none; font-weight: 800; color: var(--text-dark); font-size: 14px; }
+  .price-slider-wrap { margin: 12px 0; }
+  .price-slider {
+    width: 100%;
+    accent-color: var(--pine-green);
+    cursor: pointer;
+  }
+  .price-feedback {
+    text-align: center;
+    padding: 10px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 14px;
+    margin-top: 8px;
+  }
+
+  /* ---- GAME 3: Tourism / drag-drop ---- */
+  .tourist-card {
+    background: linear-gradient(135deg,#1A4A6B,#7BAFC4);
+    border-radius: 16px;
+    padding: 18px;
+    color: white;
+    margin-bottom: 14px;
+  }
+  .tourist-flag { font-size: 32px; margin-bottom: 6px; }
+  .tourist-question { font-size: 14px; font-style: italic; opacity: 0.95; line-height: 1.5; }
+
+  .khasi-bank {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    margin-bottom: 14px;
+  }
+  .khasi-word {
+    background: var(--pine-green);
+    color: white;
+    border-radius: 8px;
+    padding: 7px 14px;
+    font-size: 13px; font-weight: 700;
+    cursor: grab;
+    user-select: none;
+    transition: 0.15s;
+    border: 2px solid transparent;
+  }
+  .khasi-word:hover { transform: scale(1.05); background: var(--pine-mid); }
+  .khasi-word.used { opacity: 0.3; cursor: default; }
+
+  .answer-slots {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    background: rgba(45,80,22,0.05);
+    border-radius: 12px;
+    padding: 14px;
+    min-height: 52px;
+    margin-bottom: 12px;
+    border: 2px dashed rgba(45,80,22,0.15);
+  }
+  .answer-slot-word {
+    background: var(--turmeric);
+    color: var(--forest-dark);
+    border-radius: 8px;
+    padding: 7px 14px;
+    font-size: 13px; font-weight: 700;
+    cursor: pointer;
+  }
+  .answer-slot-word:hover { background: var(--turmeric-light); }
+
+  .tour-score-row { display: flex; gap: 12px; margin-bottom: 10px; }
+  .tour-score-pill {
+    background: rgba(45,80,22,0.08);
+    border-radius: 50px;
+    padding: 6px 14px;
+    font-size: 12px; font-weight: 700;
+    color: var(--pine-mid);
+  }
+
+  /* ---- GAME 4: Root Bridge ---- */
+  .forest-map {
+    background: linear-gradient(180deg,#87CEEB 0%,#A8E6CF 30%,#2D5016 100%);
+    border-radius: 16px;
+    height: 180px;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 14px;
+    cursor: pointer;
+  }
+  .fm-slot {
+    position: absolute;
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    border: 2px dashed rgba(255,255,255,0.4);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: 0.2s;
+    font-size: 22px;
+  }
+  .fm-slot:hover { border-color: rgba(255,255,255,0.9); transform: scale(1.1); }
+  .fm-slot.planted { border-style: solid; border-color: var(--turmeric-light); }
+
+  .timeline-bar {
+    display: flex; gap: 0; margin-bottom: 14px;
+    border-radius: 12px; overflow: hidden;
+  }
+  .tl-seg {
+    flex: 1; height: 10px;
+    background: rgba(45,80,22,0.12);
+    position: relative;
+  }
+  .tl-seg.done { background: var(--pine-light); }
+  .tl-seg.current { background: var(--turmeric); }
+
+  .timeline-labels { display: flex; justify-content: space-between; font-size: 10px; color: var(--text-light); font-weight: 700; margin-bottom: 14px; }
+
+  .root-choice-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+  .root-choice {
+    border-radius: 12px;
+    padding: 14px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: 0.2s;
+    text-align: center;
+    font-family: 'Nunito', sans-serif;
+  }
+  .root-choice:hover { transform: translateY(-2px); }
+  .root-choice .rc-icon { font-size: 28px; margin-bottom: 6px; }
+  .root-choice .rc-label { font-size: 13px; font-weight: 800; color: var(--text-dark); }
+  .root-choice .rc-desc { font-size: 11px; color: var(--text-light); margin-top: 3px; line-height: 1.4; }
+  .root-choice-short { background: rgba(224,80,80,0.07); border-color: rgba(224,80,80,0.2); }
+  .root-choice-long { background: rgba(45,80,22,0.06); border-color: rgba(45,80,22,0.2); }
+  .root-choice-short:hover { border-color: #e05050; }
+  .root-choice-long:hover { border-color: var(--pine-light); }
+
+  /* Wisdom Scroll (Theory Lock) */
+  .wisdom-scroll {
+    background: linear-gradient(135deg, #1A2E10, #2D5016);
+    border-radius: 20px;
+    padding: 24px;
+    color: white;
+    margin-top: 4px;
+  }
+  .ws-header {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 16px;
+  }
+  .ws-icon { font-size: 36px; }
+  .ws-title { font-family: 'Playfair Display', serif; font-size: 20px; line-height: 1.2; }
+  .ws-subtitle { font-size: 12px; opacity: 0.7; margin-top: 2px; }
+  .ws-body {
+    background: rgba(255,255,255,0.08);
+    border-radius: 14px;
+    padding: 16px;
+    font-size: 13px;
+    line-height: 1.7;
+    opacity: 0.95;
+    margin-bottom: 16px;
+  }
+  .ws-body strong { color: var(--turmeric-light); }
+  .ws-link {
+    background: rgba(212,160,23,0.2);
+    border: 1px solid rgba(212,160,23,0.4);
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-size: 13px;
+    margin-bottom: 16px;
+  }
+  .ws-link strong { color: var(--turmeric-light); display: block; margin-bottom: 4px; }
+  .ws-done-btn {
+    background: linear-gradient(135deg, var(--turmeric), var(--turmeric-light));
+    color: var(--forest-dark);
+    border: none;
+    border-radius: 50px;
+    padding: 13px 32px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 14px; font-weight: 800;
+    cursor: pointer;
+    display: block;
+    margin: 0 auto;
+    transition: 0.2s;
+  }
+  .ws-done-btn:hover { transform: translateY(-2px); }
+
+  /* ===== TOAST ===== */
+  .toast {
+    position: fixed; top: 80px; right: 24px;
+    background: var(--pine-green); color: white;
+    padding: 14px 20px;
+    border-radius: 14px;
+    font-size: 13px; font-weight: 700;
+    box-shadow: var(--shadow-lg);
+    z-index: 300;
+    transform: translateX(120%);
+    transition: transform 0.4s ease;
+    display: flex; align-items: center; gap: 10px;
+    max-width: 300px;
+  }
+  .toast.show { transform: translateX(0); }
+
+  /* Weaving color swatch */
+  .selected-color { border-color: #333 !important; }
+
+  @media (max-width: 640px) {
+    .stats-row { grid-template-columns: repeat(2, 1fr); }
+    .sim-controls { grid-template-columns: repeat(2, 1fr); }
+    .nav-center { display: none; }
+    .top-nav { flex-wrap: wrap; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== SPLASH SCREEN ===== -->
+<div id="splash" class="screen active">
+  <div class="splash-logo">
+    <div class="splash-emblem">🌿</div>
+    <div class="splash-title">Meghalaya Serenity</div>
+    <div class="splash-subtitle">E-Learning Tablet</div>
+    <div class="splash-tagline">"Where the clouds live, learning grows"</div>
+  </div>
+
+  <div class="path-selector">
+    <!-- STEP 1: Grade Selection (only step now) -->
+    <div id="step-grade">
+      <div class="path-label">📚 Select Your Grade</div>
+      <div class="grade-splash">
+        <button class="grade-splash-btn" onclick="selectSplashGrade('1-2', this)">Grade 1–2</button>
+        <button class="grade-splash-btn" onclick="selectSplashGrade('3-4', this)">Grade 3–4</button>
+        <button class="grade-splash-btn selected" onclick="selectSplashGrade('5-6', this)">Grade 5–6</button>
+        <button class="grade-splash-btn" onclick="selectSplashGrade('7-8', this)">Grade 7–8</button>
+      </div>
+      <button class="start-btn" onclick="launchApp()">✨ Begin Your Journey</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MAIN APP ===== -->
+<div id="app">
+  <!-- TOP NAV ONLY (no bottom nav) -->
+  <nav class="top-nav">
+    <div class="nav-logo" onclick="showPanel('home')">
+      <span>🌿</span> Meghalaya Serenity
+    </div>
+    <div class="nav-center">
+      <button class="nav-tab active" onclick="showPanel('home', this)">🏡 Home</button>
+      <button class="nav-tab" onclick="showPanel('subjects', this)">📚 Subjects</button>
+      <button class="nav-tab" onclick="showPanel('game', this)">🎮 Mawlynnong</button>
+      <button class="nav-tab" onclick="showPanel('oral', this)">🎙️ Elder Stories</button>
+      <button class="nav-tab" onclick="showPanel('progress', this)">🌱 My Growth</button>
+    </div>
+    <div class="nav-right">
+      <div class="vine-progress">
+        🌺
+        <div class="vine-bar"><div class="vine-fill" id="vineFill" style="width:38%"></div></div>
+        <span id="vinePercent">38%</span>
+      </div>
+      <!-- Single language selector - top right only -->
+      <div class="lang-nav-wrap">
+        <button class="lang-nav-btn" onclick="toggleNavLangPopup()" id="langNavBtn">
+          <span id="langFlag">📖</span> <span id="langLabel">English</span> ▾
+        </button>
+        <div class="lang-nav-popup" id="navLangPopup">
+          <button class="lang-nav-opt active" id="langOpt-english" onclick="setLanguage('english')">📖 English</button>
+          <button class="lang-nav-opt" id="langOpt-khasi" onclick="setLanguage('khasi')">🗣️ Khasi</button>
+          <button class="lang-nav-opt" id="langOpt-garo" onclick="setLanguage('garo')">🌿 Garo</button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="main-content">
+
+    <!-- HOME PANEL -->
+    <div id="panel-home" class="panel active">
+      <div class="welcome-banner">
+        <h1 id="welcomeMsg">Khublei, Young Eagle! 🦅</h1>
+        <p id="welcomeSub">Continue your journey through the misty hills of learning.</p>
+        <div class="badge-row">
+          <span class="badge" id="gradeBadge">🎓 Grade 5–6</span>
+          <span class="badge" id="pathBadge">📚 MBOSE Curriculum</span>
+          <span class="badge">🌿 Day 42</span>
+          <span class="badge" id="homeBadgePoints">⭐ 340 Points</span>
+        </div>
+      </div>
+
+      <div class="root-bridge">
+        <div class="bridge-title">🌉 Your Living Root Bridge — Keep Growing!</div>
+        <svg class="bridge-svg" viewBox="0 0 600 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0 60 Q150 20 300 40 Q450 60 600 30" stroke="#2D5016" stroke-width="3" fill="none" stroke-dasharray="8,4"/>
+          <path d="M0 60 Q75 30 150 45" stroke="#5A9E3A" stroke-width="5" fill="none"/>
+          <path d="M150 45 Q225 25 300 40" stroke="#D4A017" stroke-width="5" fill="none" stroke-dasharray="12,3"/>
+          <circle cx="0" cy="60" r="6" fill="#5A9E3A"/>
+          <circle cx="150" cy="45" r="6" fill="#5A9E3A"/>
+          <circle cx="300" cy="40" r="6" fill="#D4A017"/>
+          <circle cx="450" cy="52" r="6" fill="#C4CECA"/>
+          <circle cx="600" cy="30" r="6" fill="#C4CECA"/>
+          <text x="138" y="38" font-size="14">🌿</text>
+          <text x="288" y="33" font-size="14">⭐</text>
+          <text x="438" y="45" font-size="14">🔒</text>
+          <text x="588" y="23" font-size="14">🏆</text>
+        </svg>
+        <div class="bridge-milestones">
+          <span>Start</span><span>Basics ✓</span><span>Explorer ← You</span><span>Scholar</span><span>Master</span>
+        </div>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-emoji">📖</div>
+          <div class="stat-value" id="homeLessons">12</div>
+          <div class="stat-label">Lessons Done</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-emoji">⭐</div>
+          <div class="stat-value" id="homePoints">340</div>
+          <div class="stat-label">Total Points</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-emoji">🔥</div>
+          <div class="stat-value">7</div>
+          <div class="stat-label">Day Streak</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-emoji">🏆</div>
+          <div class="stat-value">#3</div>
+          <div class="stat-label">Village Rank</div>
+        </div>
+      </div>
+
+      <div class="section-heading">📚 Continue Learning</div>
+      <div class="subjects-grid">
+        <div class="subject-card" style="--card-accent:#5A9E3A" onclick="openLessonModule('khasi')">
+          <div class="subject-icon">🗣️</div>
+          <div class="subject-name">Khasi Language</div>
+          <div class="subject-sub">Phawar & Grammar</div>
+          <div class="subject-progress">
+            <div class="mini-bar"><div class="mini-fill" id="miniFill_khasi" style="width:65%"></div></div>
+            <div class="mini-label" id="miniLabel_khasi">65% complete</div>
+          </div>
+        </div>
+        <div class="subject-card" style="--card-accent:#D4A017" onclick="openLessonModule('math')">
+          <div class="subject-icon">🧮</div>
+          <div class="subject-name">Mathematics</div>
+          <div class="subject-sub">Ryndia Geometry</div>
+          <div class="subject-progress">
+            <div class="mini-bar"><div class="mini-fill" id="miniFill_math" style="width:40%; background:#D4A017"></div></div>
+            <div class="mini-label" id="miniLabel_math">40% complete</div>
+          </div>
+        </div>
+        <div class="subject-card" style="--card-accent:#7BAFC4" onclick="openLessonModule('science')">
+          <div class="subject-icon">🌿</div>
+          <div class="subject-name">Science & EVS</div>
+          <div class="subject-sub">Sacred Groves & Ecology</div>
+          <div class="subject-progress">
+            <div class="mini-bar"><div class="mini-fill" id="miniFill_science" style="width:55%; background:#7BAFC4"></div></div>
+            <div class="mini-label" id="miniLabel_science">55% complete</div>
+          </div>
+        </div>
+        <div class="subject-card" style="--card-accent:#C4648A" onclick="openLessonModule('social')">
+          <div class="subject-icon">🏔️</div>
+          <div class="subject-name">Social Studies</div>
+          <div class="subject-sub">Three Tribes & Dorbar</div>
+          <div class="subject-progress">
+            <div class="mini-bar"><div class="mini-fill" id="miniFill_social" style="width:30%; background:#C4648A"></div></div>
+            <div class="mini-label" id="miniLabel_social">30% complete</div>
+          </div>
+        </div>
+        <div class="subject-card" style="--card-accent:#6B4C2A" onclick="openLessonModule('art')">
+          <div class="subject-icon">🎋</div>
+          <div class="subject-name">Art & Values</div>
+          <div class="subject-sub">Bamboo Craft</div>
+          <div class="subject-progress">
+            <div class="mini-bar"><div class="mini-fill" id="miniFill_art" style="width:20%; background:#6B4C2A"></div></div>
+            <div class="mini-label" id="miniLabel_art">20% complete</div>
+          </div>
+        </div>
+        <div class="subject-card" style="--card-accent:#3D7022" onclick="showPanel('game')">
+          <div class="subject-icon">🏡</div>
+          <div class="subject-name">Mawlynnong Biz</div>
+          <div class="subject-sub">Village Simulation</div>
+          <div class="subject-progress">
+            <div class="mini-bar"><div class="mini-fill" style="width:25%; background:#3D7022"></div></div>
+            <div class="mini-label">Level 2 Unlocked</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUBJECTS PANEL (grade selector removed since it's on splash) -->
+    <div id="panel-subjects" class="panel">
+      <div class="section-heading">📚 All Subjects — MBOSE Curriculum</div>
+
+      <div class="filter-row">
+        <button class="filter-chip active" onclick="filterSubject('all', this)">🌟 All Subjects</button>
+        <button class="filter-chip" onclick="filterSubject('language', this)">🗣️ Language</button>
+        <button class="filter-chip" onclick="filterSubject('math', this)">🧮 Math</button>
+        <button class="filter-chip" onclick="filterSubject('science', this)">🌿 Science</button>
+        <button class="filter-chip" onclick="filterSubject('social', this)">🏔️ Social</button>
+        <button class="filter-chip" onclick="filterSubject('art', this)">🎋 Art & Values</button>
+      </div>
+
+      <div class="subject-detail">
+        <div id="subjectContent">
+          <div class="lesson-list">
+            <div class="lesson-item" data-cat="language" onclick="openLessonModule('khasi')">
+              <div class="lesson-num done">✓</div>
+              <div class="lesson-info">
+                <div class="lesson-title">🗣️ Khasi: Phawar (Oral Chants) — Unit 1</div>
+                <div class="lesson-meta">Auditory • 20 min • 50 pts</div>
+              </div>
+              <button class="lesson-action">Review</button>
+            </div>
+            <div class="lesson-item" data-cat="language" onclick="openLessonModule('khasi')">
+              <div class="lesson-num">2</div>
+              <div class="lesson-info">
+                <div class="lesson-title">🗣️ Khasi: Tri-lingual Grammar — Noun Structures</div>
+                <div class="lesson-meta">Visual + Auditory • 25 min • 60 pts</div>
+              </div>
+              <button class="lesson-action">Start</button>
+            </div>
+            <div class="lesson-item" data-cat="language" onclick="openLessonModule('science')">
+              <div class="lesson-num done">✓</div>
+              <div class="lesson-info">
+                <div class="lesson-title">📖 English: ESL — Describing the Living Root Bridge</div>
+                <div class="lesson-meta">ESL Approach • 30 min • 70 pts</div>
+              </div>
+              <button class="lesson-action">Review</button>
+            </div>
+            <div class="lesson-item" data-cat="math" onclick="openLessonModule('math')">
+              <div class="lesson-num done">✓</div>
+              <div class="lesson-info">
+                <div class="lesson-title">🧮 Math: Geometry through Ryndia Weaving Patterns</div>
+                <div class="lesson-meta">Kinesthetic • 35 min • 80 pts</div>
+              </div>
+              <button class="lesson-action">Review</button>
+            </div>
+            <div class="lesson-item" data-cat="math" onclick="openLessonModule('math')">
+              <div class="lesson-num">2</div>
+              <div class="lesson-info">
+                <div class="lesson-title">🧮 Math: Profit & Loss — Bamboo Craft Market</div>
+                <div class="lesson-meta">Contextual • 30 min • 75 pts</div>
+              </div>
+              <button class="lesson-action">Start</button>
+            </div>
+            <div class="lesson-item" data-cat="science" onclick="openLessonModule('science')">
+              <div class="lesson-num">1</div>
+              <div class="lesson-info">
+                <div class="lesson-title">🌿 EVS: Water Cycle in Sohra (Cherrapunji)</div>
+                <div class="lesson-meta">Visual + Video • 40 min • 90 pts</div>
+              </div>
+              <button class="lesson-action">Start</button>
+            </div>
+            <div class="lesson-item" data-cat="science" onclick="openLessonModule('science')">
+              <div class="lesson-num">2</div>
+              <div class="lesson-info">
+                <div class="lesson-title">🪴 EVS: Pitcher Plants & Sacred Groves Biodiversity</div>
+                <div class="lesson-meta">Visual • 35 min • 85 pts</div>
+              </div>
+              <button class="lesson-action">Start</button>
+            </div>
+            <div class="lesson-item" data-cat="social" onclick="openLessonModule('social')">
+              <div class="lesson-num">1</div>
+              <div class="lesson-info">
+                <div class="lesson-title">🏔️ Social: The Three Tribes — Khasi, Garo & Jaintia</div>
+                <div class="lesson-meta">Story + Visual • 45 min • 100 pts</div>
+              </div>
+              <button class="lesson-action">Start</button>
+            </div>
+            <div class="lesson-item" data-cat="social" onclick="openLessonModule('social')">
+              <div class="lesson-num">2</div>
+              <div class="lesson-info">
+                <div class="lesson-title">🏛️ Social: Dorbar Shnong — Village Democracy</div>
+                <div class="lesson-meta">Interactive • 30 min • 70 pts</div>
+              </div>
+              <button class="lesson-action">Start</button>
+            </div>
+            <div class="lesson-item" data-cat="art" onclick="openLessonModule('art')">
+              <div class="lesson-num">1</div>
+              <div class="lesson-info">
+                <div class="lesson-title">🎋 Art: Bamboo Craft — Design Your Own Khoh Basket</div>
+                <div class="lesson-meta">Kinesthetic • 50 min • 120 pts</div>
+              </div>
+              <button class="lesson-action">Start</button>
+            </div>
+            <div class="lesson-item" data-cat="art" onclick="openLessonModule('art')">
+              <div class="lesson-num">2</div>
+              <div class="lesson-info">
+                <div class="lesson-title">🌱 Values: Ka Akher-Khana — Community Ethics</div>
+                <div class="lesson-meta">Story + Reflection • 25 min • 60 pts</div>
+              </div>
+              <button class="lesson-action">Start</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAWLYNNONG GAME PANEL -->
+    <div id="panel-game" class="panel">
+      <div class="game-hero">
+        <h2>🏡 Mawlynnong Business Lab</h2>
+        <p>Asia's Cleanest Village — now your entrepreneurship classroom! Choose a Village Challenge to begin.</p>
+        <div class="game-metrics">
+          <div class="metric-pill">⭐ XP Earned: <span id="totalXP">0</span></div>
+          <div class="metric-pill">🏅 Games Played: <span id="gamesPlayed">0</span></div>
+          <div class="metric-pill">🌿 Village Level: <span id="villageLevel">1</span></div>
+        </div>
+      </div>
+
+      <!-- 4 Game Cards -->
+      <div class="gc-grid">
+
+        <div class="gc-card" onclick="openGame('cleanliness')">
+          <div class="gc-art gc-art-1">
+            <span class="gc-art-bg">🏡</span>
+            <div class="gc-art-icons">
+              <span style="left:10%;top:30%;animation-delay:0s">🗑️</span>
+              <span style="left:55%;top:20%;animation-delay:0.4s">🧹</span>
+              <span style="left:30%;top:55%;animation-delay:0.8s">🌸</span>
+              <span style="left:70%;top:50%;animation-delay:0.2s">🚶</span>
+            </div>
+          </div>
+          <div class="gc-body">
+            <div class="gc-num">01</div>
+            <div class="gc-title">🧹 The Cleanliness Dividend</div>
+            <div class="gc-sub">Operations Management</div>
+            <p class="gc-desc">You are the Village Headman. Place bamboo dustbins, attract tourists, and watch your economy grow — or collapse from neglect.</p>
+            <div class="gc-tags">
+              <span class="gc-tag gc-tag-green">✅ Unlocked</span>
+              <span class="gc-tag gc-tag-blue">📐 Operations</span>
+              <span class="gc-tag gc-tag-gold">~8 min</span>
+            </div>
+            <button class="gc-play-btn">▶ Play Challenge</button>
+          </div>
+        </div>
+
+        <div class="gc-card" onclick="openGame('handicrafts')">
+          <div class="gc-art gc-art-2">
+            <span class="gc-art-bg">🧺</span>
+            <div class="gc-art-icons">
+              <span style="left:8%;top:25%;animation-delay:0.1s">🪵</span>
+              <span style="left:60%;top:18%;animation-delay:0.5s">💰</span>
+              <span style="left:25%;top:58%;animation-delay:0.9s">🧵</span>
+              <span style="left:72%;top:55%;animation-delay:0.3s">🏪</span>
+            </div>
+          </div>
+          <div class="gc-body">
+            <div class="gc-num">02</div>
+            <div class="gc-title">🧺 Sustainable Handicrafts</div>
+            <div class="gc-sub">Arithmetic & Profit</div>
+            <p class="gc-desc">Enter the Crafting Shed. Choose your bamboo, weave your Khoh basket, and price it to sell — but price it wrong and you lose everything.</p>
+            <div class="gc-tags">
+              <span class="gc-tag gc-tag-green">✅ Unlocked</span>
+              <span class="gc-tag gc-tag-blue">🧮 Math</span>
+              <span class="gc-tag gc-tag-gold">~10 min</span>
+            </div>
+            <button class="gc-play-btn">▶ Play Challenge</button>
+          </div>
+        </div>
+
+        <div class="gc-card" onclick="openGame('tourism')">
+          <div class="gc-art gc-art-3">
+            <span class="gc-art-bg">🌍</span>
+            <div class="gc-art-icons">
+              <span style="left:12%;top:22%;animation-delay:0.2s">✈️</span>
+              <span style="left:58%;top:16%;animation-delay:0.6s">🗣️</span>
+              <span style="left:28%;top:60%;animation-delay:1s">📖</span>
+              <span style="left:68%;top:52%;animation-delay:0.4s">🤝</span>
+            </div>
+          </div>
+          <div class="gc-body">
+            <div class="gc-num">03</div>
+            <div class="gc-title">🗣️ Eco-Tourism & Hospitality</div>
+            <div class="gc-sub">Language & Social Studies</div>
+            <p class="gc-desc">Tourists from France, Japan, and Australia arrive! Drag the right Khasi words to explain the Living Root Bridge and Sacred Grove in English.</p>
+            <div class="gc-tags">
+              <span class="gc-tag gc-tag-green">✅ Unlocked</span>
+              <span class="gc-tag gc-tag-blue">🗣️ Language</span>
+              <span class="gc-tag gc-tag-gold">~7 min</span>
+            </div>
+            <button class="gc-play-btn">▶ Play Challenge</button>
+          </div>
+        </div>
+
+        <div class="gc-card" onclick="openGame('rootbridge')">
+          <div class="gc-art gc-art-4">
+            <span class="gc-art-bg">🌳</span>
+            <div class="gc-art-icons">
+              <span style="left:10%;top:28%;animation-delay:0s">🌱</span>
+              <span style="left:55%;top:20%;animation-delay:0.7s">⏳</span>
+              <span style="left:30%;top:58%;animation-delay:1.1s">🌉</span>
+              <span style="left:70%;top:48%;animation-delay:0.3s">💎</span>
+            </div>
+          </div>
+          <div class="gc-body">
+            <div class="gc-num">04</div>
+            <div class="gc-title">🌳 The Living Root Investment</div>
+            <div class="gc-sub">Long-term Thinking & Sustainability</div>
+            <p class="gc-desc">A slow-motion strategy game. Plant Ficus trees for a bridge in 50 years — or sell the wood now. Fast-forward time and see the consequences.</p>
+            <div class="gc-tags">
+              <span class="gc-tag gc-tag-green">✅ Unlocked</span>
+              <span class="gc-tag gc-tag-blue">🌿 Sustainability</span>
+              <span class="gc-tag gc-tag-gold">~12 min</span>
+            </div>
+            <button class="gc-play-btn">▶ Play Challenge</button>
+          </div>
+        </div>
+
+      </div><!-- /gc-grid -->
+    </div>
+
+    <!-- ORAL TRADITIONS PANEL -->
+    <div id="panel-oral" class="panel">
+      <div class="section-heading">🎙️ Listen to the Elders</div>
+      <div class="mode-toggle">
+        <button class="mode-btn active" onclick="setMode('story', this)">📖 Story Mode</button>
+        <button class="mode-btn" onclick="setMode('chant', this)">🎵 Phawar Chants</button>
+        <button class="mode-btn" onclick="setMode('dialect', this)">💬 Dialects</button>
+      </div>
+
+      <div class="story-card">
+        <div class="story-avatar">👴</div>
+        <div class="story-content">
+          <div class="story-elder">Elder Kong Bah</div>
+          <div class="story-topic">📖 The First Living Root Bridge • Social Studies + Science</div>
+          <div class="story-excerpt">"In the time when our grandmothers' grandmothers walked this earth, when the rivers ran wide and the monsoon raged for seven moons, our people did not build bridges of stone or iron. We asked the trees themselves to be our bridges..."</div>
+          <div class="story-actions">
+            <button class="play-btn" id="playBtn1" onclick="togglePlay('playBtn1', 'audioViz1')">
+              ▶ Listen
+            </button>
+            <div class="audio-bar" id="audioViz1" style="display:none">
+              <div class="audio-wave" style="height:8px; background:var(--pine-light)"></div>
+              <div class="audio-wave" style="height:8px; background:var(--pine-light)"></div>
+              <div class="audio-wave" style="height:8px; background:var(--pine-light)"></div>
+              <div class="audio-wave" style="height:8px; background:var(--pine-light)"></div>
+              <div class="audio-wave" style="height:8px; background:var(--pine-light)"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="story-card">
+        <div class="story-avatar">👵</div>
+        <div class="story-content">
+          <div class="story-elder">Elder Mei Lapdiang</div>
+          <div class="story-topic">🌿 The Sacred Grove & Why We Must Protect It • EVS</div>
+          <div class="story-excerpt">"There is a forest behind our village that no one cuts, no one hunts in, no one enters with greed in their heart. This is the Law Lyngdoh — the Sacred Grove. The birds know it. The streams know it..."</div>
+          <div class="story-actions">
+            <button class="play-btn" id="playBtn2" onclick="togglePlay('playBtn2', 'audioViz2')">
+              ▶ Listen
+            </button>
+            <div class="audio-bar" id="audioViz2" style="display:none">
+              <div class="audio-wave" style="height:8px; background:var(--turmeric)"></div>
+              <div class="audio-wave" style="height:8px; background:var(--turmeric)"></div>
+              <div class="audio-wave" style="height:8px; background:var(--turmeric)"></div>
+              <div class="audio-wave" style="height:8px; background:var(--turmeric)"></div>
+              <div class="audio-wave" style="height:8px; background:var(--turmeric)"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="story-card">
+        <div class="story-avatar">🧓</div>
+        <div class="story-content">
+          <div class="story-elder">Elder U Bah Nongkynmaw</div>
+          <div class="story-topic">🏛️ How the Dorbar Shnong Works • Social Studies</div>
+          <div class="story-excerpt">"Every voice matters in our village. When the Dorbar gathers beneath the sacred tree, the youngest farmer and the eldest grandmother have equal right to speak. This is not just tradition — this is our democracy, older than any constitution..."</div>
+          <div class="story-actions">
+            <button class="play-btn" id="playBtn3" onclick="togglePlay('playBtn3', 'audioViz3')">
+              ▶ Listen
+            </button>
+            <div class="audio-bar" id="audioViz3" style="display:none">
+              <div class="audio-wave" style="height:8px; background:var(--orchid-pink)"></div>
+              <div class="audio-wave" style="height:8px; background:var(--orchid-pink)"></div>
+              <div class="audio-wave" style="height:8px; background:var(--orchid-pink)"></div>
+              <div class="audio-wave" style="height:8px; background:var(--orchid-pink)"></div>
+              <div class="audio-wave" style="height:8px; background:var(--orchid-pink)"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="subject-detail" style="margin-top:16px">
+        <div style="font-weight:800; font-size:15px; margin-bottom:16px; color:var(--pine-green)">💬 Dialect Awareness — Same Word, Different Voices</div>
+        <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(180px,1fr)); gap:12px">
+          <div style="background:rgba(45,80,22,0.06); border-radius:14px; padding:16px; text-align:center">
+            <div style="font-size:22px; font-weight:800; color:var(--pine-green)">Khublei</div>
+            <div style="font-size:12px; color:var(--text-light); margin-top:4px">Standard Khasi</div>
+            <div style="font-size:13px; font-weight:600; margin-top:6px">"Thank you"</div>
+          </div>
+          <div style="background:rgba(212,160,23,0.08); border-radius:14px; padding:16px; text-align:center">
+            <div style="font-size:22px; font-weight:800; color:var(--earth-brown)">Khun lei</div>
+            <div style="font-size:12px; color:var(--text-light); margin-top:4px">Sohra Dialect</div>
+            <div style="font-size:13px; font-weight:600; margin-top:6px">"Thank you"</div>
+          </div>
+          <div style="background:rgba(123,175,196,0.1); border-radius:14px; padding:16px; text-align:center">
+            <div style="font-size:22px; font-weight:800; color:var(--sky-blue)">Bhei</div>
+            <div style="font-size:12px; color:var(--text-light); margin-top:4px">War Dialect</div>
+            <div style="font-size:13px; font-weight:600; margin-top:6px">"Thank you"</div>
+          </div>
+          <div style="background:rgba(196,100,138,0.08); border-radius:14px; padding:16px; text-align:center">
+            <div style="font-size:22px; font-weight:800; color:var(--orchid-pink)">Khublei shibun</div>
+            <div style="font-size:12px; color:var(--text-light); margin-top:4px">Pnar Dialect</div>
+            <div style="font-size:13px; font-weight:600; margin-top:6px">"Many thanks"</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROGRESS PANEL -->
+    <div id="panel-progress" class="panel">
+      <div class="progress-hero">
+        <h2>🌱 Your Growth Garden</h2>
+        <p>Watch your Orchid grow as you complete each module!</p>
+        <div class="orchid-row">
+          <div class="orchid-item"><div class="orchid-emoji" id="orchid_khasi">🌸</div><div class="orchid-label">Khasi ✓</div></div>
+          <div class="orchid-item"><div class="orchid-emoji">🌼</div><div class="orchid-label">English ✓</div></div>
+          <div class="orchid-item"><div class="orchid-emoji" id="orchid_math">🌱</div><div class="orchid-label">Math...</div></div>
+          <div class="orchid-item"><div class="orchid-emoji" id="orchid_science">🥀</div><div class="orchid-label">Science</div></div>
+          <div class="orchid-item"><div class="orchid-emoji" id="orchid_social">🥀</div><div class="orchid-label">Social</div></div>
+          <div class="orchid-item"><div class="orchid-emoji" id="orchid_art">🥀</div><div class="orchid-label">Art</div></div>
+          <div class="orchid-item"><div class="orchid-emoji">🌿</div><div class="orchid-label">Biz Lab</div></div>
+        </div>
+      </div>
+
+      <div class="progress-grid">
+        <div class="progress-card">
+          <div class="progress-card-title">📊 Subject Progress</div>
+          <div class="progress-bar-row">
+            <div class="progress-bar-label"><span>🗣️ Khasi</span><span id="progressPct_khasi">65%</span></div>
+            <div class="progress-bar"><div class="progress-fill" id="progressBar_khasi" style="width:65%"></div></div>
+          </div>
+          <div class="progress-bar-row">
+            <div class="progress-bar-label"><span>📖 English</span><span>58%</span></div>
+            <div class="progress-bar"><div class="progress-fill" style="width:58%"></div></div>
+          </div>
+          <div class="progress-bar-row">
+            <div class="progress-bar-label"><span>🧮 Math</span><span id="progressPct_math">40%</span></div>
+            <div class="progress-bar"><div class="progress-fill" id="progressBar_math" style="width:40%"></div></div>
+          </div>
+          <div class="progress-bar-row">
+            <div class="progress-bar-label"><span>🌿 Science</span><span id="progressPct_science">55%</span></div>
+            <div class="progress-bar"><div class="progress-fill" id="progressBar_science" style="width:55%"></div></div>
+          </div>
+          <div class="progress-bar-row">
+            <div class="progress-bar-label"><span>🏔️ Social</span><span id="progressPct_social">30%</span></div>
+            <div class="progress-bar"><div class="progress-fill" id="progressBar_social" style="width:30%"></div></div>
+          </div>
+          <div class="progress-bar-row">
+            <div class="progress-bar-label"><span>🎋 Art & Values</span><span id="progressPct_art">20%</span></div>
+            <div class="progress-bar"><div class="progress-fill" id="progressBar_art" style="width:20%"></div></div>
+          </div>
+        </div>
+
+        <div class="progress-card">
+          <div class="progress-card-title">🏆 Skills & Badges Earned</div>
+          <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:8px">
+            <div style="background:rgba(45,80,22,0.1);border-radius:10px;padding:10px 12px;text-align:center;min-width:80px">
+              <div style="font-size:24px">🌿</div>
+              <div style="font-size:10px;font-weight:700;margin-top:4px;color:var(--pine-green)">Eco Reader</div>
+            </div>
+            <div style="background:rgba(212,160,23,0.12);border-radius:10px;padding:10px 12px;text-align:center;min-width:80px">
+              <div style="font-size:24px">🧮</div>
+              <div style="font-size:10px;font-weight:700;margin-top:4px;color:var(--earth-brown)">Math Weaver</div>
+            </div>
+            <div style="background:rgba(123,175,196,0.15);border-radius:10px;padding:10px 12px;text-align:center;min-width:80px">
+              <div style="font-size:24px">🗣️</div>
+              <div style="font-size:10px;font-weight:700;margin-top:4px;color:var(--sky-blue)">Khasi Speaker</div>
+            </div>
+            <div style="background:rgba(196,100,138,0.12);border-radius:10px;padding:10px 12px;text-align:center;min-width:80px">
+              <div style="font-size:24px">🏡</div>
+              <div style="font-size:10px;font-weight:700;margin-top:4px;color:var(--orchid-pink)">Village Builder</div>
+            </div>
+            <div style="background:rgba(45,80,22,0.06);border-radius:10px;padding:10px 12px;text-align:center;min-width:80px;opacity:0.5">
+              <div style="font-size:24px">🌉</div>
+              <div style="font-size:10px;font-weight:700;margin-top:4px;color:var(--text-light)">Bridge Grower 🔒</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="progress-card">
+          <div class="progress-card-title">🏘️ Village Leaderboard</div>
+          <div class="leaderboard">
+            <div class="leaderboard-item">
+              <div class="lb-rank gold">1</div>
+              <div class="lb-avatar">👧</div>
+              <div><div class="lb-name">Baiakmenlang</div><div class="lb-village">Mawlynnong Village</div></div>
+              <div class="lb-score">890 pts</div>
+            </div>
+            <div class="leaderboard-item">
+              <div class="lb-rank silver">2</div>
+              <div class="lb-avatar">👦</div>
+              <div><div class="lb-name">Ribhabok</div><div class="lb-village">Shillong North</div></div>
+              <div class="lb-score">720 pts</div>
+            </div>
+            <div class="leaderboard-item" style="background:rgba(212,160,23,0.08);border-radius:10px;padding:8px">
+              <div class="lb-rank" style="color:var(--turmeric)">3 ←</div>
+              <div class="lb-avatar">🌿</div>
+              <div><div class="lb-name">You</div><div class="lb-village">Your Village</div></div>
+              <div class="lb-score" id="lbYouScore">340 pts</div>
+            </div>
+            <div class="leaderboard-item">
+              <div class="lb-rank">4</div>
+              <div class="lb-avatar">👩</div>
+              <div><div class="lb-name">Pyndaplang</div><div class="lb-village">Sohra District</div></div>
+              <div class="lb-score">290 pts</div>
+            </div>
+            <div class="leaderboard-item">
+              <div class="lb-rank">5</div>
+              <div class="lb-avatar">👨</div>
+              <div><div class="lb-name">Darilang</div><div class="lb-village">Jowai</div></div>
+              <div class="lb-score">210 pts</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="progress-card">
+          <div class="progress-card-title">👩‍🏫 Teacher Portal Sync</div>
+          <div style="font-size:13px;color:var(--text-light);margin-bottom:12px">Last synced: Today</div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="background:rgba(224,80,80,0.08);border-left:3px solid #e05050;border-radius:8px;padding:12px">
+              <div style="font-size:12px;font-weight:700;color:#c04040">⚠️ Needs Attention</div>
+              <div style="font-size:13px;margin-top:4px">Profit/Loss calculation in Math Unit 2</div>
+            </div>
+            <div style="background:rgba(90,158,58,0.08);border-left:3px solid var(--pine-light);border-radius:8px;padding:12px">
+              <div style="font-size:12px;font-weight:700;color:var(--pine-mid)">✅ Strength</div>
+              <div style="font-size:13px;margin-top:4px">Khasi oral comprehension — scoring 85%+</div>
+            </div>
+            <div style="background:rgba(212,160,23,0.08);border-left:3px solid var(--turmeric);border-radius:8px;padding:12px">
+              <div style="font-size:12px;font-weight:700;color:var(--earth-brown)">💡 Suggested Next</div>
+              <div style="font-size:13px;margin-top:4px">Complete Water Cycle lesson for Science boost</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /main-content -->
+</div><!-- /app -->
+
+<!-- ===== GAME OVERLAY ===== -->
+<div class="game-overlay" id="gameOverlay" onclick="closeGameOutside(event)">
+  <div class="game-box" onclick="event.stopPropagation()">
+    <div class="gb-header">
+      <div class="gb-title" id="gbTitle">Village Challenge</div>
+      <button class="gb-close" onclick="closeGame()">✕</button>
+    </div>
+    <!-- Phase: Instructions -->
+    <div class="gb-phase active" id="gbPhaseInstr">
+      <div class="instr-banner" id="instrBanner">
+        <h3 id="instrTitle"></h3>
+        <p id="instrSub"></p>
+      </div>
+      <div class="instr-steps" id="instrSteps"></div>
+      <button class="start-game-btn" id="startGameBtn" onclick="startGame()">🎮 Start the Challenge!</button>
+    </div>
+    <!-- Phase: Game -->
+    <div class="gb-phase" id="gbPhaseGame">
+      <div id="gbGameContent"></div>
+    </div>
+    <!-- Phase: Wisdom Scroll -->
+    <div class="gb-phase" id="gbPhaseWisdom">
+      <div class="wisdom-scroll" id="gbWisdom"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== LESSON MODULE OVERLAY (Video + Quiz) ===== -->
+<div class="lesson-module-overlay" id="lessonModule" onclick="closeLessonModuleOutside(event)">
+  <div class="lesson-module-box" onclick="event.stopPropagation()">
+    <div class="lm-header">
+      <div class="lm-title" id="lmTitle">Lesson</div>
+      <button class="lm-close" onclick="closeLessonModule()">✕</button>
+    </div>
+    <!-- Tabs: Learn | Take Quiz -->
+    <div class="lm-tabs">
+      <button class="lm-tab active" id="lmTabLearn" onclick="switchLmTab('learn')">📹 Learn</button>
+      <button class="lm-tab" id="lmTabQuiz" onclick="switchLmTab('quiz')">🧠 Take Quiz</button>
+    </div>
+
+    <!-- Learn Section -->
+    <div class="lm-section active" id="lmSectionLearn">
+      <div class="video-embed-wrap" id="lmVideoWrap">
+        <!-- Video injected by JS -->
+      </div>
+      <div class="video-info" id="lmVideoInfo"></div>
+    </div>
+
+    <!-- Quiz Section -->
+    <div class="lm-section" id="lmSectionQuiz">
+      <div class="quiz-style-tag" id="quizStyleTag">🦅 Eagle Style</div>
+      <div class="quiz-progress-bar">
+        <div class="quiz-progress-fill" id="quizProgressFill" style="width:0%"></div>
+      </div>
+      <div class="quiz-counter" id="quizCounter">Question 1 of 4</div>
+      <div id="quizBody">
+        <!-- Quiz questions injected by JS -->
+      </div>
+      <div class="quiz-complete" id="quizComplete">
+        <div class="qc-icon">🏆</div>
+        <h3>Quiz Complete!</h3>
+        <p id="quizCompleteMsg">Excellent! You've mastered this lesson. Keep growing your Root Bridge!</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Notification -->
+<div class="toast" id="toast">
+  <span id="toastIcon">🌿</span>
+  <span id="toastMsg">Keep growing!</span>
+</div>
+
+<script>
+  // ===== GAME SYSTEM =====
+  let currentGame = null;
+  let gameState = {};
+  let totalXP = 0;
+  let gamesPlayed = 0;
+
+  const gameConfigs = {
+    cleanliness: {
+      title: '🧹 The Cleanliness Dividend',
+      bannerGradient: 'linear-gradient(135deg,#2D5016,#5A9E3A)',
+      instrTitle: 'You are the Village Headman of Mawlynnong!',
+      instrSub: 'Your village has ₹300 budget. Spend it wisely — dustbins bring tourists, fancy signs bring nothing. Watch your Cleanliness and Tourist meters grow!',
+      steps: [
+        'You start with ₹300 and a slightly messy village.',
+        'Tap action buttons to place dustbins, hire sweepers, or waste money on fancy signs.',
+        'Watch the Cleanliness % and Tourist Inflow meters update in real time.',
+        'Reach 80% Cleanliness with 15+ tourists to WIN the round!'
+      ],
+      wisdom: {
+        icon: '🧹',
+        title: 'Operations Management',
+        subtitle: 'MBOSE Class 6 — Chapter 4: Resource Allocation',
+        body: `You just experienced <strong>Operations Management</strong> — the science of deciding <em>where to spend limited resources</em> for maximum impact.\n\nMawlynnong earns over <strong>₹1.5 crore annually</strong> from eco-tourism. Their secret? Every resident treats cleanliness as a business investment, not a chore.\n\nWhen you placed dustbins over signs, you practiced <strong>cost-benefit analysis</strong> — the same skill used by companies worldwide to allocate budgets efficiently.`,
+        link: '📘 See also: Math Chapter 4 — "Ratio and Proportion" to calculate how cleanliness % affects tourist numbers mathematically.'
+      }
+    },
+    handicrafts: {
+      title: '🧺 Sustainable Handicrafts',
+      bannerGradient: 'linear-gradient(135deg,#6B4C2A,#D4A017)',
+      instrTitle: 'Welcome to the Crafting Shed!',
+      instrSub: 'Buy bamboo, weave your Khoh basket, then price it to sell at the market. Profit too little — you can\'t buy more. Price too high — no buyers!',
+      steps: [
+        'Choose your bamboo type — cheap (breaks) or quality (costs more).',
+        'Weave your basket by clicking cells to fill the pattern.',
+        'Review your total cost (materials + time value).',
+        'Set your selling price using the slider — find the sweet spot for profit!'
+      ],
+      wisdom: {
+        icon: '🧺',
+        title: 'Profit, Loss & Markup',
+        subtitle: 'MBOSE Class 5 — Chapter 7: Commercial Mathematics',
+        body: `You just applied the formula: <strong>(Materials + Time) × Markup = Selling Price</strong>.\n\nThis is <strong>Commercial Arithmetic</strong> — the foundation of every business from a village market stall to a global corporation.\n\nIf your cost was ₹130 and you added 30% markup: ₹130 × 1.30 = <strong>₹169</strong>. That ₹39 profit sounds small — but across 50 baskets a week, that is <strong>₹1,950 per week</strong> for a Khasi family.\n\nSustainability = using quality bamboo (that regrows) rather than destroying the forest for a one-time gain.`,
+        link: '📘 See also: Math Chapter 7 — "Profit and Loss" — practice 5 problems to unlock the next level!'
+      }
+    },
+    tourism: {
+      title: '🗣️ Eco-Tourism & Hospitality',
+      bannerGradient: 'linear-gradient(135deg,#1A4A6B,#7BAFC4)',
+      instrTitle: 'Be the Voice of the Hills!',
+      instrSub: 'Tourists arrive from around the world asking questions about Khasi culture. Build the correct English answer by clicking the Khasi keywords in the right order.',
+      steps: [
+        'A tourist will appear with a question about your culture.',
+        'Click the Khasi keyword tiles in the correct sequence to form the answer.',
+        'Click a placed word to remove it if you change your mind.',
+        'Answer 3 tourists correctly to complete the challenge!'
+      ],
+      wisdom: {
+        icon: '🗣️',
+        title: 'Language, Heritage & Communication',
+        subtitle: 'MBOSE Class 5-6 — English & Social Studies',
+        body: `You just practiced <strong>bi-lingual communication</strong> — one of the most economically valuable skills in a tourism economy.\n\nIn Meghalaya, a skilled guide who can explain <strong>Ka Law Lyngdoh</strong> (Sacred Grove) and <strong>Ka Jingkynmaw</strong> (oral memory) in fluent English earns 3–5× more than one who cannot.\n\nEvery time you translated Khasi heritage into English, you were also doing <strong>Social Studies</strong> — learning what these traditions mean and why tourists travel thousands of kilometres to understand them.`,
+        link: '📘 See also: English Chapter 3 — "Describing Places" and Social Studies Chapter 6 — "Our Cultural Heritage"'
+      }
+    },
+    rootbridge: {
+      title: '🌳 The Living Root Investment',
+      bannerGradient: 'linear-gradient(135deg,#1A2E10,#3D7022)',
+      instrTitle: 'Build a legacy that lasts 100 years!',
+      instrSub: 'Plant Ficus trees across the riverbank. At each time checkpoint, decide: sell the wood for quick money, or let it grow into a Living Root Bridge worth millions.',
+      steps: [
+        'Tap empty slots on the forest map to plant Ficus trees (you have 6 plots).',
+        'At each 20-year checkpoint, you will face a choice: sell wood OR keep growing.',
+        'Each choice affects your village\'s wealth and bridge progress.',
+        'Reach Year 100 with a complete bridge to WIN the long game!'
+      ],
+      wisdom: {
+        icon: '🌳',
+        title: 'Long-term Thinking & Sustainability',
+        subtitle: 'MBOSE Class 6 — EVS Chapter 8: Natural Resources & Conservation',
+        body: `The War Khasi people began growing these bridges <strong>knowing they would never use them themselves</strong>. The bridge would serve their grandchildren's grandchildren.\n\nThis is called <strong>inter-generational thinking</strong> — making decisions today that benefit people 50 years from now. It is the foundation of all environmental conservation, and increasingly, modern business strategy.\n\n<strong>Compound growth</strong>: a Ficus tree grows slowly at first, then exponentially. Like money in a savings account or knowledge in your brain — patience multiplies value.\n\nA Living Root Bridge today generates <strong>₹8–12 lakh</strong> annually in eco-tourism. A one-time wood sale would have earned ₹40,000.`,
+        link: '📘 See also: EVS Chapter 8 — "Conservation of Forests" and Math Chapter 10 — "Simple vs Compound Interest"'
+      }
+    }
+  };
+
+  function openGame(gameId) {
+    currentGame = gameId;
+    const cfg = gameConfigs[gameId];
+    document.getElementById('gbTitle').textContent = cfg.title;
+    document.getElementById('instrBanner').style.background = cfg.bannerGradient;
+    document.getElementById('instrTitle').textContent = cfg.instrTitle;
+    document.getElementById('instrSub').textContent = cfg.instrSub;
+    document.getElementById('instrSteps').innerHTML = cfg.steps.map((s, i) =>
+      `<div class="instr-step"><div class="instr-step-num">${i+1}</div><div>${s}</div></div>`
+    ).join('');
+    // Show instructions phase
+    document.querySelectorAll('.gb-phase').forEach(p => p.classList.remove('active'));
+    document.getElementById('gbPhaseInstr').classList.add('active');
+    document.getElementById('gameOverlay').classList.add('open');
+  }
+
+  function closeGame() {
+    document.getElementById('gameOverlay').classList.remove('open');
+    currentGame = null;
+    gameState = {};
+  }
+  function closeGameOutside(e) {
+    if (e.target === document.getElementById('gameOverlay')) closeGame();
+  }
+
+  function startGame() {
+    document.querySelectorAll('.gb-phase').forEach(p => p.classList.remove('active'));
+    document.getElementById('gbPhaseGame').classList.add('active');
+    const builders = { cleanliness: buildGame1, handicrafts: buildGame2, tourism: buildGame3, rootbridge: buildGame4 };
+    if (builders[currentGame]) builders[currentGame]();
+  }
+
+  function showWisdomScroll() {
+    const cfg = gameConfigs[currentGame];
+    const w = cfg.wisdom;
+    document.getElementById('gbWisdom').innerHTML = `
+      <div class="ws-header">
+        <div class="ws-icon">${w.icon}</div>
+        <div>
+          <div class="ws-title">📜 Wisdom Scroll</div>
+          <div class="ws-subtitle">${w.subtitle}</div>
+        </div>
+      </div>
+      <div class="ws-body">${w.body.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\*(.*?)\*/g,'<em>$1</em>')}</div>
+      <div class="ws-link"><strong>🔗 Curriculum Link</strong>${w.link}</div>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:4px">
+        <button class="ws-done-btn" onclick="finishGame()">✨ Back to Challenges</button>
+        <button class="ws-done-btn" style="background:linear-gradient(135deg,#2D5016,#5A9E3A)" onclick="replayCurrentGame()">🎮 Play Again</button>
+      </div>
+    `;
+    document.querySelectorAll('.gb-phase').forEach(p => p.classList.remove('active'));
+    document.getElementById('gbPhaseWisdom').classList.add('active');
+  }
+
+  function replayCurrentGame() {
+    document.querySelectorAll('.gb-phase').forEach(p => p.classList.remove('active'));
+    document.getElementById('gbPhaseGame').classList.add('active');
+    const builders = { cleanliness: buildGame1, handicrafts: buildGame2, tourism: buildGame3, rootbridge: buildGame4 };
+    if (builders[currentGame]) builders[currentGame]();
+  }
+
+  function finishGame() {
+    gamesPlayed++;
+    totalXP += 50;
+    document.getElementById('totalXP').textContent = totalXP;
+    document.getElementById('gamesPlayed').textContent = gamesPlayed;
+    document.getElementById('villageLevel').textContent = Math.floor(gamesPlayed / 2) + 1;
+    updateVine(8);
+    closeGame();
+    showToast('🏆', '+50 XP! Challenge complete!');
+  }
+
+  // ========================
+  // GAME 1: CLEANLINESS
+  // ========================
+  function buildGame1() {
+    gameState = { budget: 300, cleanliness: 20, tourists: 2, round: 0, maxRounds: 4, won: false };
+    renderGame1();
+  }
+
+  function renderGame1() {
+    const g = gameState;
+    const trashItems = g.cleanliness < 50
+      ? ['🗑️','🍬','🧴','🗑️','🥤']
+      : g.cleanliness < 75 ? ['🍬','🥤'] : [];
+
+    document.getElementById('gbGameContent').innerHTML = `
+      <div class="budget-bar">
+        💰 Budget: <strong>₹${g.budget}</strong>
+        &nbsp;|&nbsp; Round: ${g.round}/${g.maxRounds}
+      </div>
+      <div class="village-scene" id="vs1">
+        <div class="vs-obj" style="left:8%;bottom:25%">🌲</div>
+        <div class="vs-obj" style="left:30%;bottom:22%">🏡</div>
+        <div class="vs-obj" style="left:52%;bottom:20%">🛖</div>
+        <div class="vs-obj" style="right:12%;bottom:28%">🌳</div>
+        ${g.cleanliness >= 60 ? '<div class="vs-obj" style="left:15%;bottom:40%">🗑️</div>' : ''}
+        ${g.cleanliness >= 80 ? '<div class="vs-obj" style="right:25%;bottom:38%">🗑️</div>' : ''}
+        ${trashItems.map((t,i) => `<div class="vs-trash" style="left:${20+i*14}%;bottom:${10+i%3*8}%" onclick="clickTrash(this)">🗑️</div>`).join('')}
+        ${g.tourists >= 5  ? '<div class="vs-obj" style="left:5%;bottom:12%">🚶</div>' : ''}
+        ${g.tourists >= 10 ? '<div class="vs-obj" style="left:65%;bottom:12%">🧍</div>' : ''}
+        ${g.tourists >= 15 ? '<div class="vs-obj" style="left:40%;bottom:10%">👫</div>' : ''}
+        ${g.tourists >= 20 ? '<div class="vs-obj" style="right:5%;bottom:14%">👨‍👩‍👧</div>' : ''}
+        <div class="village-score" style="position:absolute;top:10px;right:10px;background:rgba(255,255,255,0.9);border-radius:10px;padding:6px 12px;font-weight:800;font-size:12px;color:var(--pine-green)">
+          👣 ${g.tourists} tourists/wk
+        </div>
+      </div>
+      <div class="meter-row">
+        <div class="meter-box">
+          <div class="meter-label">🧹 Cleanliness</div>
+          <div class="meter-bar"><div class="meter-fill" style="width:${g.cleanliness}%;background:${g.cleanliness>70?'var(--pine-light)':g.cleanliness>40?'var(--turmeric)':'#e05050'}"></div></div>
+          <div class="meter-val">${g.cleanliness}%</div>
+        </div>
+        <div class="meter-box">
+          <div class="meter-label">😊 Tourist Happiness</div>
+          <div class="meter-bar"><div class="meter-fill" style="width:${Math.min(100,g.tourists*5)}%;background:var(--sky-blue)"></div></div>
+          <div class="meter-val">${Math.min(100,g.tourists*5)}%</div>
+        </div>
+      </div>
+      <div class="game-log" id="g1log">Choose an action below to manage your village...</div>
+      <div class="action-row">
+        <button class="action-btn" onclick="g1Action('bin')" ${g.budget<40?'disabled':''}>
+          🗑️ Bamboo Dustbin <span class="ab-cost">₹40 | +12% Clean | +2 tourist</span>
+        </button>
+        <button class="action-btn" onclick="g1Action('sweeper')" ${g.budget<60?'disabled':''}>
+          🧹 Hire Sweeper <span class="ab-cost">₹60 | +18% Clean | +3 tourist</span>
+        </button>
+        <button class="action-btn" onclick="g1Action('sign')" ${g.budget<30?'disabled':''}>
+          🪧 Fancy Sign <span class="ab-cost">₹30 | +0% Clean | +0 tourist</span>
+        </button>
+        <button class="action-btn" onclick="g1Action('path')" ${g.budget<80?'disabled':''}>
+          🛤️ Paved Path <span class="ab-cost">₹80 | +8% Clean | +5 tourist</span>
+        </button>
+      </div>
+      ${g.round >= g.maxRounds ? `<button class="start-game-btn" style="margin-top:12px" onclick="endGame1()">See Results →</button>` : ''}
+    `;
+  }
+
+  function clickTrash(el) { el.style.opacity = '0'; setTimeout(()=>el.remove(),300); }
+
+  function g1Action(type) {
+    const g = gameState;
+    const actions = {
+      bin:     { cost: 40, clean: 12, tourist: 2, msg: '🗑️ Bamboo dustbin placed near waterfall! Cleanliness rising.' },
+      sweeper: { cost: 60, clean: 18, tourist: 3, msg: '🧹 Sweeper hired! Paths are sparkling clean.' },
+      sign:    { cost: 30, clean:  0, tourist: 0, msg: '🪧 Fancy sign placed... tourists still walk past trash. No effect!' },
+      path:    { cost: 80, clean:  8, tourist: 5, msg: '🛤️ Paved path built! Tourists can walk easily to the viewpoint.' }
+    };
+    const a = actions[type];
+    if (g.budget < a.cost) return;
+    g.budget -= a.cost;
+    g.cleanliness = Math.min(100, g.cleanliness + a.clean);
+    g.tourists    = Math.min(30, g.tourists + a.tourist);
+    g.round++;
+    document.getElementById('g1log').textContent = a.msg;
+    renderGame1();
+    if (g.cleanliness >= 80 && g.tourists >= 15) {
+      setTimeout(endGame1, 600);
+    }
+  }
+
+  function endGame1() {
+    const g = gameState;
+    const won = g.cleanliness >= 80 && g.tourists >= 15;
+    if (!won) {
+      // Game Over screen
+      document.getElementById('gbGameContent').innerHTML = `
+        <div style="text-align:center;padding:20px 0">
+          <div style="font-size:64px;margin-bottom:12px">💔</div>
+          <div style="font-family:'Playfair Display',serif;font-size:24px;color:#c04040;margin-bottom:8px">
+            Game Over!
+          </div>
+          <div style="background:rgba(224,80,80,0.08);border-radius:14px;padding:16px;font-size:14px;color:var(--text-mid);line-height:1.7;margin-bottom:8px">
+            <strong>Target not achieved.</strong><br>
+            You reached <strong>${g.cleanliness}% cleanliness</strong> and <strong>${g.tourists} tourists/week</strong>.<br>
+            Target: 80% cleanliness + 15 tourists.
+          </div>
+          <div style="font-size:13px;color:var(--text-light);margin-bottom:20px">
+            💡 Hint: Spend on <strong>dustbins & sweepers</strong> — not signs!
+          </div>
+          <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+            <button class="start-game-btn" style="background:linear-gradient(135deg,#c04040,#e07070)" onclick="buildGame1()">🔄 Play Again</button>
+            <button class="start-game-btn" onclick="showWisdomScroll()">📜 Learn Theory First</button>
+          </div>
+        </div>
+      `;
+      return;
+    }
+    document.getElementById('gbGameContent').innerHTML = `
+      <div style="text-align:center;padding:20px 0">
+        <div style="font-size:56px;margin-bottom:12px">🏆</div>
+        <div style="font-family:'Playfair Display',serif;font-size:22px;color:var(--pine-green);margin-bottom:8px">
+          Village Champion!
+        </div>
+        <div style="font-size:14px;color:var(--text-mid);line-height:1.6;margin-bottom:20px">
+          Your village reached ${g.cleanliness}% cleanliness and attracted ${g.tourists} tourists/week! The community income is growing.
+        </div>
+        <button class="start-game-btn" onclick="showWisdomScroll()">📜 Read the Wisdom Scroll</button>
+      </div>
+    `;
+  }
+
+  // ========================
+  // GAME 2: HANDICRAFTS
+  // ========================
+  function buildGame2() {
+    gameState = { phase: 'bamboo', bambooType: null, weaveFilled: 0, quality: 0, totalCost: 0, sellPrice: 130 };
+    renderGame2Phase('bamboo');
+  }
+
+  function renderGame2Phase(phase) {
+    const g = gameState;
+    if (phase === 'bamboo') {
+      document.getElementById('gbGameContent').innerHTML = `
+        <div style="font-weight:800;font-size:15px;margin-bottom:14px;color:var(--pine-green)">Step 1 — Choose Your Bamboo</div>
+        <div class="bamboo-choice">
+          <div class="bamboo-opt" style="background:rgba(224,80,80,0.06);border-color:rgba(224,80,80,0.2)" onclick="chooseBamboo('cheap',this)">
+            <div class="bo-icon">🪵</div>
+            <div class="bo-name">Cheap Young Bamboo</div>
+            <div class="bo-desc">Flexible but breaks easily under weight. Quick to get.</div>
+            <div class="bo-cost" style="color:#c04040">₹30 — Low quality</div>
+          </div>
+          <div class="bamboo-opt" style="background:rgba(45,80,22,0.06);border-color:rgba(45,80,22,0.2)" onclick="chooseBamboo('seasoned',this)">
+            <div class="bo-icon">🎋</div>
+            <div class="bo-name">Seasoned Strong Bamboo</div>
+            <div class="bo-desc">Aged 3 years. Durable, beautiful grain, commands higher price.</div>
+            <div class="bo-cost" style="color:var(--pine-green)">₹60 — High quality</div>
+          </div>
+        </div>
+        <div style="font-size:12px;color:var(--text-light);text-align:center">Tap to select your bamboo type</div>
+      `;
+    } else if (phase === 'weave') {
+      const cols = 10, rows = 6;
+      document.getElementById('gbGameContent').innerHTML = `
+        <div style="font-weight:800;font-size:15px;margin-bottom:6px;color:var(--pine-green)">Step 2 — Weave Your Khoh Basket</div>
+        <div style="font-size:13px;color:var(--text-mid);margin-bottom:12px">Click cells to weave. Fill at least 40 cells to make a complete basket!</div>
+        <div class="weave-stage">
+          <div class="weave-grid-game" id="weaveGrid2"></div>
+          <div style="margin-top:10px;font-size:13px;font-weight:700;color:var(--pine-mid)">
+            Cells woven: <span id="weaveCnt">0</span> / 60
+          </div>
+        </div>
+        <div style="font-size:13px;color:var(--text-light);margin-bottom:12px">
+          Bamboo chosen: ${g.bambooType === 'seasoned' ? '🎋 Seasoned (high quality)' : '🪵 Cheap (low quality)'}
+        </div>
+        <button class="start-game-btn" id="weaveNextBtn" style="opacity:0.4;pointer-events:none" onclick="g2NextPhase('price')">Done Weaving →</button>
+      `;
+      // Build grid
+      const grid = document.getElementById('weaveGrid2');
+      for (let i = 0; i < cols * rows; i++) {
+        const c = document.createElement('div');
+        c.className = 'wc';
+        c.onclick = function() {
+          if (this.classList.contains('filled') || this.classList.contains('filled-2')) {
+            this.classList.remove('filled','filled-2');
+            gameState.weaveFilled = Math.max(0, gameState.weaveFilled - 1);
+          } else {
+            this.classList.add(gameState.bambooType === 'seasoned' ? 'filled' : 'filled-2');
+            gameState.weaveFilled++;
+          }
+          document.getElementById('weaveCnt').textContent = gameState.weaveFilled;
+          const btn = document.getElementById('weaveNextBtn');
+          if (gameState.weaveFilled >= 40) { btn.style.opacity='1'; btn.style.pointerEvents='auto'; }
+          else { btn.style.opacity='0.4'; btn.style.pointerEvents='none'; }
+        };
+        grid.appendChild(c);
+      }
+    } else if (phase === 'price') {
+      const materialCost = g.bambooType === 'seasoned' ? 60 : 30;
+      const rattan = 15; const time = 80;
+      const totalCost = materialCost + rattan + time;
+      gameState.totalCost = totalCost;
+      const quality = g.bambooType === 'seasoned' ? 'Premium' : 'Standard';
+      const qualityMult = g.bambooType === 'seasoned' ? 1.4 : 1.0;
+      const minPrice = Math.round(totalCost * 1.1);
+      const maxPrice = Math.round(totalCost * qualityMult * 1.8);
+      document.getElementById('gbGameContent').innerHTML = `
+        <div style="font-weight:800;font-size:15px;margin-bottom:12px;color:var(--pine-green)">Step 3 — Price Your Basket at Market</div>
+        <div class="price-display">
+          <div class="pd-row"><span>🪵 Bamboo material</span><span>₹${materialCost}</span></div>
+          <div class="pd-row"><span>🧵 Rattan binding</span><span>₹${rattan}</span></div>
+          <div class="pd-row"><span>⏱️ Your time (4 hrs × ₹20)</span><span>₹${time}</span></div>
+          <div class="pd-row"><span>Total Cost</span><span>₹${totalCost}</span></div>
+        </div>
+        <div style="font-size:13px;color:var(--text-mid);margin-bottom:8px">
+          Basket quality: <strong>${quality}</strong> ${g.bambooType==='seasoned'?'— buyers will pay up to 40% premium!':''}
+        </div>
+        <div class="price-stage">
+          <div class="price-slider-wrap">
+            <label style="font-size:13px;font-weight:700;color:var(--pine-green)">
+              Your price: ₹<span id="sliderVal">${totalCost+30}</span>
+            </label>
+            <input type="range" class="price-slider" id="priceSlider"
+              min="${minPrice}" max="${maxPrice}" value="${totalCost+30}"
+              oninput="updatePriceFeedback(${totalCost},${qualityMult})">
+          </div>
+          <div class="price-feedback" id="priceFeedback" style="background:rgba(45,80,22,0.08)">
+            Adjust the price slider ↑
+          </div>
+        </div>
+        <button class="start-game-btn" onclick="g2Sell(${totalCost},${qualityMult})">🏪 Sell at Market!</button>
+      `;
+      updatePriceFeedback(totalCost, qualityMult);
+    }
+  }
+
+  function updatePriceFeedback(cost, qualMult) {
+    const slider = document.getElementById('priceSlider');
+    if (!slider) return;
+    const price = parseInt(slider.value);
+    document.getElementById('sliderVal').textContent = price;
+    const profit = price - cost;
+    const profitPct = ((profit / cost) * 100).toFixed(0);
+    const maxBuyable = Math.round(cost * qualMult * 1.5);
+    const fb = document.getElementById('priceFeedback');
+    if (price > maxBuyable) {
+      fb.style.background = 'rgba(224,80,80,0.1)'; fb.style.color = '#c04040';
+      fb.textContent = `⚠️ ₹${price} is too high! Tourists walk away. Profit ₹${profit} but no sales.`;
+    } else if (profitPct < 10) {
+      fb.style.background = 'rgba(212,160,23,0.1)'; fb.style.color = 'var(--earth-brown)';
+      fb.textContent = `😐 ₹${price} barely covers costs. Profit only ₹${profit} (${profitPct}%). You can't buy more bamboo.`;
+    } else {
+      fb.style.background = 'rgba(45,80,22,0.08)'; fb.style.color = 'var(--pine-mid)';
+      fb.textContent = `✅ ₹${price} — Profit ₹${profit} (${profitPct}% markup). Tourists are interested!`;
+    }
+  }
+
+  function chooseBamboo(type, el) {
+    gameState.bambooType = type;
+    document.querySelectorAll('.bamboo-opt').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    setTimeout(() => renderGame2Phase('weave'), 600);
+  }
+
+  function g2NextPhase(phase) { renderGame2Phase(phase); }
+
+  function g2Sell(cost, qualMult) {
+    const slider = document.getElementById('priceSlider');
+    const price = parseInt(slider.value);
+    const profit = price - cost;
+    const maxBuyable = Math.round(cost * qualMult * 1.5);
+    const sold = price <= maxBuyable;
+    document.getElementById('gbGameContent').innerHTML = `
+      <div style="text-align:center;padding:20px 0">
+        <div style="font-size:56px;margin-bottom:12px">${sold && profit >= 25 ? '🏆' : sold ? '😐' : '😓'}</div>
+        <div style="font-family:'Playfair Display',serif;font-size:20px;color:var(--pine-green);margin-bottom:10px">
+          ${sold && profit >= 25 ? 'Master Seller!' : sold ? 'Sold, but barely...' : 'No buyers today!'}
+        </div>
+        <div style="font-size:14px;color:var(--text-mid);line-height:1.7;margin-bottom:20px">
+          ${sold
+            ? `You sold your ${gameState.bambooType} basket for <strong>₹${price}</strong>. Cost was ₹${cost}. Profit: <strong>₹${profit} (${((profit/cost)*100).toFixed(0)}%)</strong>.${profit >= 25 ? ' In a week of 10 baskets, that is ₹'+profit*10+' profit!' : ' Try pricing a bit higher next time.'}`
+            : `Your price of ₹${price} was too high. No one bought it. You spent ₹${cost} and earned ₹0 today.`}
+        </div>
+        ${!sold ? `
+          <div style="background:rgba(224,80,80,0.08);border-radius:14px;padding:12px;font-size:13px;color:var(--text-mid);margin-bottom:20px">
+            <strong>Target not achieved.</strong> Price too high — aim for 20–35% above your cost.
+          </div>
+          <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+            <button class="start-game-btn" style="background:linear-gradient(135deg,#c04040,#e07070)" onclick="buildGame2()">🔄 Play Again</button>
+            <button class="start-game-btn" onclick="showWisdomScroll()">📜 Learn Theory First</button>
+          </div>
+        ` : `<button class="start-game-btn" onclick="showWisdomScroll()">📜 Read the Wisdom Scroll</button>`}
+      </div>
+    `;
+  }
+
+  // ========================
+  // GAME 3: TOURISM / DRAG-DROP (click-based)
+  // ========================
+  const tourismRounds = [
+    {
+      flag: '🇫🇷', country: 'France',
+      question: '"Why do your bridges grow instead of being built? It seems very unusual!"',
+      keywords: ['Sacred', 'Ficus', 'roots', 'grow', 'stronger', 'generations'],
+      answer: ['Sacred', 'Ficus', 'roots', 'grow', 'stronger', 'generations'],
+      hint: 'Build a sentence using all 6 words to explain the Living Root Bridge.'
+    },
+    {
+      flag: '🇯🇵', country: 'Japan',
+      question: '"What is Ka Law Lyngdoh? We saw it on the map but don\'t understand."',
+      keywords: ['Sacred', 'Grove', 'protected', 'forest', 'community', 'nature'],
+      answer: ['Sacred', 'Grove', 'protected', 'forest', 'community', 'nature'],
+      hint: 'Explain Ka Law Lyngdoh (Sacred Grove) using all 6 words.'
+    },
+    {
+      flag: '🇦🇺', country: 'Australia',
+      question: '"How does your village stay so clean without a municipal corporation?"',
+      keywords: ['Every', 'resident', 'owns', 'cleanliness', 'bamboo', 'dustbins'],
+      answer: ['Every', 'resident', 'owns', 'cleanliness', 'bamboo', 'dustbins'],
+      hint: 'Explain how Mawlynnong manages cleanliness using all 6 words.'
+    }
+  ];
+  let tourRound = 0;
+  let tourCorrect = 0;
+  let tourSelected = [];
+
+  function buildGame3() {
+    tourRound = 0; tourCorrect = 0; tourSelected = [];
+    renderGame3();
+  }
+
+  function renderGame3() {
+    if (tourRound >= tourismRounds.length) { endGame3(); return; }
+    const r = tourismRounds[tourRound];
+    tourSelected = [];
+    document.getElementById('gbGameContent').innerHTML = `
+      <div class="tour-score-row">
+        <div class="tour-score-pill">Tourist ${tourRound+1} of ${tourismRounds.length}</div>
+        <div class="tour-score-pill">✅ Correct: ${tourCorrect}</div>
+      </div>
+      <div class="tourist-card">
+        <div class="tourist-flag">${r.flag} Visitor from ${r.country}</div>
+        <div class="tourist-question">"${r.question}"</div>
+      </div>
+      <div style="font-size:12px;font-weight:700;color:var(--text-light);margin-bottom:8px;text-transform:uppercase;letter-spacing:1px">Click keywords to build your answer:</div>
+      <div class="khasi-bank" id="khasiBank">
+        ${r.keywords.map(w => `<div class="khasi-word" onclick="addWord('${w}',this)">${w}</div>`).join('')}
+      </div>
+      <div style="font-size:12px;font-weight:700;color:var(--text-light);margin-bottom:6px;text-transform:uppercase;letter-spacing:1px">Your answer (click word to remove):</div>
+      <div class="answer-slots" id="answerSlots"><span style="color:var(--text-light);font-size:13px">Click words above to add them here...</span></div>
+      <div style="font-size:11px;color:var(--text-light);margin-bottom:12px">💡 Hint: ${r.hint}</div>
+      <button class="start-game-btn" onclick="checkTourAnswer()" style="font-size:13px;padding:12px 28px">✓ Submit Answer</button>
+    `;
+  }
+
+  function addWord(word, el) {
+    if (el.classList.contains('used')) return;
+    el.classList.add('used');
+    tourSelected.push(word);
+    const slots = document.getElementById('answerSlots');
+    if (slots.querySelector('span')) slots.innerHTML = '';
+    const chip = document.createElement('div');
+    chip.className = 'answer-slot-word';
+    chip.textContent = word;
+    chip.onclick = function() {
+      tourSelected = tourSelected.filter(w => w !== word);
+      chip.remove();
+      el.classList.remove('used');
+      if (document.getElementById('answerSlots').children.length === 0) {
+        document.getElementById('answerSlots').innerHTML = '<span style="color:var(--text-light);font-size:13px">Click words above to add them here...</span>';
+      }
+    };
+    slots.appendChild(chip);
+  }
+
+  function checkTourAnswer() {
+    const r = tourismRounds[tourRound];
+    const correct = r.answer.every(w => tourSelected.includes(w)) && tourSelected.length === r.answer.length;
+    if (correct) tourCorrect++;
+    document.getElementById('gbGameContent').innerHTML = `
+      <div style="text-align:center;padding:16px 0 20px">
+        <div style="font-size:48px;margin-bottom:10px">${correct ? '🌟' : '💬'}</div>
+        <div style="font-family:'Playfair Display',serif;font-size:18px;color:var(--pine-green);margin-bottom:8px">
+          ${correct ? 'The tourist is delighted!' : 'Good try! Here\'s what works best:'}
+        </div>
+        <div style="background:rgba(45,80,22,0.06);border-radius:12px;padding:14px;font-size:13px;color:var(--text-mid);line-height:1.6;margin-bottom:16px;text-align:left">
+          ${r.flag} <strong>Perfect answer:</strong> "${r.answer.join(' ')}" — all the key concepts explained!
+        </div>
+        <button class="start-game-btn" style="font-size:13px;padding:12px 28px" onclick="nextTourist()">
+          ${tourRound + 1 < tourismRounds.length ? 'Next Tourist →' : 'See Final Results →'}
+        </button>
+      </div>
+    `;
+  }
+
+  function nextTourist() { tourRound++; renderGame3(); }
+
+  function endGame3() {
+    const won = tourCorrect >= 2;
+    if (!won) {
+      document.getElementById('gbGameContent').innerHTML = `
+        <div style="text-align:center;padding:20px 0">
+          <div style="font-size:64px;margin-bottom:12px">💔</div>
+          <div style="font-family:'Playfair Display',serif;font-size:24px;color:#c04040;margin-bottom:8px">Game Over!</div>
+          <div style="background:rgba(224,80,80,0.08);border-radius:14px;padding:16px;font-size:14px;color:var(--text-mid);line-height:1.7;margin-bottom:8px">
+            <strong>Target not achieved.</strong><br>
+            You helped only <strong>${tourCorrect} of ${tourismRounds.length} tourists</strong>.<br>
+            Target: at least 2 correct answers.
+          </div>
+          <div style="font-size:13px;color:var(--text-light);margin-bottom:20px">💡 Use all 6 keywords in your answer!</div>
+          <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+            <button class="start-game-btn" style="background:linear-gradient(135deg,#c04040,#e07070)" onclick="buildGame3()">🔄 Play Again</button>
+            <button class="start-game-btn" onclick="showWisdomScroll()">📜 Learn Theory First</button>
+          </div>
+        </div>
+      `;
+      return;
+    }
+    document.getElementById('gbGameContent').innerHTML = `
+      <div style="text-align:center;padding:20px 0">
+        <div style="font-size:56px;margin-bottom:12px">🏆</div>
+        <div style="font-family:'Playfair Display',serif;font-size:22px;color:var(--pine-green);margin-bottom:8px">
+          ${tourCorrect === 3 ? 'Voice of the Hills!' : 'Well Done!'}
+        </div>
+        <div style="font-size:14px;color:var(--text-mid);line-height:1.7;margin-bottom:20px">
+          You helped <strong>${tourCorrect} of ${tourismRounds.length} tourists</strong>. ${tourCorrect === 3 ? 'A perfect guide score!' : 'Great communication skills!'}
+        </div>
+        <button class="start-game-btn" onclick="showWisdomScroll()">📜 Read the Wisdom Scroll</button>
+      </div>
+    `;
+  }
+
+  // ========================
+  // GAME 4: ROOT BRIDGE
+  // ========================
+  function buildGame4() {
+    gameState = { trees: new Array(6).fill(null), year: 0, gold: 2000, bridgeProgress: 0, choices: [] };
+    renderGame4();
+  }
+
+  function renderGame4() {
+    const g = gameState;
+    const years = [0, 20, 50, 80, 100];
+    const currentYearIdx = years.indexOf(g.year);
+    const slots = [
+      { left:'12%', top:'55%' }, { left:'28%', top:'45%' }, { left:'44%', top:'58%' },
+      { left:'58%', top:'42%' }, { left:'72%', top:'55%' }, { left:'85%', top:'48%' }
+    ];
+
+    document.getElementById('gbGameContent').innerHTML = `
+      <div class="budget-bar">
+        💰 Village Treasury: <strong>₹${g.gold.toLocaleString()}</strong>
+        &nbsp;|&nbsp; 🌉 Bridge: ${g.bridgeProgress}%
+        &nbsp;|&nbsp; 📅 Year ${g.year}
+      </div>
+      <div class="forest-map">
+        <div class="vs-obj" style="left:5%;bottom:15%">🏡</div>
+        <div class="vs-obj" style="left:50%;bottom:8%">🌊</div>
+        <div class="vs-obj" style="right:5%;bottom:12%">🛖</div>
+        ${slots.map((s,i) => `
+          <div class="fm-slot ${g.trees[i] ? 'planted' : ''}" style="left:${s.left};top:${s.top}" onclick="plantTree(${i})">
+            ${g.trees[i] ? (g.year >= 50 ? '🌳' : '🌱') : '➕'}
+          </div>
+        `).join('')}
+        ${g.bridgeProgress >= 100 ? '<div class="vs-obj" style="left:40%;bottom:5%;font-size:28px">🌉</div>' : ''}
+        <div style="position:absolute;top:8px;right:8px;background:rgba(255,255,255,0.9);border-radius:8px;padding:5px 10px;font-size:11px;font-weight:800;color:var(--pine-green)">🌿 Tap + to plant trees</div>
+      </div>
+      <div style="margin-bottom:4px">
+        <div class="timeline-bar">
+          ${years.map((y,i) => `<div class="tl-seg ${i < currentYearIdx ? 'done' : i === currentYearIdx ? 'current' : ''}"></div>`).join('')}
+        </div>
+        <div class="timeline-labels">
+          ${years.map(y => `<span>Year ${y}</span>`).join('')}
+        </div>
+      </div>
+      <div class="game-log" id="g4log">
+        ${g.year === 0 ? 'Plant Ficus trees across the riverbank, then advance to Year 20.' :
+          g.choices.length > 0 ? g.choices[g.choices.length-1] : 'Choose your next action...'}
+      </div>
+      ${g.year === 0 ? `
+        <button class="start-game-btn" style="font-size:13px;padding:11px 24px" onclick="g4Advance()"
+          ${g.trees.filter(Boolean).length === 0 ? 'disabled style="opacity:0.4"' : ''}>
+          ⏩ Advance to Year 20
+        </button>
+      ` : g.year < 100 ? `
+        <div class="root-choice-row">
+          <div class="root-choice root-choice-short" onclick="g4Choose('sell')">
+            <div class="rc-icon">💵</div>
+            <div class="rc-label">Sell Wood Now</div>
+            <div class="rc-desc">Earn ₹40,000 immediately. Bridge progress stops.</div>
+          </div>
+          <div class="root-choice root-choice-long" onclick="g4Choose('grow')">
+            <div class="rc-icon">🌱</div>
+            <div class="rc-label">Let It Grow</div>
+            <div class="rc-desc">Sacrifice ₹40,000 now. Bridge grows stronger for the future.</div>
+          </div>
+        </div>
+      ` : `
+        <button class="start-game-btn" onclick="endGame4()">See Your Legacy →</button>
+      `}
+    `;
+  }
+
+  function plantTree(idx) {
+    if (gameState.trees[idx]) return;
+    gameState.trees[idx] = true;
+    renderGame4();
+    showToast('🌱', 'Ficus tree planted! It will grow for 50 years.');
+  }
+
+  function g4Advance() {
+    const years = [0, 20, 50, 80, 100];
+    const g = gameState;
+    const idx = years.indexOf(g.year);
+    if (idx < years.length - 1) g.year = years[idx + 1];
+    renderGame4();
+  }
+
+  function g4Choose(choice) {
+    const g = gameState;
+    const planted = g.trees.filter(Boolean).length;
+    if (choice === 'sell') {
+      g.gold += 40000;
+      g.bridgeProgress = Math.max(0, g.bridgeProgress - 5);
+      g.choices.push('💵 You sold wood for ₹40,000. The forest thins slightly.');
+    } else {
+      g.bridgeProgress = Math.min(100, g.bridgeProgress + Math.round(planted * 12));
+      g.choices.push('🌱 You let the roots grow. Bridge is now at ' + g.bridgeProgress + '%!');
+    }
+    if (g.year < 100) g4Advance();
+    else renderGame4();
+  }
+
+  function endGame4() {
+    const g = gameState;
+    const bridgeBuilt = g.bridgeProgress >= 80;
+    if (!bridgeBuilt) {
+      document.getElementById('gbGameContent').innerHTML = `
+        <div style="text-align:center;padding:20px 0">
+          <div style="font-size:64px;margin-bottom:12px">💔</div>
+          <div style="font-family:'Playfair Display',serif;font-size:24px;color:#c04040;margin-bottom:8px">Game Over!</div>
+          <div style="background:rgba(224,80,80,0.08);border-radius:14px;padding:16px;font-size:14px;color:var(--text-mid);line-height:1.7;margin-bottom:8px">
+            <strong>Target not achieved.</strong><br>
+            Bridge progress: <strong>${g.bridgeProgress}%</strong> — needed 80%.<br>
+            You chose short-term gains too many times.
+          </div>
+          <div style="font-size:13px;color:var(--text-light);margin-bottom:20px">💡 Choose <strong>Let It Grow</strong> at every checkpoint!</div>
+          <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+            <button class="start-game-btn" style="background:linear-gradient(135deg,#c04040,#e07070)" onclick="buildGame4()">🔄 Play Again</button>
+            <button class="start-game-btn" onclick="showWisdomScroll()">📜 Learn Theory First</button>
+          </div>
+        </div>
+      `;
+      return;
+    }
+    const growChoices = g.choices.filter(c => c.startsWith('🌱')).length;
+    document.getElementById('gbGameContent').innerHTML = `
+      <div style="text-align:center;padding:20px 0">
+        <div style="font-size:56px;margin-bottom:12px">🌉</div>
+        <div style="font-family:'Playfair Display',serif;font-size:20px;color:var(--pine-green);margin-bottom:10px">
+          Year 100 — Your Legacy
+        </div>
+        <div style="background:rgba(45,80,22,0.06);border-radius:14px;padding:16px;font-size:13px;color:var(--text-mid);line-height:1.7;margin-bottom:16px;text-align:left">
+          🌉 <strong>Your village has a Living Root Bridge!</strong> It generates ₹10 lakh/year in eco-tourism. Treasury: ₹${g.gold.toLocaleString()}. You chose patience ${growChoices} times — your great-grandchildren are grateful.
+        </div>
+        <button class="start-game-btn" onclick="showWisdomScroll()">📜 Read the Wisdom Scroll</button>
+      </div>
+    `;
+  }
+
+  // ===== STATE =====
+  let currentGrade = '5-6';
+  let currentLang = 'english';
+  let currentPanel = 'home';
+  let currentQuizIdx = 0;
+  let currentQuizData = [];
+  let currentQuizSubject = null;
+  let playingAudio = null;
+
+  // Points & progress tracking
+  const subjectPoints = { khasi: 0, math: 0, science: 0, social: 0, art: 0 };
+  const subjectMaxPoints = { khasi: 40, math: 40, science: 40, social: 40, art: 40 };
+  let totalPoints = 340; // starting points shown in UI
+  let lessonsCompleted = 12;
+
+  // ===== KHASI TRANSLATIONS — Complete page coverage =====
+  const khasiMap = {
+    // NAV
+    '🏡 Home': '🏡 Ïing',
+    '📚 Subjects': '📚 Pyrthei',
+    '🎮 Mawlynnong': '🎮 Mawlynnong',
+    '🎙️ Elder Stories': '🎙️ Ki Kyntiew Rangbah',
+    '🌱 My Growth': '🌱 Ka Jingkyrkhu Jong Nga',
+    // HOME PANEL
+    'Khublei! Welcome Back! 🌿': 'Khublei! Wan Leh! 🌿',
+    'Continue your journey through the misty hills of learning.': 'Tip ka jingpyrthei sha ki lum khmih ha ka jingkynmaw.',
+    '📚 MBOSE Curriculum': '📚 Pyrthei MBOSE',
+    '🌿 Day 42': '🌿 Sngi 42',
+    '🌉 Your Living Root Bridge — Keep Growing!': '🌉 Ka Jingkieng Dieng Lawei Jong Phi — Kyrshan Ktah!',
+    'Start': 'Start',
+    'Explore': 'Ïoh',
+    'Basics ✓': 'Shaphang ✓',
+    'Explorer ← You': 'Ïaktor ← Phi',
+    'Scholar': 'Nongkynmaw',
+    'Master': 'Nongshisha',
+    'Lessons Done': 'Ki Lesson Ba Thoh',
+    'Total Points': 'Ki Point Katba',
+    'Day Streak': 'Sngi Phah Noh',
+    'Village Rank': 'Nambor sha ka Shnong',
+    '📚 Continue Learning': '📚 Tip Ïoh Kynmaw',
+    'Khasi Language': 'Ktien Khasi',
+    'Phawar & Grammar': 'Phawar bad Ka Jingkyrkhu Ktien',
+    '65% complete': '65% ban thoh',
+    'Mathematics': 'Nambornai',
+    'Ryndia Geometry': 'Ka Geometry Ryndia',
+    '40% complete': '40% ban thoh',
+    'Science & EVS': 'Saïens bad EVS',
+    'Sacred Groves & Ecology': 'Ki Law Lyngdoh bad Ka Ecology',
+    '55% complete': '55% ban thoh',
+    'Social Studies': 'Shaphang Ki Nongshong Shnong',
+    'Three Tribes & Dorbar': 'Lai Kur bad Ka Dorbar',
+    '30% complete': '30% ban thoh',
+    'Art & Values': 'Ka Pyrkhat bad Ki Thma',
+    'Bamboo Craft': 'Ka Jingkren Dieng Saw',
+    '20% complete': '20% ban thoh',
+    'Mawlynnong Biz': 'Ka Biz Mawlynnong',
+    'Village Simulation': 'Ka Jingsim Shnong',
+    'Level 2 Unlocked': 'Level 2 Phah Hap',
+    // SUBJECTS PANEL
+    '📚 All Subjects — MBOSE Curriculum': '📚 Katba Pyrthei — Pyrthei MBOSE',
+    '🌟 All Subjects': '🌟 Katba Pyrthei',
+    '🗣️ Language': '🗣️ Ktien',
+    '🧮 Math': '🧮 Nambornai',
+    '🌿 Science': '🌿 Saïens',
+    '🏔️ Social': '🏔️ Social',
+    '🎋 Art & Values': '🎋 Pyrkhat bad Thma',
+    'Review': 'Neng Leh',
+    'Auditory • 20 min • 50 pts': 'Ktien • 20 mnt • 50 pts',
+    'Visual + Auditory • 25 min • 60 pts': 'Pyrthei • 25 mnt • 60 pts',
+    'ESL Approach • 30 min • 70 pts': 'ESL • 30 mnt • 70 pts',
+    'Kinesthetic • 35 min • 80 pts': 'Ka Jingkren • 35 mnt • 80 pts',
+    'Contextual • 30 min • 75 pts': 'Jingshim • 30 mnt • 75 pts',
+    'Visual + Video • 40 min • 90 pts': 'Video • 40 mnt • 90 pts',
+    'Visual • 35 min • 85 pts': 'Pyrthei • 35 mnt • 85 pts',
+    'Story + Visual • 45 min • 100 pts': 'Hikai • 45 mnt • 100 pts',
+    'Interactive • 30 min • 70 pts': 'Jingkynmaw • 30 mnt • 70 pts',
+    'Kinesthetic • 50 min • 120 pts': 'Jingkren • 50 mnt • 120 pts',
+    'Story + Reflection • 25 min • 60 pts': 'Hikai • 25 mnt • 60 pts',
+    // GAME PANEL
+    '🏡 Mawlynnong Business Lab': '🏡 Ka Lab Biz Mawlynnong',
+    "Asia's Cleanest Village — now your entrepreneurship classroom! Choose a Village Challenge to begin.": 'Ka Shnong Daplar Bah ha Asia — mynta ka jingkynmaw biz jong phi! Shem ka challenge.',
+    '⭐ XP Earned:': '⭐ XP Ba Ïoh:',
+    '🏅 Games Played:': '🏅 Ki Game Ba Leh:',
+    '🌿 Village Level:': '🌿 Level Shnong:',
+    '▶ Play Challenge': '▶ Leh Ka Challenge',
+    'Operations Management': 'Ka Jingshitkur Jingtip',
+    'Arithmetic & Profit': 'Nambornai bad Ka Pynlait',
+    'Language & Social Studies': 'Ktien bad Shaphang Nongshong',
+    'Long-term Thinking & Sustainability': 'Ka Jingïa Snam bad Ka Pynhep',
+    // LESSON MODULE
+    '📹 Learn': '📹 Ïoh Kynmaw',
+    '🧠 Take Quiz': '🧠 Leh Quiz',
+    // ORAL PANEL
+    '🎙️ Listen to the Elders': '🎙️ Ngen Ki Rangbah',
+    '📖 Story Mode': '📖 Ka Hikai',
+    '🎵 Phawar Chants': '🎵 Ki Phawar',
+    '💬 Dialects': '💬 Ki Slem Ktien',
+    '▶ Listen': '▶ Ngen',
+    '⏸ Pause': '⏸ Kynmaw',
+    // PROGRESS PANEL
+    '🌱 Your Growth Garden': '🌱 Ka Iing Jingkyrkhu Jong Phi',
+    'Watch your Orchid grow as you complete each module!': 'Neng ka jingdang orchid tymmen ia ki module!',
+    '📊 Subject Progress': '📊 Jingkyrshan Pyrthei',
+    '🏆 Skills & Badges Earned': '🏆 Ki Skill bad Badge Ba Ïoh',
+    '🏘️ Village Leaderboard': '🏘️ Ka Leaderboard Shnong',
+    '👩‍🏫 Teacher Portal Sync': '👩‍🏫 Ka Sync Nongïarap',
+    'Last synced: Today': 'Synced shibai: Mynsngi',
+    '⚠️ Needs Attention': '⚠️ Dei Ngen Ia Phi',
+    '✅ Strength': '✅ Ka Jingkyntih',
+    '💡 Suggested Next': '💡 Ka Kynmaw Khynmaw',
+    // NAV RIGHT
+    'English': 'Ktien Inglang',
+    'Khasi': 'Ktien Khasi',
+    'Garo': 'Ktien Garo',
+    '📖 English': '📖 Ktien Inglang',
+    '🗣️ Khasi': '🗣️ Ktien Khasi',
+    '🌿 Garo': '🌿 Ktien Garo',
+    // SPLASH
+    '📚 Select Your Grade': '📚 Shem Ka Klas Jong Phi',
+    'Grade 1–2': 'Klas 1–2',
+    'Grade 3–4': 'Klas 3–4',
+    'Grade 5–6': 'Klas 5–6',
+    'Grade 7–8': 'Klas 7–8',
+    '✨ Begin Your Journey': '✨ Thoh Shah Ka Jingpyrthei',
+    // MISC
+    'Khasi Speaker': 'Nongktien Khasi',
+    'Eco Reader': 'Nongioh Kynmaw Eco',
+    'Math Weaver': 'Nongkren Nambornai',
+    'Village Builder': 'Nongshong Shnong',
+    'Bridge Grower 🔒': 'Nongdang Jingkieng 🔒',
+    'Needs Attention': 'Dei Ngen',
+    'Profit/Loss calculation in Math Unit 2': 'Ka Jingpynlait/Jingshim ha Nambornai Unit 2',
+    'Strength': 'Ka Jingkyntih',
+    'Khasi oral comprehension — scoring 85%+': 'Ka Jingïap Ktien Khasi — 85%+',
+    'Suggested Next': 'Kynmaw Khynmaw',
+    'Complete Water Cycle lesson for Science boost': 'Thoh ka Lesson Water Cycle sha ka Saïens',
+  };
+
+  // Garo stub (brief translation of key terms)
+  const garoMap = {
+    // NAV
+    '🏡 Home': '🏡 Grika',
+    '📚 Subjects': '📚 Bicharan',
+    '🎮 Mawlynnong': '🎮 Mawlynnong',
+    '🎙️ Elder Stories': '🎙️ Mande Grikanio Galpo',
+    '🌱 My Growth': '🌱 Nanga Brikhi',
+    // HOME PANEL
+    'Khublei! Welcome Back! 🌿': 'Boro Dokhat! Mande Mano! 🌿',
+    'Continue your journey through the misty hills of learning.': 'Bikhara parana suru koro ki dimba hilso khage.',
+    '📚 MBOSE Curriculum': '📚 MBOSE Bicharan',
+    '🌿 Day 42': '🌿 Din 42',
+    '🌉 Your Living Root Bridge — Keep Growing!': '🌉 Nanga Jibanta Mul Bata — Badhte Thako!',
+    'Start': 'Arambha',
+    'Explore': 'Khoja',
+    'Basics ✓': 'Mula ✓',
+    'Explorer ← You': 'Khojak ← Boro',
+    'Scholar': 'Gyani',
+    'Master': 'Usta',
+    'Lessons Done': 'Sabak Ses',
+    'Total Points': 'Mota Anka',
+    'Day Streak': 'Din Dhara',
+    'Village Rank': 'Gaon Pangti',
+    '📚 Continue Learning': '📚 Bikhara Chalo',
+    'Khasi Language': 'Khasi Bak',
+    'Phawar & Grammar': 'Phawar aro Byakaran',
+    '65% complete': '65% ses',
+    'Mathematics': 'Gonit',
+    'Ryndia Geometry': 'Ryndia Jyamiti',
+    '40% complete': '40% ses',
+    'Science & EVS': 'Biggan aro EVS',
+    'Sacred Groves & Ecology': 'Pabitro Ban aro Prakriti',
+    '55% complete': '55% ses',
+    'Social Studies': 'Samajik Pariksha',
+    'Three Tribes & Dorbar': 'Tinku Janajati aro Dorbar',
+    '30% complete': '30% ses',
+    'Art & Values': 'Kala aro Mul',
+    'Bamboo Craft': 'Bash Karigor',
+    '20% complete': '20% ses',
+    'Mawlynnong Biz': 'Mawlynnong Byapar',
+    'Village Simulation': 'Gaon Simuylasion',
+    'Level 2 Unlocked': 'Level 2 Khula',
+    // SUBJECTS PANEL
+    '📚 All Subjects — MBOSE Curriculum': '📚 Sab Bicharan — MBOSE Pariksha',
+    '🌟 All Subjects': '🌟 Sab Bicharan',
+    '🗣️ Language': '🗣️ Bak',
+    '🧮 Math': '🧮 Gonit',
+    '🌿 Science': '🌿 Biggan',
+    '🏔️ Social': '🏔️ Samajik',
+    '🎋 Art & Values': '🎋 Kala aro Mul',
+    'Review': 'Aro Dekha',
+    // GAME PANEL
+    '🏡 Mawlynnong Business Lab': '🏡 Mawlynnong Byapar Lab',
+    "Asia's Cleanest Village — now your entrepreneurship classroom! Choose a Village Challenge to begin.": 'Asiar Subhe Chokkhon Gaon — nanga byapar kalasrum! Gaon challenge becho.',
+    '⭐ XP Earned:': '⭐ XP Pora:',
+    '🏅 Games Played:': '🏅 Khela Khelecha:',
+    '🌿 Village Level:': '🌿 Gaon Level:',
+    '▶ Play Challenge': '▶ Challenge Khelo',
+    'Operations Management': 'Karjo Bebasthapana',
+    'Arithmetic & Profit': 'Gonit aro Labh',
+    'Language & Social Studies': 'Bak aro Samajik',
+    'Long-term Thinking & Sustainability': 'Dirkhalin Chinta aro Sthitibol',
+    // LESSON MODULE
+    '📹 Learn': '📹 Bathiana',
+    '🧠 Take Quiz': '🧠 Quiz La',
+    // ORAL PANEL
+    '🎙️ Listen to the Elders': '🎙️ Mande Shona',
+    '📖 Story Mode': '📖 Galpo Mode',
+    '🎵 Phawar Chants': '🎵 Ki Phawar',
+    '💬 Dialects': '💬 Bak Bhed',
+    '▶ Listen': '▶ Sona',
+    '⏸ Pause': '⏸ Roko',
+    // PROGRESS PANEL
+    '🌱 Your Growth Garden': '🌱 Nanga Brikhi Bagta',
+    'Watch your Orchid grow as you complete each module!': 'Nanga Orchid brikhi dekho module ses kore!',
+    '📊 Subject Progress': '📊 Bicharan Aga',
+    '🏆 Skills & Badges Earned': '🏆 Dakhta aro Badge Pora',
+    '🏘️ Village Leaderboard': '🏘️ Gaon Leaderboard',
+    '👩‍🏫 Teacher Portal Sync': '👩‍🏫 Shikkhok Portal Sync',
+    'Last synced: Today': 'Shes sync: Aje',
+    '⚠️ Needs Attention': '⚠️ Dhyan Dorkhar',
+    '✅ Strength': '✅ Shakti',
+    '💡 Suggested Next': '💡 Porborte',
+    // NAV RIGHT
+    'English': 'Ingreji',
+    'Khasi': 'Khasi Bak',
+    'Garo': 'Garo Bak',
+    '📖 English': '📖 Ingreji',
+    '🗣️ Khasi': '🗣️ Khasi Bak',
+    '🌿 Garo': '🌿 Garo Bak',
+    // SPLASH
+    '📚 Select Your Grade': '📚 Shrenib Bechho',
+    'Grade 1–2': 'Shreni 1–2',
+    'Grade 3–4': 'Shreni 3–4',
+    'Grade 5–6': 'Shreni 5–6',
+    'Grade 7–8': 'Shreni 7–8',
+    '✨ Begin Your Journey': '✨ Parana Suru Koro',
+    // MISC BADGES
+    'Khasi Speaker': 'Khasi Bakbol',
+    'Eco Reader': 'Prakriti Pathak',
+    'Math Weaver': 'Gonit Bunkar',
+    'Village Builder': 'Gaon Nirmata',
+    'Bridge Grower 🔒': 'Mul Badhok 🔒',
+    'Needs Attention': 'Dhyan Dorkhar',
+    'Profit/Loss calculation in Math Unit 2': 'Labh/Khoti Gonit Unit 2-te',
+    'Strength': 'Shakti',
+    'Khasi oral comprehension — scoring 85%+': 'Khasi maukha pariksha — 85%+',
+    'Suggested Next': 'Porborte',
+    'Complete Water Cycle lesson for Science boost': 'Jol Chakra Sabak ses koro Biggan-e',
+  };
+
+  function applyTranslation(map) {
+    document.querySelectorAll('[data-en]').forEach(el => {
+      const en = el.getAttribute('data-en');
+      if (map[en]) el.textContent = map[en];
+      else el.textContent = en; // fallback to English
+    });
+    // Also translate elements without data-en by walking text nodes
+    translateTextNodes(document.getElementById('app'), map);
+    translateTextNodes(document.getElementById('splash'), map);
+  }
+
+  function translateTextNodes(root, map) {
+    if (!root) return;
+    // Translate elements that have a data-en attribute we just set
+    const walk = (node) => {
+      if (node.nodeType === 3) { // text node
+        const trimmed = node.textContent.trim();
+        if (trimmed && map[trimmed]) {
+          node.textContent = node.textContent.replace(trimmed, map[trimmed]);
+        }
+      } else if (node.nodeType === 1) {
+        // Skip script/style/iframe
+        if (['SCRIPT','STYLE','IFRAME','INPUT'].includes(node.tagName)) return;
+        // Set data-en if it's a leaf-ish text element and doesn't have it
+        const directText = Array.from(node.childNodes).filter(n => n.nodeType === 3).map(n => n.textContent.trim()).join(' ').trim();
+        if (directText && map[directText] && !node.getAttribute('data-en')) {
+          node.setAttribute('data-en', directText);
+        }
+        node.childNodes.forEach(walk);
+      }
+    };
+    root.childNodes.forEach(walk);
+  }
+
+  function applyKhasi() {
+    // First pass: set data-en on all translatable elements
+    markDataEn(document.getElementById('app'), khasiMap);
+    markDataEn(document.getElementById('splash'), khasiMap);
+    // Also do a deep text-node walk to catch everything
+    deepTranslate(document.getElementById('app'), khasiMap);
+    deepTranslate(document.getElementById('splash'), khasiMap);
+    // Second pass: translate marked elements
+    document.querySelectorAll('[data-en]').forEach(el => {
+      const en = el.getAttribute('data-en');
+      if (khasiMap[en]) el.textContent = khasiMap[en];
+    });
+  }
+
+  function applyGaro() {
+    markDataEn(document.getElementById('app'), garoMap);
+    markDataEn(document.getElementById('splash'), garoMap);
+    deepTranslate(document.getElementById('app'), garoMap);
+    deepTranslate(document.getElementById('splash'), garoMap);
+    document.querySelectorAll('[data-en]').forEach(el => {
+      const en = el.getAttribute('data-en');
+      if (garoMap[en]) el.textContent = garoMap[en];
+      else el.textContent = en; // fallback to English
+    });
+  }
+
+  function deepTranslate(root, map) {
+    if (!root) return;
+    const skipTags = new Set(['SCRIPT','STYLE','IFRAME','INPUT','TEXTAREA','SVG','PATH','CIRCLE','TEXT','BUTTON']);
+    const walk = (node) => {
+      if (node.nodeType === 3) {
+        const trimmed = node.textContent.trim();
+        if (trimmed && map[trimmed]) {
+          node.textContent = node.textContent.replace(trimmed, map[trimmed]);
+          if (node.parentNode && !node.parentNode.getAttribute('data-en')) {
+            node.parentNode.setAttribute('data-en', trimmed);
+          }
+        }
+      } else if (node.nodeType === 1) {
+        if (skipTags.has(node.tagName)) return;
+        node.childNodes.forEach(walk);
+      }
+    };
+    root.childNodes.forEach(walk);
+  }
+
+  function markDataEn(root, map) {
+    if (!root) return;
+    const skipTags = new Set(['SCRIPT','STYLE','IFRAME','INPUT','TEXTAREA','SVG','PATH','CIRCLE','TEXT']);
+    const walk = (node) => {
+      if (node.nodeType === 1) {
+        if (skipTags.has(node.tagName)) return;
+        // Only mark leaf-level text elements (no complex children)
+        const hasOnlyTextChildren = Array.from(node.childNodes).every(c => c.nodeType === 3 || (c.nodeType === 1 && c.childNodes.length === 0));
+        if (hasOnlyTextChildren) {
+          const txt = node.textContent.trim();
+          if (txt && !node.getAttribute('data-en') && map[txt]) {
+            node.setAttribute('data-en', txt);
+          }
+        }
+        node.childNodes.forEach(walk);
+      }
+    };
+    root.childNodes.forEach(walk);
+  }
+
+  function revertToEnglish() {
+    document.querySelectorAll('[data-en]').forEach(el => {
+      el.textContent = el.getAttribute('data-en');
+    });
+  }
+
+  // ===== SPLASH =====
+  function selectSplashGrade(grade, el) {
+    currentGrade = grade;
+    document.querySelectorAll('.grade-splash-btn').forEach(b => b.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+
+  function launchApp() {
+    const splash = document.getElementById('splash');
+    const app = document.getElementById('app');
+    splash.classList.remove('active');
+    splash.style.display = 'none';
+    app.style.display = 'flex';
+    // Activate home panel
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('panel-home').classList.add('active');
+    document.getElementById('welcomeMsg').textContent = 'Khublei! Welcome Back! 🌿';
+    document.getElementById('pathBadge').textContent = '📚 MBOSE Curriculum';
+    document.getElementById('gradeBadge').textContent = '🎓 Grade ' + currentGrade;
+    setTimeout(() => showToast('🌿', 'Welcome to Meghalaya Serenity!'), 300);
+  }
+
+  // ===== NAVIGATION =====
+  function showPanel(name, navEl) {
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('panel-' + name).classList.add('active');
+    currentPanel = name;
+
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    if (navEl) {
+      navEl.classList.add('active');
+    } else {
+      document.querySelectorAll('.nav-tab').forEach(t => {
+        const txt = (t.getAttribute('data-en') || t.textContent).toLowerCase();
+        if ((name === 'home' && txt.includes('home')) ||
+            (name === 'subjects' && txt.includes('subject')) ||
+            (name === 'game' && txt.includes('mawly')) ||
+            (name === 'oral' && txt.includes('elder')) ||
+            (name === 'progress' && txt.includes('growth'))) {
+          t.classList.add('active');
+        }
+      });
+    }
+  }
+
+  // ===== LANGUAGE =====
+  function toggleNavLangPopup() {
+    document.getElementById('navLangPopup').classList.toggle('open');
+  }
+
+  function setLanguage(lang) {
+    currentLang = lang;
+    document.getElementById('navLangPopup').classList.remove('open');
+    const labels = { khasi: 'Khasi', english: 'English', garo: 'Garo' };
+    const flags  = { khasi: '🗣️', english: '📖', garo: '🌿' };
+    document.getElementById('langLabel').textContent = labels[lang] || lang;
+    document.getElementById('langFlag').textContent  = flags[lang] || '📖';
+    // Update active state on lang buttons
+    document.querySelectorAll('.lang-nav-opt').forEach(b => b.classList.remove('active'));
+    const activeOpt = document.getElementById('langOpt-' + lang);
+    if (activeOpt) activeOpt.classList.add('active');
+    if (lang === 'khasi') {
+      applyKhasi();
+      showToast('🍃', 'Pyrthei ia Khasi! (Switched to Khasi)');
+    } else if (lang === 'garo') {
+      applyGaro();
+      showToast('🌿', 'Garo language applied!');
+    } else {
+      revertToEnglish();
+      showToast('🍃', 'Language: English');
+    }
+  }
+
+  document.addEventListener('click', (e) => {
+    const popup = document.getElementById('navLangPopup');
+    const btn = document.querySelector('.lang-nav-btn');
+    if (popup && btn && !popup.contains(e.target) && !btn.contains(e.target)) {
+      popup.classList.remove('open');
+    }
+  });
+
+  // ===== LESSON MODULE DATA =====
+  // Quiz questions are customized per learning style
+  const lessonData = {
+    khasi: {
+      title: '🗣️ Khasi Language — Phawar & Chants',
+      videoId: 'YR5UsL1pON4', // YouTube: Khasi language/culture video
+      videoTitle: 'Khasi Language & Phawar Oral Tradition',
+      videoDesc: `<strong>Topic:</strong> Phawar are the oral poetry of the Khasi people — chanted at festivals, ceremonies, and storytelling evenings.<br><br>
+        Watch the video above to learn about Khasi oral traditions, pronunciation, and the famous Phawar chant: <em>"Ka jingkynmaw na ka jingim ki bynta"</em> — "Memory is the root of a living life."`,
+      quizzes: {
+        eagle: [ // visual/video learner — scenario-based
+          { q: 'After watching the video, what does "Ka jingkynmaw" mean?', opts: ['A river', 'Memory / Remembrance', 'A song', 'A forest'], ans: 1 },
+          { q: 'In Khasi culture, Phawar are used at which events?', opts: ['Only school exams', 'Festivals, ceremonies & storytelling', 'Sports events', 'Market days'], ans: 1 },
+          { q: 'What language family does Khasi belong to?', opts: ['Indo-Aryan', 'Dravidian', 'Austroasiatic', 'Sino-Tibetan'], ans: 2 },
+          { q: 'In the video, what does the elder use to teach Phawar to children?', opts: ['A whiteboard', 'Oral repetition and rhythm', 'Books and flashcards', 'Mobile phones'], ans: 1 },
+        ],
+        songbird: [ // auditory learner — listening & pronunciation focus
+          { q: 'Listen carefully: which syllable is stressed in "Khublei"?', opts: ['Khu-BLEI', 'KHU-blei', 'Both equally', 'Neither'], ans: 0 },
+          { q: 'What does "Khublei shibun" mean when you hear it?', opts: ['Good morning', 'Many thanks', 'Come here', 'Goodbye'], ans: 1 },
+          { q: 'Phawar chants are passed down through…', opts: ['Written scriptures', 'Oral tradition from elder to child', 'Radio broadcasts', 'School textbooks'], ans: 1 },
+          { q: 'Which word means "Memory" in Khasi?', opts: ['Jingim', 'Jingkynmaw', 'Bynta', 'Lyngdoh'], ans: 1 },
+        ],
+        weaver: [ // kinesthetic/puzzle learner — pattern & construction focus
+          { q: 'Arrange these words to form a correct Khasi greeting: [Khublei] [Ngi] [Ia]', opts: ['Ngi Khublei Ia', 'Ia Khublei Ngi', 'Khublei Ia Ngi', 'Ngi Ia Khublei'], ans: 2 },
+          { q: 'Complete the Phawar: "Ka jingkynmaw na ka jingim ___"', opts: ['ki nongri', 'ki bynta', 'ki dorbar', 'ki shnong'], ans: 1 },
+          { q: 'Khasi nouns are classified by gender prefix. Which prefix is used for a woman?', opts: ['U (masculine)', 'Ka (feminine)', 'Ki (plural)', 'I (neutral)'], ans: 1 },
+          { q: 'If "Ka shnong" means "the village", what does "Ki shnong" mean?', opts: ['The big village', 'The villages (plural)', 'Our village', 'A small village'], ans: 1 },
+        ]
+      }
+    },
+    math: {
+      title: '🧮 Mathematics — Geometry & Real Life',
+      videoId: 'G0YHqHNOjbY', // YouTube: Math/geometry educational video
+      videoTitle: 'Geometry in Nature & Traditional Crafts',
+      videoDesc: `<strong>Topic:</strong> The Ryndia silk weavers of Meghalaya use geometry every day — circles, angles, and symmetry are in every basket and textile pattern.<br><br>
+        Key formula for today: <em>Area of circle = π × r²</em>. With π ≈ 22/7, if r = 7 cm, area = 22/7 × 49 = <strong>154 cm²</strong>.`,
+      quizzes: {
+        eagle: [
+          { q: 'A Khoh basket has a circular base with radius 7 cm. What is the area? (π ≈ 22/7)', opts: ['22 cm²', '44 cm²', '154 cm²', '196 cm²'], ans: 2 },
+          { q: 'A bamboo stick is 2.5 m long. If you need 8 sticks, how many meters of bamboo do you need?', opts: ['10 m', '16 m', '20 m', '25 m'], ans: 2 },
+          { q: 'A square weaving pattern has side 12 cm. A circle inside it has radius 6 cm. What is the area of the circle? (π ≈ 22/7)', opts: ['144 cm²', '113.1 cm²', '72 cm²', '37.7 cm²'], ans: 1 },
+          { q: 'You sell a basket for ₹169 that cost ₹130 to make. What is the % profit?', opts: ['20%', '25%', '30%', '39%'], ans: 2 },
+        ],
+        songbird: [
+          { q: 'Listen to this word problem: "Three baskets, each needing 5 bamboo strips. How many total?" ', opts: ['8', '12', '15', '20'], ans: 2 },
+          { q: 'The elder says: "Our bridge is 3 times as long as the river is wide — 40 metres wide." How long is the bridge?', opts: ['80 m', '100 m', '120 m', '43 m'], ans: 2 },
+          { q: 'A chant counts: "one basket, two baskets, three... each sells for ₹169". After 4 baskets, total earnings?', opts: ['₹507', '₹676', '₹338', '₹845'], ans: 1 },
+          { q: 'Repeat after the pattern: 2, 4, 8, 16... What comes next?', opts: ['18', '24', '32', '20'], ans: 2 },
+        ],
+        weaver: [
+          { q: 'You are weaving a grid 8 × 8. How many cells total do you need to fill?', opts: ['16', '32', '56', '64'], ans: 3 },
+          { q: 'A Ryndia pattern repeats every 4 rows. In a 20-row fabric, how many pattern repetitions?', opts: ['4', '5', '6', '8'], ans: 1 },
+          { q: 'You have 48 bamboo strips. Each basket needs 12 strips. How many baskets can you make?', opts: ['3', '4', '5', '6'], ans: 1 },
+          { q: 'A weaving pattern uses a ratio of 3 dark:2 light threads. In 25 threads, how many are dark?', opts: ['10', '12', '15', '9'], ans: 2 },
+        ]
+      }
+    },
+    science: {
+      title: '🌿 Science & EVS — Water Cycle & Ecology',
+      videoId: 'al-do-HGuIk', // YouTube: water cycle educational
+      videoTitle: 'The Water Cycle — Cherrapunji & Meghalaya',
+      videoDesc: `<strong>Topic:</strong> Sohra (Cherrapunji) receives 11,777 mm of rain per year — one of the highest in the world! Learn why Bay of Bengal winds create this phenomenon and how Meghalaya's sacred groves protect the ecosystem.`,
+      quizzes: {
+        eagle: [
+          { q: 'Why does Sohra (Cherrapunji) receive so much rainfall?', opts: ['It is near the ocean shore', 'Bay of Bengal winds hit hills and rise, cooling to form clouds', 'There are many underground rivers', 'It has no trees to absorb water'], ans: 1 },
+          { q: 'What is a "Law Lyngdoh" (Sacred Grove)?', opts: ['A marketplace', 'A protected forest no one cuts or hunts in', 'A river crossing point', 'A type of bamboo'], ans: 1 },
+          { q: 'Which plant is famous in Meghalaya for catching insects?', opts: ['Bamboo', 'Pitcher Plant (Nepenthes)', 'Orchid', 'Fern'], ans: 1 },
+          { q: 'In the water cycle, what happens to water after it evaporates from lakes?', opts: ['It disappears permanently', 'It forms clouds and returns as rain', 'It becomes underground water only', 'It turns into ice'], ans: 1 },
+        ],
+        songbird: [
+          { q: 'The elder says: "Our groves are alive — they breathe with us." What process allows forests to release water vapor?', opts: ['Photosynthesis only', 'Transpiration', 'Condensation', 'Precipitation'], ans: 1 },
+          { q: 'Storytellers say Sohra is "where rain is born". What do they mean?', opts: ['Rain is manufactured there', 'Clouds form there due to rising moist air', 'There is a rain factory', 'The rivers start there'], ans: 1 },
+          { q: 'What sound does the Pitcher Plant make to attract insects? (Hint: it uses…)', opts: ['A buzzing sound', 'Sweet nectar smell', 'A clicking noise', 'Bright flashing light'], ans: 1 },
+          { q: 'Why are Sacred Groves important for water cycles?', opts: ['They look beautiful', 'Tree roots hold soil and allow rainwater to seep into ground', 'They produce oxygen only', 'They block rain'], ans: 1 },
+        ],
+        weaver: [
+          { q: 'Draw the water cycle in order: Evaporation → ? → Precipitation → Collection', opts: ['Transpiration', 'Condensation', 'Infiltration', 'Runoff'], ans: 1 },
+          { q: 'Match: Sohra = ___mm of rainfall per year', opts: ['7,000 mm', '9,500 mm', '11,777 mm', '15,000 mm'], ans: 2 },
+          { q: 'Construct the food chain: Leaf → Insect → ___ → Eagle', opts: ['Pitcher Plant', 'Frog', 'Tree', 'Water'], ans: 1 },
+          { q: 'If 3 sacred groves protect 60 hectares each, how many hectares total are protected?', opts: ['120', '150', '180', '200'], ans: 2 },
+        ]
+      }
+    },
+    social: {
+      title: '🏔️ Social Studies — Tribes & Heritage',
+      videoId: 'E3L1qSyHrIE', // YouTube: Meghalaya culture/tribes
+      videoTitle: 'Meghalaya — The Three Tribes & Living Heritage',
+      videoDesc: `<strong>Topic:</strong> Meghalaya is home to three main tribes — the Khasi, Garo, and Jaintia — each with unique language, traditions, and governance. The Dorbar Shnong is the traditional village democracy where every voice counts.`,
+      quizzes: {
+        eagle: [
+          { q: 'Which three tribes are the main indigenous communities of Meghalaya?', opts: ['Naga, Bodo, Mizo', 'Khasi, Garo, Jaintia', 'Santhali, Oraon, Munda', 'Angami, Ao, Lotha'], ans: 1 },
+          { q: 'What is the Dorbar Shnong?', opts: ['A type of bamboo hut', 'The traditional village council/democracy', 'A festival name', 'A river in Meghalaya'], ans: 1 },
+          { q: 'Meghalaya follows a matrilineal system. What does this mean?', opts: ['Men inherit property', 'Women are clan heads and children take mother\'s name', 'Only boys attend school', 'The king rules all'], ans: 1 },
+          { q: 'The Living Root Bridge of Meghalaya is built by which tribe?', opts: ['Garo', 'Jaintia', 'Khasi (War sub-group)', 'Bodo'], ans: 2 },
+        ],
+        songbird: [
+          { q: 'An elder says: "In our Dorbar, no one is left without a voice." What kind of governance does this describe?', opts: ['Monarchy', 'Dictatorship', 'Participatory democracy', 'Military rule'], ans: 2 },
+          { q: 'The storyteller mentions "Ka Nongkynmaw" — the rememberer. What role do they play in Khasi society?', opts: ['Tax collector', 'Oral historian and tradition keeper', 'War leader', 'Market vendor'], ans: 1 },
+          { q: 'Which language is spoken by the Garo tribe?', opts: ['Khasi', 'Assamese', 'Garo (Tibeto-Burman family)', 'Bengali'], ans: 2 },
+          { q: 'A Jaintia elder explains: "We celebrate Behdeinkhlam every year." This festival is associated with?', opts: ['Harvest and driving away disease', 'New Year celebration', 'River worship only', 'School completion'], ans: 0 },
+        ],
+        weaver: [
+          { q: 'Map it: Garo Hills is in which part of Meghalaya?', opts: ['Eastern Meghalaya', 'Central Meghalaya', 'Western Meghalaya', 'Northern Meghalaya'], ans: 2 },
+          { q: 'Arrange in order of governance: Village → ___ → State', opts: ['Nation', 'District', 'Block', 'Panchayat'], ans: 1 },
+          { q: 'Connect: The Dorbar Shnong makes decisions by ___', opts: ['One person voting', 'Consensus and community discussion', 'Random lottery', 'The richest person decides'], ans: 1 },
+          { q: 'Which symbol represents the Khasi people\'s connection to nature?', opts: ['The Tiger', 'The Living Root Bridge', 'The Snow Peak', 'The Desert Sand'], ans: 1 },
+        ]
+      }
+    },
+    art: {
+      title: '🎋 Art & Values — Bamboo Craft & Ethics',
+      videoId: 'SBNuEDNqh4Y', // YouTube: bamboo craft/weaving
+      videoTitle: 'Bamboo Crafts of Northeast India — Tradition & Skill',
+      videoDesc: `<strong>Topic:</strong> The Khoh basket is a traditional Khasi backpack woven from bamboo strips, carried with a headband. Every pattern tells a story.<br><br>
+        <strong>Value of the Day:</strong> Ka Akher-Khana — community ethics. "What benefits one should benefit all."`,
+      quizzes: {
+        eagle: [
+          { q: 'What is a "Khoh" in Khasi culture?', opts: ['A type of song', 'A traditional backpack basket made from bamboo', 'A festival', 'A river bridge'], ans: 1 },
+          { q: 'The principle "Ka Akher-Khana" means?', opts: ['Work alone for yourself', 'Community ethics — what benefits one should benefit all', 'Take as much as you can', 'Only elders decide'], ans: 1 },
+          { q: 'If a basket costs ₹130 to make and you add 30% profit, the selling price is?', opts: ['₹150', '₹160', '₹169', '₹175'], ans: 2 },
+          { q: 'Bamboo is sustainable because?', opts: ['It never dies', 'It grows very quickly and regrows after cutting', 'It is made of plastic', 'It needs no water'], ans: 1 },
+        ],
+        songbird: [
+          { q: 'An elder weaver sings: "Each strip tells a story." What does this suggest about Khasi craft?', opts: ['Baskets are just containers', 'Craft carries cultural memory and meaning', 'Weaving is just work', 'Only women weave'], ans: 1 },
+          { q: 'The value "Ka Akher-Khana" — how would you describe it in one phrase?', opts: ['Individual achievement', 'Community wellbeing over self-interest', 'Competition and winning', 'Silent wisdom'], ans: 1 },
+          { q: 'What natural sound is used to test bamboo quality?', opts: ['It should make no sound', 'A clear hollow knock when tapped', 'A dull thud', 'A crackling sound'], ans: 1 },
+          { q: 'The weaver says: "In our baskets, we weave three colours — what do they represent?" Traditionally: green = nature, yellow = sun, what does red represent?', opts: ['Sky', 'Courage & blood of ancestors', 'Water', 'Animals'], ans: 1 },
+        ],
+        weaver: [
+          { q: 'You are designing a pattern. A 8×8 grid needs every 4th cell in dark colour. How many dark cells?', opts: ['8', '12', '16', '20'], ans: 2 },
+          { q: 'A Khoh basket uses a zigzag pattern that repeats every 6 rows. In a 30-row basket, how many zigzag repetitions?', opts: ['4', '5', '6', '7'], ans: 1 },
+          { q: 'You have 3 colors of bamboo strips: 12 green, 8 yellow, 4 red. What fraction are red?', opts: ['1/6', '1/5', '1/4', '1/3'], ans: 0 },
+          { q: 'A weaving pattern has a line of symmetry. If the left half has 24 cells, how many total cells?', opts: ['24', '36', '48', '32'], ans: 2 },
+        ]
+      }
+    }
+  };
+
+  // ===== LESSON MODULE =====
+  function openLessonModule(subject) {
+    const data = lessonData[subject] || lessonData['science'];
+    currentQuizSubject = subject;
+    document.getElementById('lmTitle').textContent = data.title;
+
+    // Video section
+    document.getElementById('lmVideoWrap').innerHTML =
+      `<iframe src="https://www.youtube.com/embed/${data.videoId}?rel=0&modestbranding=1" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>`;
+    document.getElementById('lmVideoInfo').innerHTML = data.videoDesc;
+
+    // Quiz section — always use eagle style now (learning style removed)
+    const styleQuizzes = data.quizzes['eagle'];
+    currentQuizData = styleQuizzes;
+    currentQuizIdx = 0;
+
+    document.getElementById('quizStyleTag').textContent = '📖 Knowledge Check — 4 Questions';
+
+    document.getElementById('quizComplete').classList.remove('show');
+    renderQuizQuestion();
+
+    // Reset to learn tab
+    switchLmTab('learn');
+
+    document.getElementById('lessonModule').classList.add('open');
+  }
+
+  function renderQuizQuestion() {
+    const total = currentQuizData.length;
+    if (currentQuizIdx >= total) {
+      document.getElementById('quizBody').innerHTML = '';
+      document.getElementById('quizComplete').classList.add('show');
+      document.getElementById('quizProgressFill').style.width = '100%';
+      document.getElementById('quizCounter').textContent = 'Quiz Complete!';
+      // Award bonus XP for finishing quiz
+      awardPoints(currentQuizSubject, 0, true);
+      showToast('🏆', 'Quiz complete! +bonus XP!');
+      updateVine(10);
+      return;
+    }
+    const q = currentQuizData[currentQuizIdx];
+    document.getElementById('quizProgressFill').style.width = ((currentQuizIdx / total) * 100) + '%';
+    document.getElementById('quizCounter').textContent = `Question ${currentQuizIdx + 1} of ${total} • +10 pts each`;
+    document.getElementById('quizBody').innerHTML = `
+      <div class="quiz-question">${q.q}</div>
+      <div class="quiz-options">
+        ${q.opts.map((opt, i) => `
+          <button class="quiz-opt" onclick="answerLessonQuiz(this, ${i === q.ans}, ${i})">
+            ${opt}
+          </button>
+        `).join('')}
+      </div>
+      <button class="quiz-next-btn" id="quizNextBtn" onclick="nextQuizQuestion()">
+        Next Question →
+      </button>
+    `;
+  }
+
+  function awardPoints(subject, pts, isCompletion) {
+    if (pts > 0) {
+      totalPoints += pts;
+      if (subject && subjectPoints[subject] !== undefined) {
+        subjectPoints[subject] = Math.min(subjectMaxPoints[subject], subjectPoints[subject] + pts);
+      }
+    }
+    if (isCompletion) {
+      totalPoints += 20; // bonus for completing full quiz
+      lessonsCompleted++;
+      if (subject && subjectPoints[subject] !== undefined) {
+        subjectPoints[subject] = Math.min(subjectMaxPoints[subject], subjectPoints[subject] + 20);
+      }
+    }
+    refreshAllDashboard();
+  }
+
+  function refreshAllDashboard() {
+    // Home panel stats
+    const homePtsEl = document.getElementById('homePoints');
+    if (homePtsEl) homePtsEl.textContent = totalPoints;
+    const homeLessonsEl = document.getElementById('homeLessons');
+    if (homeLessonsEl) homeLessonsEl.textContent = lessonsCompleted;
+    // Home badge row
+    const homeBadgePts = document.getElementById('homeBadgePoints');
+    if (homeBadgePts) homeBadgePts.textContent = '⭐ ' + totalPoints + ' Points';
+    // Leaderboard your score
+    const lbYou = document.getElementById('lbYouScore');
+    if (lbYou) lbYou.textContent = totalPoints + ' pts';
+
+    // Subject progress bars and mini-bars in home grid
+    const subjectPct = {};
+    const base = { khasi: 65, math: 40, science: 55, social: 30, art: 20 };
+    Object.keys(base).forEach(s => {
+      const earned = subjectPoints[s] || 0;
+      const max = subjectMaxPoints[s];
+      subjectPct[s] = Math.min(100, base[s] + Math.round((earned / max) * 30));
+    });
+
+    // Update progress panel subject bars
+    Object.keys(subjectPct).forEach(s => {
+      const barEl = document.getElementById('progressBar_' + s);
+      const pctEl = document.getElementById('progressPct_' + s);
+      if (barEl) barEl.style.width = subjectPct[s] + '%';
+      if (pctEl) pctEl.textContent = subjectPct[s] + '%';
+    });
+
+    // Update home subject cards mini bars
+    Object.keys(subjectPct).forEach(s => {
+      const miniEl = document.getElementById('miniFill_' + s);
+      const miniLbl = document.getElementById('miniLabel_' + s);
+      if (miniEl) miniEl.style.width = subjectPct[s] + '%';
+      if (miniLbl) miniLbl.textContent = subjectPct[s] + '% complete';
+    });
+
+    // Overall progress vine
+    const overallPct = Math.round(Object.values(subjectPct).reduce((a,b)=>a+b,0) / Object.keys(subjectPct).length);
+    const vineEl = document.getElementById('vineFill');
+    const vineLbl = document.getElementById('vinePercent');
+    if (vineEl) vineEl.style.width = overallPct + '%';
+    if (vineLbl) vineLbl.textContent = overallPct + '%';
+
+    // Orchid display
+    updateOrchids(subjectPct);
+  }
+
+  function updateOrchids(pct) {
+    const subjects = ['khasi', 'math', 'science', 'social', 'art'];
+    const icons = ['khasi','math','science','social','art'];
+    subjects.forEach(s => {
+      const el = document.getElementById('orchid_' + s);
+      if (!el) return;
+      const p = pct[s] || 0;
+      el.textContent = p >= 80 ? '🌸' : p >= 50 ? '🌼' : p >= 30 ? '🌱' : '🥀';
+    });
+  }
+
+  function answerLessonQuiz(el, correct, idx) {
+    document.querySelectorAll('.quiz-opt').forEach(o => o.disabled = true);
+    el.classList.add(correct ? 'correct' : 'wrong');
+    if (!correct) {
+      const opts = document.querySelectorAll('.quiz-opt');
+      opts[currentQuizData[currentQuizIdx].ans].classList.add('correct');
+    }
+    if (correct) {
+      awardPoints(currentQuizSubject, 10, false);
+      showToast('⭐', '+10 points! Total: ' + totalPoints);
+      updateVine(3);
+      setTimeout(() => {
+        currentQuizIdx++;
+        renderQuizQuestion();
+      }, 1000);
+    } else {
+      const nextBtn = document.getElementById('quizNextBtn');
+      if (nextBtn) nextBtn.classList.add('visible');
+    }
+  }
+
+  function nextQuizQuestion() {
+    currentQuizIdx++;
+    renderQuizQuestion();
+  }
+
+  function switchLmTab(tab) {
+    document.querySelectorAll('.lm-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.lm-section').forEach(s => s.classList.remove('active'));
+    document.getElementById('lmTab' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('active');
+    document.getElementById('lmSection' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('active');
+  }
+
+  function closeLessonModule() {
+    document.getElementById('lessonModule').classList.remove('open');
+    // Stop video
+    document.getElementById('lmVideoWrap').innerHTML = '';
+  }
+  function closeLessonModuleOutside(e) {
+    if (e.target === document.getElementById('lessonModule')) closeLessonModule();
+  }
+
+  // ===== AUDIO (simulated) =====
+  function togglePlay(btnId, vizId) {
+    const btn = document.getElementById(btnId);
+    const viz = document.getElementById(vizId);
+    if (playingAudio && playingAudio !== btnId) {
+      const oldBtn = document.getElementById(playingAudio);
+      const oldViz = document.getElementById(playingAudio.replace('playBtn', 'audioViz'));
+      if (oldBtn) { oldBtn.textContent = '▶ Listen'; oldBtn.classList.remove('playing'); }
+      if (oldViz) oldViz.style.display = 'none';
+    }
+    if (btn.classList.contains('playing')) {
+      btn.textContent = '▶ Listen';
+      btn.classList.remove('playing');
+      viz.style.display = 'none';
+      playingAudio = null;
+    } else {
+      btn.innerHTML = '⏸ Pause';
+      btn.classList.add('playing');
+      viz.style.display = 'flex';
+      playingAudio = btnId;
+      showToast('🎙️', 'Elder story playing...');
+    }
+  }
+
+  // ===== SUBJECT FILTER =====
+  function filterSubject(cat, el) {
+    document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+    document.querySelectorAll('.lesson-item').forEach(item => {
+      if (cat === 'all' || item.dataset.cat === cat) {
+        item.style.display = 'flex';
+      } else {
+        item.style.display = 'none';
+      }
+    });
+  }
+
+  function setMode(mode, el) {
+    document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  // ===== VINE PROGRESS =====
+  function updateVine(pct) {
+    // Vine is now managed by refreshAllDashboard; this is a small bump for immediate feedback
+    const fill = document.getElementById('vineFill');
+    const label = document.getElementById('vinePercent');
+    if (!fill) return;
+    const current = parseFloat(fill.style.width) || 38;
+    const next = Math.min(100, current + pct);
+    fill.style.width = next + '%';
+    if (label) label.textContent = Math.round(next) + '%';
+  }
+
+  // ===== TOAST =====
+  function showToast(icon, msg) {
+    const toast = document.getElementById('toast');
+    document.getElementById('toastIcon').textContent = icon;
+    document.getElementById('toastMsg').textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3000);
+  }
+
+  // ===== UTILITY =====
+</script>
+</body>
+</html>
