@@ -4,8 +4,44 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Meghalaya Serenity — E-Learning Tablet</title>
+<title>Shaphangj Jingialam — E-Learning Tablet</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Nunito:wght@300;400;600;700;800&family=Noto+Sans:wght@400;600&display=swap" rel="stylesheet">
+<!-- Firebase SDKs -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getDatabase, ref, set, onValue, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+  // ── PASTE YOUR FIREBASE CONFIG HERE ──────────────────────────────────
+  // 1. Go to https://console.firebase.google.com
+  // 2. Create a project → Add Web App → copy the firebaseConfig object below
+  // 3. In your project: Build → Realtime Database → Create database (test mode)
+  const firebaseConfig = {
+    apiKey:            "PASTE_YOUR_API_KEY",
+    authDomain:        "PASTE_YOUR_AUTH_DOMAIN",
+    databaseURL:       "PASTE_YOUR_DATABASE_URL",
+    projectId:         "PASTE_YOUR_PROJECT_ID",
+    storageBucket:     "PASTE_YOUR_STORAGE_BUCKET",
+    messagingSenderId: "PASTE_YOUR_MESSAGING_SENDER_ID",
+    appId:             "PASTE_YOUR_APP_ID"
+  };
+  // ─────────────────────────────────────────────────────────────────────
+
+  const app = initializeApp(firebaseConfig);
+  const db  = getDatabase(app);
+
+  // Expose Firebase helpers to the global scope so the rest of the app can use them
+  window._fb = {
+    db,
+    ref,
+    set,
+    onValue,
+    serverTimestamp,
+    ready: true
+  };
+
+  // Once Firebase is ready, signal the app
+  window.dispatchEvent(new Event('firebaseReady'));
+</script>
 <style>
   :root {
     --cloud-white: #F7F4EF;
@@ -1423,15 +1459,34 @@
 <div id="splash" class="screen active">
   <div class="splash-logo">
     <div class="splash-emblem">🌿</div>
-    <div class="splash-title">Meghalaya Serenity</div>
+    <div class="splash-title">Shaphangj Jingialam</div>
     <div class="splash-subtitle">E-Learning Tablet</div>
-    <div class="splash-tagline">"Where the clouds live, learning grows"</div>
+    <div class="splash-tagline">"for the path of learning"</div>
   </div>
 
   <div class="path-selector">
     <!-- STEP 1: Grade Selection (only step now) -->
     <div id="step-grade">
-      <div class="path-label">📚 Select Your Grade</div>
+      <div class="path-label">👤 Enter Your Name</div>
+      <input type="text" id="studentNameInput" placeholder="Your name..." style="
+        background: rgba(255,255,255,0.15);
+        border: 2px solid rgba(255,255,255,0.3);
+        border-radius: 50px;
+        padding: 12px 24px;
+        color: white;
+        font-family: 'Nunito', sans-serif;
+        font-size: 17px;
+        font-weight: 600;
+        text-align: center;
+        width: 100%;
+        max-width: 320px;
+        outline: none;
+        margin-bottom: 20px;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+      " oninput="this.style.borderColor='rgba(212,160,23,0.8)'" />
+      <div class="path-label" style="margin-top:8px">📚 Select Your Grade</div>
       <div class="grade-splash">
         <button class="grade-splash-btn" onclick="selectSplashGrade('1-2', this)">Grade 1–2</button>
         <button class="grade-splash-btn" onclick="selectSplashGrade('3-4', this)">Grade 3–4</button>
@@ -1447,8 +1502,8 @@
 <div id="app">
   <!-- TOP NAV ONLY (no bottom nav) -->
   <nav class="top-nav">
-    <div class="nav-logo" onclick="showPanel('home')">
-      <span>🌿</span> Meghalaya Serenity
+    <div class="nav-logo" id="navLogo" onclick="goHome()">
+      <span>🌿</span> Shaphangj Jingialam
     </div>
     <div class="nav-center">
       <button class="nav-tab active" onclick="showPanel('home', this)">🏡 Home</button>
@@ -1464,14 +1519,14 @@
         <span id="vinePercent">38%</span>
       </div>
       <!-- Single language selector - top right only -->
-      <div class="lang-nav-wrap">
-        <button class="lang-nav-btn" onclick="toggleNavLangPopup()" id="langNavBtn">
-          <span id="langFlag">🗣️</span> <span id="langLabel">Khasi</span> ▾
+      <div class="lang-nav-wrap" data-skip-translate="true">
+        <button class="lang-nav-btn" onclick="toggleNavLangPopup()" id="langNavBtn" data-skip-translate="true">
+          <span id="langFlag" data-skip-translate="true">🗣️</span> <span id="langLabel" data-skip-translate="true">Khasi</span> ▾
         </button>
-        <div class="lang-nav-popup" id="navLangPopup">
-          <button class="lang-nav-opt" id="langOpt-english" onclick="setLanguage('english')">📖 English</button>
-          <button class="lang-nav-opt active" id="langOpt-khasi" onclick="setLanguage('khasi')">🗣️ Khasi</button>
-          <button class="lang-nav-opt" id="langOpt-garo" onclick="setLanguage('garo')">🌿 Garo</button>
+        <div class="lang-nav-popup" id="navLangPopup" data-skip-translate="true">
+          <button class="lang-nav-opt" id="langOpt-english" onclick="setLanguage('english')" data-skip-translate="true">📖 English</button>
+          <button class="lang-nav-opt active" id="langOpt-khasi" onclick="setLanguage('khasi')" data-skip-translate="true">🗣️ Khasi</button>
+          <button class="lang-nav-opt" id="langOpt-garo" onclick="setLanguage('garo')" data-skip-translate="true">🌿 Garo</button>
         </div>
       </div>
     </div>
@@ -1483,7 +1538,7 @@
     <!-- HOME PANEL -->
     <div id="panel-home" class="panel active">
       <div class="welcome-banner">
-        <h1 id="welcomeMsg">Khublei, Young Eagle! 🦅</h1>
+        <h1 id="welcomeMsg" data-skip-translate="true">Khublei, Young Eagle! 🌿</h1>
         <p id="welcomeSub">Continue your journey through the misty hills of learning.</p>
         <div class="badge-row">
           <span class="badge" id="gradeBadge">🎓 Grade 5–6</span>
@@ -1818,6 +1873,19 @@
         </div>
 
       </div><!-- /gc-grid -->
+
+      <!-- Theory Scroll Section -->
+      <div style="margin-top:24px; background:linear-gradient(135deg,#1A2E10,#2D5016); border-radius:24px; padding:28px 32px; color:white; position:relative; overflow:hidden;">
+        <div style="position:absolute;right:24px;top:50%;transform:translateY(-50%);font-size:60px;opacity:0.12;letter-spacing:8px">📜📖🌿</div>
+        <div style="font-family:'Playfair Display',serif;font-size:20px;margin-bottom:8px;">📜 Theory Scroll — Read Before You Play</div>
+        <p style="opacity:0.8;font-size:13px;line-height:1.6;margin-bottom:20px;">Unlock the wisdom behind each challenge. Read the theory to understand the real-world concepts hidden in each game — Operations Management, Profit & Loss, Language & Heritage, and Long-term Sustainability.</p>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+          <button onclick="openWisdomDirect('cleanliness')" style="background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);border-radius:50px;padding:10px 20px;color:white;font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:0.2s;" onmouseover="this.style.background='rgba(212,160,23,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.12)'">🧹 Cleanliness Theory</button>
+          <button onclick="openWisdomDirect('handicrafts')" style="background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);border-radius:50px;padding:10px 20px;color:white;font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:0.2s;" onmouseover="this.style.background='rgba(212,160,23,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.12)'">🧺 Handicrafts Theory</button>
+          <button onclick="openWisdomDirect('tourism')" style="background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);border-radius:50px;padding:10px 20px;color:white;font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:0.2s;" onmouseover="this.style.background='rgba(212,160,23,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.12)'">🗣️ Tourism Theory</button>
+          <button onclick="openWisdomDirect('rootbridge')" style="background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);border-radius:50px;padding:10px 20px;color:white;font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:0.2s;" onmouseover="this.style.background='rgba(212,160,23,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.12)'">🌳 Root Bridge Theory</button>
+        </div>
+      </div>
     </div>
 
     <!-- ORAL TRADITIONS PANEL -->
@@ -1991,37 +2059,14 @@
         </div>
 
         <div class="progress-card">
-          <div class="progress-card-title">🏘️ Village Leaderboard</div>
-          <div class="leaderboard">
-            <div class="leaderboard-item">
-              <div class="lb-rank gold">1</div>
-              <div class="lb-avatar">👧</div>
-              <div><div class="lb-name">Baiakmenlang</div><div class="lb-village">Mawlynnong Village</div></div>
-              <div class="lb-score">890 pts</div>
-            </div>
-            <div class="leaderboard-item">
-              <div class="lb-rank silver">2</div>
-              <div class="lb-avatar">👦</div>
-              <div><div class="lb-name">Ribhabok</div><div class="lb-village">Shillong North</div></div>
-              <div class="lb-score">720 pts</div>
-            </div>
-            <div class="leaderboard-item" style="background:rgba(212,160,23,0.08);border-radius:10px;padding:8px">
-              <div class="lb-rank" style="color:var(--turmeric)">3 ←</div>
-              <div class="lb-avatar">🌿</div>
-              <div><div class="lb-name">You</div><div class="lb-village">Your Village</div></div>
-              <div class="lb-score" id="lbYouScore">340 pts</div>
-            </div>
-            <div class="leaderboard-item">
-              <div class="lb-rank">4</div>
-              <div class="lb-avatar">👩</div>
-              <div><div class="lb-name">Pyndaplang</div><div class="lb-village">Sohra District</div></div>
-              <div class="lb-score">290 pts</div>
-            </div>
-            <div class="leaderboard-item">
-              <div class="lb-rank">5</div>
-              <div class="lb-avatar">👨</div>
-              <div><div class="lb-name">Darilang</div><div class="lb-village">Jowai</div></div>
-              <div class="lb-score">210 pts</div>
+          <div class="progress-card-title">🏘️ Village Leaderboard — Live</div>
+          <div style="font-size:12px;color:var(--text-light);margin-bottom:10px;display:flex;align-items:center;gap:6px;">
+            <span id="lbStatus" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#ccc;flex-shrink:0;"></span>
+            <span id="lbStatusText">Connecting…</span>
+          </div>
+          <div class="leaderboard" id="liveLeaderboard">
+            <div style="text-align:center;padding:20px;color:var(--text-light);font-size:13px;">
+              ⏳ Loading scores…
             </div>
           </div>
         </div>
@@ -3315,6 +3360,9 @@ Vs. selling wood for ₹40,000 today.
     const skipTags = new Set(['SCRIPT','STYLE','IFRAME','INPUT','TEXTAREA','SVG','PATH','CIRCLE','TEXT','BUTTON']);
     const walk = (node) => {
       if (node.nodeType === 3) {
+        // Skip if any ancestor has data-skip-translate
+        let p = node.parentNode;
+        while (p) { if (p.getAttribute && p.getAttribute('data-skip-translate')) return; p = p.parentNode; }
         const trimmed = node.textContent.trim();
         if (trimmed && map[trimmed]) {
           node.textContent = node.textContent.replace(trimmed, map[trimmed]);
@@ -3324,6 +3372,7 @@ Vs. selling wood for ₹40,000 today.
         }
       } else if (node.nodeType === 1) {
         if (skipTags.has(node.tagName)) return;
+        if (node.getAttribute('data-skip-translate')) return;
         node.childNodes.forEach(walk);
       }
     };
@@ -3336,6 +3385,10 @@ Vs. selling wood for ₹40,000 today.
     const walk = (node) => {
       if (node.nodeType === 1) {
         if (skipTags.has(node.tagName)) return;
+        if (node.getAttribute('data-skip-translate')) return;
+        // Skip if any ancestor has data-skip-translate
+        let p = node.parentNode;
+        while (p) { if (p.getAttribute && p.getAttribute('data-skip-translate')) return; p = p.parentNode; }
         // Only mark leaf-level text elements (no complex children)
         const hasOnlyTextChildren = Array.from(node.childNodes).every(c => c.nodeType === 3 || (c.nodeType === 1 && c.childNodes.length === 0));
         if (hasOnlyTextChildren) {
@@ -3352,11 +3405,17 @@ Vs. selling wood for ₹40,000 today.
 
   function revertToEnglish() {
     document.querySelectorAll('[data-en]').forEach(el => {
-      el.textContent = el.getAttribute('data-en');
+      // Don't revert elements that are protected
+      let skip = false;
+      let p = el;
+      while (p) { if (p.getAttribute && p.getAttribute('data-skip-translate')) { skip = true; break; } p = p.parentNode; }
+      if (!skip) el.textContent = el.getAttribute('data-en');
     });
   }
 
   // ===== SPLASH =====
+  let studentName = '';
+
   function selectSplashGrade(grade, el) {
     currentGrade = grade;
     document.querySelectorAll('.grade-splash-btn').forEach(b => b.classList.remove('selected'));
@@ -3364,6 +3423,9 @@ Vs. selling wood for ₹40,000 today.
   }
 
   function launchApp() {
+    const nameInput = document.getElementById('studentNameInput');
+    studentName = (nameInput && nameInput.value.trim()) ? nameInput.value.trim() : 'Young Eagle';
+
     const splash = document.getElementById('splash');
     const app = document.getElementById('app');
     splash.classList.remove('active');
@@ -3372,12 +3434,45 @@ Vs. selling wood for ₹40,000 today.
     // Activate home panel
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
     document.getElementById('panel-home').classList.add('active');
-    document.getElementById('welcomeMsg').textContent = 'Khublei! Welcome Back! 🌿';
+    document.getElementById('welcomeMsg').textContent = 'Khublei, ' + studentName + '! 🌿';
     document.getElementById('pathBadge').textContent = '📚 MBOSE Curriculum';
     document.getElementById('gradeBadge').textContent = '🎓 Grade ' + currentGrade;
     const gpEl = document.getElementById('gameGradePill');
     if (gpEl) gpEl.textContent = '🎓 Grade ' + currentGrade;
-    setTimeout(() => { applyKhasi(); showToast('🌿', 'Khublei! Pyrthei ia Khasi!'); }, 400);
+    // Update leaderboard "You" entry with student name
+    const lbYouName = document.getElementById('lbYouName');
+    if (lbYouName) lbYouName.textContent = studentName;
+    setTimeout(() => {
+      applyKhasi();
+      // Re-apply name after translation (skip-translate protects welcomeMsg)
+      document.getElementById('welcomeMsg').textContent = 'Khublei, ' + studentName + '! 🌿';
+      const lbYN = document.getElementById('lbYouName');
+      if (lbYN) lbYN.textContent = studentName;
+      showToast('🌿', 'Khublei ' + studentName + '! Pyrthei ia Khasi!');
+      // Connect to Firebase leaderboard
+      fbStartListening();
+      fbPushScore();
+    }, 400);
+  }
+
+  // ===== GO HOME (title click) — returns to splash grade page =====
+  function goHome() {
+    const splash = document.getElementById('splash');
+    const app = document.getElementById('app');
+    app.style.display = 'none';
+    splash.style.display = 'flex';
+    splash.classList.add('active');
+    // Reset all data-en so re-entry to app works cleanly
+    document.querySelectorAll('[data-en]').forEach(el => el.removeAttribute('data-en'));
+  }
+
+  // ===== OPEN THEORY SCROLL DIRECTLY FROM GAME PANEL =====
+  function openWisdomDirect(gameId) {
+    currentGame = gameId;
+    const cfg = getGameConfigs()[gameId];
+    document.getElementById('gbTitle').textContent = cfg.title;
+    document.getElementById('gameOverlay').classList.add('open');
+    showWisdomScroll();
   }
 
   // ===== NAVIGATION =====
@@ -3419,16 +3514,49 @@ Vs. selling wood for ₹40,000 today.
     document.querySelectorAll('.lang-nav-opt').forEach(b => b.classList.remove('active'));
     const activeOpt = document.getElementById('langOpt-' + lang);
     if (activeOpt) activeOpt.classList.add('active');
+
+    // Always revert to English first (using stored data-en), then apply new lang
+    revertToEnglish();
+
     if (lang === 'khasi') {
-      applyKhasi();
+      // Re-mark and apply Khasi fresh
+      markDataEn(document.getElementById('app'), khasiMap);
+      markDataEn(document.getElementById('splash'), khasiMap);
+      deepTranslate(document.getElementById('app'), khasiMap);
+      deepTranslate(document.getElementById('splash'), khasiMap);
+      document.querySelectorAll('[data-en]').forEach(el => {
+        const en = el.getAttribute('data-en');
+        if (khasiMap[en]) el.textContent = khasiMap[en];
+      });
       showToast('🍃', 'Pyrthei ia Khasi! (Switched to Khasi)');
     } else if (lang === 'garo') {
-      applyGaro();
+      markDataEn(document.getElementById('app'), garoMap);
+      markDataEn(document.getElementById('splash'), garoMap);
+      deepTranslate(document.getElementById('app'), garoMap);
+      deepTranslate(document.getElementById('splash'), garoMap);
+      document.querySelectorAll('[data-en]').forEach(el => {
+        const en = el.getAttribute('data-en');
+        if (garoMap[en]) el.textContent = garoMap[en];
+        else el.textContent = en;
+      });
       showToast('🌿', 'Garo language applied!');
     } else {
-      revertToEnglish();
+      // English — already reverted above
       showToast('🍃', 'Language: English');
     }
+
+    // Restore dynamic name fields (they are skip-translate protected but revertToEnglish may hit them)
+    if (studentName) {
+      document.getElementById('welcomeMsg').textContent = 'Khublei, ' + studentName + '! 🌿';
+      const lbYN = document.getElementById('lbYouName');
+      if (lbYN) lbYN.textContent = studentName;
+    }
+
+    // Force-set the language button label last — nothing should overwrite this
+    const labelMap = { khasi: 'Khasi', english: 'English', garo: 'Garo' };
+    const flagMap  = { khasi: '🗣️', english: '📖', garo: '🌿' };
+    document.getElementById('langLabel').textContent = labelMap[lang] || lang;
+    document.getElementById('langFlag').textContent  = flagMap[lang] || '📖';
   }
 
   document.addEventListener('click', (e) => {
@@ -3710,7 +3838,88 @@ Vs. selling wood for ₹40,000 today.
       }
     }
     refreshAllDashboard();
+    // Push updated score to Firebase
+    fbPushScore();
   }
+
+  // ── FIREBASE LEADERBOARD ─────────────────────────────────────────────
+
+  let fbListenerAttached = false;
+
+  function fbPushScore() {
+    if (!window._fb || !window._fb.ready || !studentName) return;
+    const { db, ref, set, serverTimestamp } = window._fb;
+    const key = studentName.trim().toLowerCase().replace(/[^a-z0-9]/g, '_');
+    set(ref(db, 'leaderboard/' + key), {
+      name: studentName,
+      grade: currentGrade,
+      points: totalPoints,
+      updatedAt: serverTimestamp()
+    }).catch(e => console.warn('Firebase write failed:', e));
+  }
+
+  function fbStartListening() {
+    if (!window._fb || !window._fb.ready) return;
+    if (fbListenerAttached) return;
+    fbListenerAttached = true;
+
+    const { db, ref, onValue } = window._fb;
+    const statusDot  = document.getElementById('lbStatus');
+    const statusText = document.getElementById('lbStatusText');
+
+    onValue(ref(db, 'leaderboard'), (snapshot) => {
+      const data = snapshot.val() || {};
+
+      // Set connected indicator
+      if (statusDot)  statusDot.style.background  = '#5A9E3A';
+      if (statusText) statusText.textContent = 'Live — ' + Object.keys(data).length + ' students';
+
+      // Sort by points descending
+      const entries = Object.values(data).sort((a, b) => (b.points || 0) - (a.points || 0));
+
+      const avatars = ['👧','👦','👩','👨','🧒','👱','🧑','👲'];
+      const rankClasses = ['gold','silver','bronze','',''];
+
+      const myKey = studentName.trim().toLowerCase().replace(/[^a-z0-9]/g, '_');
+
+      const html = entries.slice(0, 10).map((entry, i) => {
+        const isMe = entry.name === studentName;
+        const rankClass = rankClasses[i] || '';
+        const avatar = avatars[i % avatars.length];
+        return `
+          <div class="leaderboard-item" style="${isMe ? 'background:rgba(212,160,23,0.08);border-radius:10px;padding:8px;' : ''}">
+            <div class="lb-rank ${rankClass}">${i + 1}${isMe ? ' ←' : ''}</div>
+            <div class="lb-avatar">${isMe ? '🌿' : avatar}</div>
+            <div>
+              <div class="lb-name" style="${isMe ? 'color:var(--pine-green);font-weight:800;' : ''}">${entry.name}${isMe ? ' (You)' : ''}</div>
+              <div class="lb-village">Grade ${entry.grade || '?'}</div>
+            </div>
+            <div class="lb-score">${entry.points || 0} pts</div>
+          </div>`;
+      }).join('');
+
+      const lb = document.getElementById('liveLeaderboard');
+      if (lb) lb.innerHTML = html || '<div style="text-align:center;padding:20px;color:var(--text-light);font-size:13px;">No scores yet — be the first!</div>';
+
+      // Also update the home badge score
+      const lbYou = document.getElementById('lbYouScore');
+      if (lbYou) lbYou.textContent = totalPoints + ' pts';
+
+    }, (error) => {
+      console.warn('Firebase read error:', error);
+      if (statusDot)  statusDot.style.background  = '#e05050';
+      if (statusText) statusText.textContent = 'Offline — check Firebase config';
+    });
+  }
+
+  // Start listening once Firebase is ready
+  window.addEventListener('firebaseReady', () => {
+    fbStartListening();
+    // Push initial score if already logged in
+    if (studentName) fbPushScore();
+  });
+
+  // ── END FIREBASE LEADERBOARD ─────────────────────────────────────────
 
   function refreshAllDashboard() {
     // Home panel stats
@@ -3878,6 +4087,21 @@ Vs. selling wood for ₹40,000 today.
   }
 
   // ===== UTILITY =====
+
+  // On page load: apply Khasi to splash and mark language button active
+  document.addEventListener('DOMContentLoaded', () => {
+    // Apply Khasi translations to splash screen
+    markDataEn(document.getElementById('splash'), khasiMap);
+    deepTranslate(document.getElementById('splash'), khasiMap);
+    document.querySelectorAll('[data-en]').forEach(el => {
+      const en = el.getAttribute('data-en');
+      if (khasiMap[en]) el.textContent = khasiMap[en];
+    });
+    // Ensure Khasi is marked active in the dropdown
+    document.querySelectorAll('.lang-nav-opt').forEach(b => b.classList.remove('active'));
+    const khasiOpt = document.getElementById('langOpt-khasi');
+    if (khasiOpt) khasiOpt.classList.add('active');
+  });
 </script>
 </body>
 </html>
