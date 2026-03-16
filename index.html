@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -37,6 +38,7 @@
     color: var(--text-dark);
     min-height: 100vh;
     overflow-x: hidden;
+    font-size: 17px;
   }
 
   .screen { display: none; min-height: 100vh; }
@@ -103,13 +105,13 @@
   }
   .splash-title {
     font-family: 'Playfair Display', serif;
-    font-size: 36px;
+    font-size: 42px;
     color: var(--cloud-white);
     letter-spacing: 2px;
     line-height: 1.2;
   }
   .splash-subtitle {
-    font-size: 14px;
+    font-size: 17px;
     color: var(--turmeric-light);
     letter-spacing: 4px;
     text-transform: uppercase;
@@ -117,7 +119,7 @@
   }
   .splash-tagline {
     color: rgba(255,255,255,0.6);
-    font-size: 14px;
+    font-size: 16px;
     margin-top: 16px;
     font-style: italic;
   }
@@ -132,7 +134,7 @@
   }
   .path-label {
     color: rgba(255,255,255,0.7);
-    font-size: 13px;
+    font-size: 16px;
     letter-spacing: 2px;
     text-transform: uppercase;
     margin-bottom: 16px;
@@ -147,12 +149,12 @@
     background: rgba(255,255,255,0.1);
     border: 2px solid rgba(255,255,255,0.2);
     border-radius: 50px;
-    padding: 10px 22px;
+    padding: 12px 26px;
     cursor: pointer;
     color: white;
     font-family: 'Nunito', sans-serif;
     font-weight: 700;
-    font-size: 14px;
+    font-size: 17px;
     transition: all 0.25s ease;
   }
   .grade-splash-btn:hover, .grade-splash-btn.selected {
@@ -180,8 +182,8 @@
     transform: translateY(-4px);
   }
   .path-card .path-icon { font-size: 32px; margin-bottom: 8px; }
-  .path-card .path-name { font-weight: 700; font-size: 14px; }
-  .path-card .path-desc { font-size: 11px; opacity: 0.7; margin-top: 4px; }
+  .path-card .path-name { font-weight: 700; font-size: 16px; }
+  .path-card .path-desc { font-size: 13px; opacity: 0.7; margin-top: 4px; }
   .start-btn {
     margin-top: 28px;
     background: linear-gradient(135deg, var(--turmeric), var(--turmeric-light));
@@ -190,7 +192,7 @@
     padding: 16px 48px;
     border-radius: 50px;
     font-family: 'Nunito', sans-serif;
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 800;
     cursor: pointer;
     letter-spacing: 1px;
@@ -243,7 +245,7 @@
     border: none;
     background: transparent;
     font-family: 'Nunito', sans-serif;
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 600;
     color: var(--text-mid);
     cursor: pointer;
@@ -258,7 +260,7 @@
   .nav-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
   .vine-progress {
     display: flex; align-items: center; gap: 8px;
-    font-size: 12px; color: var(--pine-mid); font-weight: 700;
+    font-size: 14px; color: var(--pine-mid); font-weight: 700;
   }
   .vine-bar {
     width: 80px; height: 8px;
@@ -282,7 +284,7 @@
     padding: 8px 14px;
     border-radius: 50px;
     font-family: 'Nunito', sans-serif;
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 800;
     cursor: pointer;
     display: flex; align-items: center; gap: 6px;
@@ -346,10 +348,10 @@
   }
   .welcome-banner h1 {
     font-family: 'Playfair Display', serif;
-    font-size: 28px; line-height: 1.3;
+    font-size: 32px; line-height: 1.3;
     margin-bottom: 8px;
   }
-  .welcome-banner p { opacity: 0.85; font-size: 14px; }
+  .welcome-banner p { opacity: 0.85; font-size: 16px; }
   .badge-row {
     display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap;
   }
@@ -357,14 +359,14 @@
     background: rgba(255,255,255,0.2);
     border: 1px solid rgba(255,255,255,0.3);
     border-radius: 50px;
-    padding: 4px 12px;
-    font-size: 12px;
+    padding: 5px 14px;
+    font-size: 14px;
     font-weight: 700;
   }
 
   .section-heading {
     font-family: 'Playfair Display', serif;
-    font-size: 20px;
+    font-size: 22px;
     color: var(--pine-green);
     margin-bottom: 16px;
     display: flex; align-items: center; gap: 10px;
@@ -402,12 +404,12 @@
   }
   .subject-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
   .subject-icon { font-size: 36px; margin-bottom: 12px; }
-  .subject-name { font-weight: 800; font-size: 15px; color: var(--text-dark); }
-  .subject-sub { font-size: 12px; color: var(--text-light); margin-top: 4px; }
+  .subject-name { font-weight: 800; font-size: 17px; color: var(--text-dark); }
+  .subject-sub { font-size: 14px; color: var(--text-light); margin-top: 4px; }
   .subject-progress { margin-top: 12px; }
   .mini-bar { height: 4px; background: rgba(45,80,22,0.1); border-radius: 50px; overflow: hidden; }
   .mini-fill { height: 100%; background: var(--card-accent, var(--pine-light)); border-radius: 50px; }
-  .mini-label { font-size: 10px; color: var(--text-light); margin-top: 4px; font-weight: 600; }
+  .mini-label { font-size: 12px; color: var(--text-light); margin-top: 4px; font-weight: 600; }
 
   .stats-row {
     display: grid;
@@ -423,8 +425,8 @@
     box-shadow: var(--shadow);
     border: 1px solid rgba(45,80,22,0.06);
   }
-  .stat-value { font-size: 28px; font-weight: 800; color: var(--pine-green); }
-  .stat-label { font-size: 11px; color: var(--text-light); text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
+  .stat-value { font-size: 30px; font-weight: 800; color: var(--pine-green); }
+  .stat-label { font-size: 13px; color: var(--text-light); text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
   .stat-emoji { font-size: 20px; margin-bottom: 8px; }
 
   /* ===== SUBJECTS PANEL ===== */
@@ -457,8 +459,8 @@
   }
   .lesson-num.done { background: var(--turmeric); }
   .lesson-info { flex: 1; }
-  .lesson-title { font-weight: 700; font-size: 14px; }
-  .lesson-meta { font-size: 12px; color: var(--text-light); margin-top: 2px; }
+  .lesson-title { font-weight: 700; font-size: 16px; }
+  .lesson-meta { font-size: 14px; color: var(--text-light); margin-top: 2px; }
   .lesson-action {
     background: var(--pine-green);
     color: white;
@@ -499,7 +501,7 @@
     display: flex; align-items: center; justify-content: space-between;
     padding: 22px 28px 0;
   }
-  .lm-title { font-family: 'Playfair Display', serif; font-size: 20px; color: var(--pine-green); }
+  .lm-title { font-family: 'Playfair Display', serif; font-size: 22px; color: var(--pine-green); }
   .lm-close {
     background: rgba(45,80,22,0.1); border: none; border-radius: 50%;
     width: 36px; height: 36px; font-size: 16px; cursor: pointer;
@@ -569,7 +571,7 @@
     font-size: 12px; color: var(--text-light); font-weight: 700;
     margin-bottom: 12px;
   }
-  .quiz-question { font-size: 17px; font-weight: 700; margin-bottom: 18px; line-height: 1.5; color: var(--text-dark); }
+  .quiz-question { font-size: 19px; font-weight: 700; margin-bottom: 18px; line-height: 1.5; color: var(--text-dark); }
   .quiz-options { display: flex; flex-direction: column; gap: 10px; }
   .quiz-opt {
     background: rgba(45,80,22,0.06);
@@ -578,7 +580,7 @@
     padding: 14px 18px;
     cursor: pointer;
     font-family: 'Nunito', sans-serif;
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 600;
     text-align: left;
     transition: all 0.2s ease;
@@ -641,9 +643,9 @@
     box-shadow: 0 4px 16px rgba(45,80,22,0.2);
   }
   .story-content { flex: 1; }
-  .story-elder { font-weight: 800; font-size: 15px; color: var(--pine-green); }
-  .story-topic { font-size: 12px; color: var(--text-light); margin-top: 2px; }
-  .story-excerpt { margin-top: 10px; font-size: 14px; color: var(--text-mid); line-height: 1.7; font-style: italic; }
+  .story-elder { font-weight: 800; font-size: 17px; color: var(--pine-green); }
+  .story-topic { font-size: 14px; color: var(--text-light); margin-top: 2px; }
+  .story-excerpt { margin-top: 10px; font-size: 15px; color: var(--text-mid); line-height: 1.7; font-style: italic; }
   .story-actions { display: flex; gap: 10px; margin-top: 14px; }
   .play-btn {
     background: var(--pine-green);
@@ -691,11 +693,11 @@
     padding: 24px;
     box-shadow: var(--shadow);
   }
-  .progress-card-title { font-weight: 800; font-size: 15px; margin-bottom: 12px; color: var(--text-dark); }
+  .progress-card-title { font-weight: 800; font-size: 17px; margin-bottom: 12px; color: var(--text-dark); }
   .progress-bar-row { margin-bottom: 10px; }
   .progress-bar-label {
     display: flex; justify-content: space-between;
-    font-size: 12px; margin-bottom: 4px;
+    font-size: 14px; margin-bottom: 4px;
     color: var(--text-mid); font-weight: 600;
   }
   .progress-bar { height: 8px; background: rgba(45,80,22,0.1); border-radius: 50px; overflow: hidden; }
@@ -716,8 +718,8 @@
   .lb-rank.silver { color: var(--stone-grey); }
   .lb-rank.bronze { color: var(--earth-brown); }
   .lb-avatar { font-size: 28px; }
-  .lb-name { font-weight: 700; flex: 1; }
-  .lb-village { font-size: 12px; color: var(--text-light); }
+  .lb-name { font-weight: 700; flex: 1; font-size: 15px; }
+  .lb-village { font-size: 14px; color: var(--text-light); }
   .lb-score { font-weight: 800; color: var(--pine-green); }
 
   /* ===== ROOT BRIDGE PROGRESS ===== */
@@ -946,7 +948,7 @@
   }
   .gc-title {
     font-family: 'Playfair Display', serif;
-    font-size: 17px;
+    font-size: 19px;
     color: var(--text-dark);
     line-height: 1.3;
   }
@@ -958,7 +960,7 @@
     letter-spacing: 1px;
   }
   .gc-desc {
-    font-size: 13px;
+    font-size: 15px;
     color: var(--text-mid);
     line-height: 1.6;
     margin-top: 4px;
@@ -1147,7 +1149,7 @@
     background: rgba(45,80,22,0.04);
     border-radius: 10px;
     padding: 10px 12px;
-    font-size: 12px;
+    font-size: 14px;
     color: var(--text-mid);
     min-height: 36px;
     line-height: 1.5;
@@ -1464,11 +1466,11 @@
       <!-- Single language selector - top right only -->
       <div class="lang-nav-wrap">
         <button class="lang-nav-btn" onclick="toggleNavLangPopup()" id="langNavBtn">
-          <span id="langFlag">📖</span> <span id="langLabel">English</span> ▾
+          <span id="langFlag">🗣️</span> <span id="langLabel">Khasi</span> ▾
         </button>
         <div class="lang-nav-popup" id="navLangPopup">
-          <button class="lang-nav-opt active" id="langOpt-english" onclick="setLanguage('english')">📖 English</button>
-          <button class="lang-nav-opt" id="langOpt-khasi" onclick="setLanguage('khasi')">🗣️ Khasi</button>
+          <button class="lang-nav-opt" id="langOpt-english" onclick="setLanguage('english')">📖 English</button>
+          <button class="lang-nav-opt active" id="langOpt-khasi" onclick="setLanguage('khasi')">🗣️ Khasi</button>
           <button class="lang-nav-opt" id="langOpt-garo" onclick="setLanguage('garo')">🌿 Garo</button>
         </div>
       </div>
@@ -1712,6 +1714,7 @@
           <div class="metric-pill">⭐ XP Earned: <span id="totalXP">0</span></div>
           <div class="metric-pill">🏅 Games Played: <span id="gamesPlayed">0</span></div>
           <div class="metric-pill">🌿 Village Level: <span id="villageLevel">1</span></div>
+          <div class="metric-pill" id="gameGradePill">🎓 Grade 5–6</div>
         </div>
       </div>
 
@@ -2127,88 +2130,228 @@
   let totalXP = 0;
   let gamesPlayed = 0;
 
-  const gameConfigs = {
-    cleanliness: {
-      title: '🧹 The Cleanliness Dividend',
-      bannerGradient: 'linear-gradient(135deg,#2D5016,#5A9E3A)',
-      instrTitle: 'You are the Village Headman of Mawlynnong!',
-      instrSub: 'Your village has ₹300 budget. Spend it wisely — dustbins bring tourists, fancy signs bring nothing. Watch your Cleanliness and Tourist meters grow!',
-      steps: [
-        'You start with ₹300 and a slightly messy village.',
-        'Tap action buttons to place dustbins, hire sweepers, or waste money on fancy signs.',
-        'Watch the Cleanliness % and Tourist Inflow meters update in real time.',
-        'Reach 80% Cleanliness with 15+ tourists to WIN the round!'
-      ],
-      wisdom: {
-        icon: '🧹',
-        title: 'Operations Management',
-        subtitle: 'MBOSE Class 6 — Chapter 4: Resource Allocation',
-        body: `You just experienced <strong>Operations Management</strong> — the science of deciding <em>where to spend limited resources</em> for maximum impact.\n\nMawlynnong earns over <strong>₹1.5 crore annually</strong> from eco-tourism. Their secret? Every resident treats cleanliness as a business investment, not a chore.\n\nWhen you placed dustbins over signs, you practiced <strong>cost-benefit analysis</strong> — the same skill used by companies worldwide to allocate budgets efficiently.`,
-        link: '📘 See also: Math Chapter 4 — "Ratio and Proportion" to calculate how cleanliness % affects tourist numbers mathematically.'
+  // Grade-based game configurations
+  function getGameConfigs() {
+    const g = currentGrade;
+    const isEarly = (g === '1-2' || g === '3-4');
+    const isMiddle = (g === '5-6');
+    const isAdvanced = (g === '7-8');
+
+    return {
+      cleanliness: {
+        title: '🧹 The Cleanliness Dividend',
+        bannerGradient: 'linear-gradient(135deg,#2D5016,#5A9E3A)',
+        instrTitle: isEarly ? 'Help keep Mawlynnong clean!' : 'You are the Village Headman of Mawlynnong!',
+        instrSub: isEarly
+          ? 'Your village has ₹200 to spend. Place dustbins to keep it clean and bring visitors. Simple and fun!'
+          : isMiddle
+            ? 'Your village has ₹300 budget. Spend it wisely — dustbins bring tourists, fancy signs bring nothing. Watch your Cleanliness and Tourist meters grow!'
+            : 'Your village has ₹400 budget. Maximize ROI: calculate cost-benefit ratio for each action. Target 90% cleanliness and 20 tourists to win!',
+        steps: isEarly ? [
+          'You start with ₹200 and a messy village.',
+          'Tap buttons to place dustbins or hire a sweeper.',
+          'Watch the Cleanliness meter go up!',
+          'Reach 70% cleanliness to WIN!'
+        ] : isMiddle ? [
+          'You start with ₹300 and a slightly messy village.',
+          'Tap action buttons to place dustbins, hire sweepers, or waste money on fancy signs.',
+          'Watch the Cleanliness % and Tourist Inflow meters update.',
+          'Reach 80% Cleanliness with 15+ tourists to WIN!'
+        ] : [
+          'Budget: ₹400. Each action has a different cost-to-benefit ratio.',
+          'Calculate: which action gives the highest % cleanliness per rupee?',
+          'You must reach 90% Cleanliness AND 20+ tourists.',
+          'Track your budget efficiency — bonus points for doing it in fewer rounds!'
+        ],
+        budget: isEarly ? 200 : isMiddle ? 300 : 400,
+        targetClean: isEarly ? 70 : isMiddle ? 80 : 90,
+        targetTourists: isEarly ? 8 : isMiddle ? 15 : 20,
+        wisdom: {
+          icon: '🧹',
+          title: isEarly ? 'Keeping our village clean' : isMiddle ? 'Operations Management' : 'Cost-Benefit Analysis & ROI',
+          subtitle: isEarly ? 'EVS — Our Environment' : isMiddle ? 'MBOSE Class 6 — Chapter 4: Resource Allocation' : 'MBOSE Class 8 — Business Studies: Resource Optimization',
+          body: isEarly
+            ? `Mawlynnong is called Asia's Cleanest Village. Every child helps keep it clean.
+
+When we put rubbish in a dustbin, we make our village beautiful for visitors and for ourselves.
+
+**Clean village = Happy people = More visitors!**`
+            : isMiddle
+              ? `You just experienced **Operations Management** — the science of deciding *where to spend limited resources* for maximum impact.
+
+Mawlynnong earns over **₹1.5 crore annually** from eco-tourism. Their secret? Every resident treats cleanliness as a business investment.
+
+When you placed dustbins over signs, you practiced **cost-benefit analysis** — the same skill used by companies worldwide.`
+              : `You just applied **Return on Investment (ROI)** thinking:
+
+ROI = (Benefit − Cost) / Cost × 100%
+
+A dustbin at ₹40 gives +12% cleanliness. A sweeper at ₹60 gives +18%.
+Cleanliness % → Tourist inflow → Revenue.
+
+Mawlynnong generates ₹1.5 crore/year. If each tourist spends ₹500, that's **3,000 tourists/year**. Your choices directly model this economic chain.`,
+          link: isEarly ? '📘 See also: EVS — Our Surroundings' : isMiddle ? '📘 See also: Math Chapter 4 — Ratio and Proportion' : '📘 See also: Math Chapter 10 — Percentage & Profit/Loss + Business Studies Chapter 2'
+        }
+      },
+      handicrafts: {
+        title: '🧺 Sustainable Handicrafts',
+        bannerGradient: 'linear-gradient(135deg,#6B4C2A,#D4A017)',
+        instrTitle: isEarly ? 'Make a Khoh Basket!' : 'Welcome to the Crafting Shed!',
+        instrSub: isEarly
+          ? 'Click the bamboo strips to weave your basket. Fill it with colours!'
+          : isMiddle
+            ? 'Buy bamboo, weave your Khoh basket, then price it to sell. Profit too little — you cannot buy more. Price too high — no buyers!'
+            : 'Advanced mode: manage costs across 3 baskets, apply markup formulas, and calculate weekly profit margin to decide whether to scale up production.',
+        steps: isEarly ? [
+          'Choose your bamboo colour.',
+          'Click cells to weave your basket pattern.',
+          'Fill at least 30 cells to finish!'
+        ] : isMiddle ? [
+          'Choose your bamboo type — cheap (breaks) or quality (costs more).',
+          'Weave your basket by clicking cells.',
+          'Review your total cost (materials + time value).',
+          'Set your selling price — find the sweet spot for profit!'
+        ] : [
+          'Choose bamboo grade: Standard, Premium, or Export-quality.',
+          'Calculate your cost: materials + labour + overhead.',
+          'Apply the correct markup % for your target market (local/tourist/export).',
+          'Manage inventory: how many baskets to make this week for maximum weekly profit?'
+        ],
+        wisdom: {
+          icon: '🧺',
+          title: isEarly ? 'Bamboo and Baskets' : isMiddle ? 'Profit, Loss & Markup' : 'Supply Chain & Business Scaling',
+          subtitle: isEarly ? 'Art & Craft — Grade 1-4' : isMiddle ? 'MBOSE Class 5 — Commercial Mathematics' : 'MBOSE Class 7-8 — Business Mathematics',
+          body: isEarly
+            ? `The **Khoh** is a basket the Khasi people carry on their backs.
+
+It is made from bamboo strips. Bamboo is a grass that grows very fast — in just 3 years it is ready to use again!
+
+**Bamboo is our friend** — it grows back after we cut it, so we never run out.`
+            : isMiddle
+              ? `You applied: **(Materials + Time) × Markup = Selling Price**.
+
+If cost = ₹130 and markup = 30%: ₹130 × 1.30 = **₹169**.
+
+That ₹39 profit sounds small — but across 50 baskets a week = **₹1,950/week** for a Khasi family.`
+              : `You applied **Business Mathematics**:
+
+Markup % = (Profit / Cost) × 100
+Break-even = Fixed Costs / (Price − Variable Cost)
+Weekly Revenue = Units × Selling Price
+
+Scaling from 10 to 50 baskets/week requires investment in materials, storage, and distribution. This is **Working Capital Management** — a core business concept.`,
+          link: isEarly ? '📘 See also: Art Class — Bamboo Craft Activity' : isMiddle ? '📘 See also: Math Chapter 7 — Profit and Loss' : '📘 See also: Math Chapter 8 — Commercial Mathematics & Business Studies'
+        }
+      },
+      tourism: {
+        title: '🗣️ Eco-Tourism & Hospitality',
+        bannerGradient: 'linear-gradient(135deg,#1A4A6B,#7BAFC4)',
+        instrTitle: isEarly ? 'Welcome tourists to our village!' : 'Be the Voice of the Hills!',
+        instrSub: isEarly
+          ? 'A tourist is visiting! Click the right Khasi words to greet them warmly.'
+          : isMiddle
+            ? 'Tourists arrive from around the world. Build the correct English answer by clicking the Khasi keywords in the right order.'
+            : 'Advanced guide challenge: translate complex heritage concepts, handle difficult tourist questions, and explain Khasi history with accuracy.',
+        steps: isEarly ? [
+          'A tourist arrives — say hello in Khasi!',
+          'Click the correct greeting word.',
+          'Make 3 tourists feel welcome to win!'
+        ] : isMiddle ? [
+          'A tourist appears with a question about your culture.',
+          'Click Khasi keyword tiles to form the answer.',
+          'Click a placed word to remove it.',
+          'Answer 3 tourists correctly to complete!'
+        ] : [
+          'Tourists ask complex cultural and historical questions.',
+          'Form accurate, detailed answers using both Khasi terms and English explanations.',
+          'Bonus: explain the economic value of eco-tourism.',
+          'Answer 4 tourists with full accuracy to win!'
+        ],
+        wisdom: {
+          icon: '🗣️',
+          title: isEarly ? 'Saying Hello in Khasi' : isMiddle ? 'Language, Heritage & Communication' : 'Cultural Tourism & Economic Value',
+          subtitle: isEarly ? 'Khasi Language — Grade 1-4' : isMiddle ? 'MBOSE Class 5-6 — English & Social Studies' : 'MBOSE Class 7-8 — Social Studies & Language',
+          body: isEarly
+            ? `"**Khublei**" means "Thank you" in Khasi.
+"**Kumno**" means "How are you?"
+
+When tourists visit our village, we greet them with kindness. This is called **hospitality** — making visitors feel welcome.
+
+Mawlynnong receives thousands of visitors every year because the people are so friendly!`
+            : isMiddle
+              ? `You practiced **bi-lingual communication** — one of the most economically valuable skills in a tourism economy.
+
+In Meghalaya, a skilled guide who can explain **Ka Law Lyngdoh** and **Ka Jingkynmaw** in fluent English earns 3–5× more.
+
+Every translation was also **Social Studies** — learning why tourists travel thousands of kilometres to understand these traditions.`
+              : `**Cultural Tourism Economics:**
+
+Meghalaya's tourism revenue grows 12% annually. A certified heritage guide earns ₹1,200–₹2,500 per day.
+
+The ability to explain Khasi matrilineal society, the Dorbar Shnong governance, and the ecological significance of Sacred Groves in fluent English is worth **₹15–25 lakh** over a career.
+
+**Language = Economic Empowerment.**`,
+          link: isEarly ? '📘 See also: Khasi Language Chapter 1 — Greetings' : isMiddle ? '📘 See also: English Chapter 3 — Describing Places' : '📘 See also: Social Studies Chapter 8 — Tourism & Economy'
+        }
+      },
+      rootbridge: {
+        title: '🌳 The Living Root Investment',
+        bannerGradient: 'linear-gradient(135deg,#1A2E10,#3D7022)',
+        instrTitle: isEarly ? 'Plant trees for the future!' : 'Build a legacy that lasts 100 years!',
+        instrSub: isEarly
+          ? 'Plant Ficus trees on the riverbank. Watch them grow over many years!'
+          : isMiddle
+            ? 'Plant Ficus trees for a bridge in 50 years — or sell the wood now. Fast-forward time and see the consequences.'
+            : 'Advanced simulation: model compound growth, calculate 100-year NPV (Net Present Value), and decide the optimal investment strategy across 5 time checkpoints.',
+        steps: isEarly ? [
+          'Tap the green spots to plant Ficus trees.',
+          'Press the time button to jump ahead.',
+          'Keep your trees growing — do not sell them!',
+          'See your bridge grow over 100 years!'
+        ] : isMiddle ? [
+          'Tap empty slots on the forest map to plant Ficus trees.',
+          'At each 20-year checkpoint, decide: sell wood OR keep growing.',
+          'Each choice affects your village wealth and bridge progress.',
+          'Reach Year 100 with a complete bridge to WIN!'
+        ] : [
+          'Plant trees and model their growth using compound growth formula.',
+          'At each 20-year checkpoint, calculate: PV of selling wood vs. NPV of bridge revenue.',
+          'Apply the concept: ₹40,000 today vs. ₹10 lakh/year in 100 years.',
+          'Calculate the break-even year where bridge income exceeds cumulative opportunity cost.'
+        ],
+        wisdom: {
+          icon: '🌳',
+          title: isEarly ? 'Trees are our friends' : isMiddle ? 'Long-term Thinking & Sustainability' : 'Compound Growth & Intergenerational Economics',
+          subtitle: isEarly ? 'EVS — Plants & Trees' : isMiddle ? 'MBOSE Class 6 — EVS Chapter 8' : 'MBOSE Class 8 — Math: Compound Interest + Economics',
+          body: isEarly
+            ? `The people of Meghalaya grow bridges from tree roots!
+
+They plant a **Ficus** (rubber tree) and guide its roots over many, many years until the roots form a bridge strong enough for people to walk on.
+
+**The bridge is a gift** — made by grandparents for their grandchildren. That is the Khasi way of caring for the future.`
+            : isMiddle
+              ? `The War Khasi people began growing bridges **knowing they would never use them themselves**.
+
+This is **inter-generational thinking** — making decisions today that benefit people 50 years from now.
+
+**Compound growth**: a Ficus tree grows slowly at first, then exponentially. A Living Root Bridge generates **₹8–12 lakh annually** in eco-tourism. A one-time wood sale earns ₹40,000.`
+              : `**Compound Growth Formula:** A = P(1 + r)ⁿ
+
+If a root bridge attracts 2% more tourists each year, and earns ₹10L/year at Year 100:
+Year 50 value ≈ ₹10L / (1.06)⁵⁰ = **₹5.4L in today's money**
+
+Vs. selling wood for ₹40,000 today.
+
+**Net Present Value (NPV)** shows us that patience is mathematically the best investment — just as the Khasi ancestors intuitively knew.`,
+          link: isEarly ? '📘 See also: EVS — Plants Around Us' : isMiddle ? '📘 See also: EVS Chapter 8 — Conservation + Math: Compound Interest' : '📘 See also: Math Chapter 10 — Compound Interest & Financial Literacy'
+        }
       }
-    },
-    handicrafts: {
-      title: '🧺 Sustainable Handicrafts',
-      bannerGradient: 'linear-gradient(135deg,#6B4C2A,#D4A017)',
-      instrTitle: 'Welcome to the Crafting Shed!',
-      instrSub: 'Buy bamboo, weave your Khoh basket, then price it to sell at the market. Profit too little — you can\'t buy more. Price too high — no buyers!',
-      steps: [
-        'Choose your bamboo type — cheap (breaks) or quality (costs more).',
-        'Weave your basket by clicking cells to fill the pattern.',
-        'Review your total cost (materials + time value).',
-        'Set your selling price using the slider — find the sweet spot for profit!'
-      ],
-      wisdom: {
-        icon: '🧺',
-        title: 'Profit, Loss & Markup',
-        subtitle: 'MBOSE Class 5 — Chapter 7: Commercial Mathematics',
-        body: `You just applied the formula: <strong>(Materials + Time) × Markup = Selling Price</strong>.\n\nThis is <strong>Commercial Arithmetic</strong> — the foundation of every business from a village market stall to a global corporation.\n\nIf your cost was ₹130 and you added 30% markup: ₹130 × 1.30 = <strong>₹169</strong>. That ₹39 profit sounds small — but across 50 baskets a week, that is <strong>₹1,950 per week</strong> for a Khasi family.\n\nSustainability = using quality bamboo (that regrows) rather than destroying the forest for a one-time gain.`,
-        link: '📘 See also: Math Chapter 7 — "Profit and Loss" — practice 5 problems to unlock the next level!'
-      }
-    },
-    tourism: {
-      title: '🗣️ Eco-Tourism & Hospitality',
-      bannerGradient: 'linear-gradient(135deg,#1A4A6B,#7BAFC4)',
-      instrTitle: 'Be the Voice of the Hills!',
-      instrSub: 'Tourists arrive from around the world asking questions about Khasi culture. Build the correct English answer by clicking the Khasi keywords in the right order.',
-      steps: [
-        'A tourist will appear with a question about your culture.',
-        'Click the Khasi keyword tiles in the correct sequence to form the answer.',
-        'Click a placed word to remove it if you change your mind.',
-        'Answer 3 tourists correctly to complete the challenge!'
-      ],
-      wisdom: {
-        icon: '🗣️',
-        title: 'Language, Heritage & Communication',
-        subtitle: 'MBOSE Class 5-6 — English & Social Studies',
-        body: `You just practiced <strong>bi-lingual communication</strong> — one of the most economically valuable skills in a tourism economy.\n\nIn Meghalaya, a skilled guide who can explain <strong>Ka Law Lyngdoh</strong> (Sacred Grove) and <strong>Ka Jingkynmaw</strong> (oral memory) in fluent English earns 3–5× more than one who cannot.\n\nEvery time you translated Khasi heritage into English, you were also doing <strong>Social Studies</strong> — learning what these traditions mean and why tourists travel thousands of kilometres to understand them.`,
-        link: '📘 See also: English Chapter 3 — "Describing Places" and Social Studies Chapter 6 — "Our Cultural Heritage"'
-      }
-    },
-    rootbridge: {
-      title: '🌳 The Living Root Investment',
-      bannerGradient: 'linear-gradient(135deg,#1A2E10,#3D7022)',
-      instrTitle: 'Build a legacy that lasts 100 years!',
-      instrSub: 'Plant Ficus trees across the riverbank. At each time checkpoint, decide: sell the wood for quick money, or let it grow into a Living Root Bridge worth millions.',
-      steps: [
-        'Tap empty slots on the forest map to plant Ficus trees (you have 6 plots).',
-        'At each 20-year checkpoint, you will face a choice: sell wood OR keep growing.',
-        'Each choice affects your village\'s wealth and bridge progress.',
-        'Reach Year 100 with a complete bridge to WIN the long game!'
-      ],
-      wisdom: {
-        icon: '🌳',
-        title: 'Long-term Thinking & Sustainability',
-        subtitle: 'MBOSE Class 6 — EVS Chapter 8: Natural Resources & Conservation',
-        body: `The War Khasi people began growing these bridges <strong>knowing they would never use them themselves</strong>. The bridge would serve their grandchildren's grandchildren.\n\nThis is called <strong>inter-generational thinking</strong> — making decisions today that benefit people 50 years from now. It is the foundation of all environmental conservation, and increasingly, modern business strategy.\n\n<strong>Compound growth</strong>: a Ficus tree grows slowly at first, then exponentially. Like money in a savings account or knowledge in your brain — patience multiplies value.\n\nA Living Root Bridge today generates <strong>₹8–12 lakh</strong> annually in eco-tourism. A one-time wood sale would have earned ₹40,000.`,
-        link: '📘 See also: EVS Chapter 8 — "Conservation of Forests" and Math Chapter 10 — "Simple vs Compound Interest"'
-      }
-    }
-  };
+    };
+  }
 
   function openGame(gameId) {
     currentGame = gameId;
-    const cfg = gameConfigs[gameId];
+    const cfg = getGameConfigs()[gameId];
     document.getElementById('gbTitle').textContent = cfg.title;
     document.getElementById('instrBanner').style.background = cfg.bannerGradient;
     document.getElementById('instrTitle').textContent = cfg.instrTitle;
@@ -2239,7 +2382,7 @@
   }
 
   function showWisdomScroll() {
-    const cfg = gameConfigs[currentGame];
+    const cfg = getGameConfigs()[currentGame];
     const w = cfg.wisdom;
     document.getElementById('gbWisdom').innerHTML = `
       <div class="ws-header">
@@ -2282,7 +2425,17 @@
   // GAME 1: CLEANLINESS
   // ========================
   function buildGame1() {
-    gameState = { budget: 300, cleanliness: 20, tourists: 2, round: 0, maxRounds: 4, won: false };
+    const cfg = getGameConfigs().cleanliness;
+    gameState = {
+      budget: cfg.budget,
+      cleanliness: 20,
+      tourists: 2,
+      round: 0,
+      maxRounds: (currentGrade === '7-8') ? 5 : 4,
+      targetClean: cfg.targetClean,
+      targetTourists: cfg.targetTourists,
+      won: false
+    };
     renderGame1();
   }
 
@@ -2362,14 +2515,14 @@
     g.round++;
     document.getElementById('g1log').textContent = a.msg;
     renderGame1();
-    if (g.cleanliness >= 80 && g.tourists >= 15) {
+    if (g.cleanliness >= (g.targetClean || 80) && g.tourists >= (g.targetTourists || 15)) {
       setTimeout(endGame1, 600);
     }
   }
 
   function endGame1() {
     const g = gameState;
-    const won = g.cleanliness >= 80 && g.tourists >= 15;
+    const won = g.cleanliness >= (g.targetClean || 80) && g.tourists >= (g.targetTourists || 15);
     if (!won) {
       // Game Over screen
       document.getElementById('gbGameContent').innerHTML = `
@@ -2381,7 +2534,7 @@
           <div style="background:rgba(224,80,80,0.08);border-radius:14px;padding:16px;font-size:14px;color:var(--text-mid);line-height:1.7;margin-bottom:8px">
             <strong>Target not achieved.</strong><br>
             You reached <strong>${g.cleanliness}% cleanliness</strong> and <strong>${g.tourists} tourists/week</strong>.<br>
-            Target: 80% cleanliness + 15 tourists.
+            Target: ${g.targetClean || 80}% cleanliness + ${g.targetTourists || 15} tourists.
           </div>
           <div style="font-size:13px;color:var(--text-light);margin-bottom:20px">
             💡 Hint: Spend on <strong>dustbins & sweepers</strong> — not signs!
@@ -2848,7 +3001,8 @@
 
   // ===== STATE =====
   let currentGrade = '5-6';
-  let currentLang = 'english';
+  let currentLang = 'khasi';
+  let currentLearningStyle = 'eagle'; // set from splash path selector
   let currentPanel = 'home';
   let currentQuizIdx = 0;
   let currentQuizData = [];
@@ -3221,7 +3375,9 @@
     document.getElementById('welcomeMsg').textContent = 'Khublei! Welcome Back! 🌿';
     document.getElementById('pathBadge').textContent = '📚 MBOSE Curriculum';
     document.getElementById('gradeBadge').textContent = '🎓 Grade ' + currentGrade;
-    setTimeout(() => showToast('🌿', 'Welcome to Meghalaya Serenity!'), 300);
+    const gpEl = document.getElementById('gameGradePill');
+    if (gpEl) gpEl.textContent = '🎓 Grade ' + currentGrade;
+    setTimeout(() => { applyKhasi(); showToast('🌿', 'Khublei! Pyrthei ia Khasi!'); }, 400);
   }
 
   // ===== NAVIGATION =====
@@ -3422,22 +3578,82 @@
   };
 
   // ===== LESSON MODULE =====
+  // Grade-specific YouTube video IDs per subject
+  const gradeVideoIds = {
+    'khasi': {
+      '1-2': 'YR5UsL1pON4', // basic Khasi language intro
+      '3-4': 'YR5UsL1pON4',
+      '5-6': 'YR5UsL1pON4',
+      '7-8': 'YR5UsL1pON4'
+    },
+    'math': {
+      '1-2': 'mvOkMYCygps', // basic counting shapes for young learners
+      '3-4': 'G0YHqHNOjbY', // intro geometry
+      '5-6': 'G0YHqHNOjbY', // geometry patterns
+      '7-8': 'X1E7I7_r3Cw'  // algebra & advanced geometry
+    },
+    'science': {
+      '1-2': 'K4ePHHPHBss', // simple water cycle animation
+      '3-4': 'al-do-HGuIk',
+      '5-6': 'al-do-HGuIk',
+      '7-8': 'A1JnGpkzsBA'  // ecosystems & biodiversity
+    },
+    'social': {
+      '1-2': 'E3L1qSyHrIE',
+      '3-4': 'E3L1qSyHrIE',
+      '5-6': 'E3L1qSyHrIE',
+      '7-8': 'NpNEXBMFqe8'  // advanced tribal governance & democracy
+    },
+    'art': {
+      '1-2': 'SBNuEDNqh4Y',
+      '3-4': 'SBNuEDNqh4Y',
+      '5-6': 'SBNuEDNqh4Y',
+      '7-8': 'SBNuEDNqh4Y'
+    }
+  };
+
+  // Grade-specific video descriptions
+  const gradeVideoDesc = {
+    'math': {
+      '1-2': `<strong>Grade 1–2 — Shapes & Counting:</strong> Learn basic shapes by looking at Khasi bamboo baskets. Circles, squares and triangles are hiding in traditional crafts! Count and identify shapes around you.`,
+      '3-4': `<strong>Grade 3–4 — Patterns & Multiplication:</strong> The Ryndia weavers use repeated patterns. Learn multiplication tables through weaving patterns and basic geometry: perimeter and area of simple shapes.`,
+      '5-6': `<strong>Grade 5–6 — Geometry & Profit/Loss:</strong> The Ryndia silk weavers use geometry every day — circles, angles, and symmetry. Key formula: <em>Area of circle = π × r²</em>. With π ≈ 22/7, if r = 7 cm, area = <strong>154 cm²</strong>.`,
+      '7-8': `<strong>Grade 7–8 — Algebra & Advanced Geometry:</strong> Apply algebraic equations to real business scenarios. If a basket costs ₹C to make and sells for ₹P, profit = P−C. Find the break-even point using linear equations.`
+    },
+    'science': {
+      '1-2': `<strong>Grade 1–2 — Water & Plants:</strong> Where does rain come from? Simple introduction to clouds, rain, and why plants need water. Meghalaya gets more rain than anywhere else — let's find out why!`,
+      '3-4': `<strong>Grade 3–4 — Water Cycle Basics:</strong> Learn evaporation, condensation, and precipitation using Meghalaya's famous rain. Introduction to Sacred Groves and why we protect forests.`,
+      '5-6': `<strong>Grade 5–6 — Ecosystems & Ecology:</strong> Sohra (Cherrapunji) receives 11,777 mm of rain per year! Learn why Bay of Bengal winds create this and how Meghalaya's sacred groves protect the ecosystem.`,
+      '7-8': `<strong>Grade 7–8 — Biodiversity & Conservation:</strong> Advanced study of food chains, endemic species (Pitcher Plants, Orchids), and the science of why Sacred Groves are natural biodiversity reserves.`
+    }
+  };
+
   function openLessonModule(subject) {
     const data = lessonData[subject] || lessonData['science'];
     currentQuizSubject = subject;
-    document.getElementById('lmTitle').textContent = data.title;
+    document.getElementById('lmTitle').textContent = data.title + ' — Grade ' + currentGrade;
+
+    // Pick grade-specific videoId if available
+    const gradeVids = gradeVideoIds[subject];
+    const videoId = (gradeVids && gradeVids[currentGrade]) ? gradeVids[currentGrade] : data.videoId;
+
+    // Pick grade-specific description if available
+    const gradeDescs = gradeVideoDesc[subject];
+    const videoDesc = (gradeDescs && gradeDescs[currentGrade]) ? gradeDescs[currentGrade] : data.videoDesc;
 
     // Video section
     document.getElementById('lmVideoWrap').innerHTML =
-      `<iframe src="https://www.youtube.com/embed/${data.videoId}?rel=0&modestbranding=1" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>`;
-    document.getElementById('lmVideoInfo').innerHTML = data.videoDesc;
+      `<iframe src="https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>`;
+    document.getElementById('lmVideoInfo').innerHTML = `<div style="margin-bottom:8px;font-size:13px;background:rgba(45,80,22,0.07);border-radius:8px;padding:8px 12px;color:var(--pine-mid);font-weight:700;">📚 Grade ${currentGrade} Lesson</div>` + videoDesc;
 
-    // Quiz section — always use eagle style now (learning style removed)
-    const styleQuizzes = data.quizzes['eagle'];
+    // Quiz section — use learning style
+    const styleKey = currentLearningStyle || 'eagle';
+    const styleQuizzes = data.quizzes[styleKey] || data.quizzes['eagle'];
     currentQuizData = styleQuizzes;
     currentQuizIdx = 0;
 
-    document.getElementById('quizStyleTag').textContent = '📖 Knowledge Check — 4 Questions';
+    const styleLabel = { eagle: '🦅 Eagle — Visual Style', songbird: '🐦 Songbird — Auditory Style', weaver: '🧵 Weaver — Kinesthetic Style' };
+    document.getElementById('quizStyleTag').textContent = styleLabel[styleKey] || '📖 Knowledge Check — 4 Questions';
 
     document.getElementById('quizComplete').classList.remove('show');
     renderQuizQuestion();
