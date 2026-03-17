@@ -67,6 +67,7 @@
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
+  html, body { overflow: hidden; height: 100%; }
   body {
     font-family: 'Nunito', sans-serif;
     background: var(--mist-bg);
@@ -77,7 +78,8 @@
   }
 
   .screen { display: none; min-height: 100vh; }
-  .screen.active { display: block; }
+  #splash.active { display: flex; }
+  #app.active { display: flex; }
 
   .bg-mist {
     background: linear-gradient(160deg, #EEF2EF 0%, #DDE8D8 40%, #C8DCC0 100%);
@@ -94,11 +96,12 @@
 
   /* ===== SPLASH / ONBOARDING ===== */
   #splash {
-    display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 100vh;
+    min-height: 100%;
+    height: 100%;
+    overflow-y: auto;
     background: linear-gradient(160deg, #1A2E10 0%, #2D5016 50%, #3D7022 100%);
     position: relative;
     overflow: hidden;
@@ -242,7 +245,7 @@
   }
 
   /* ===== MAIN APP LAYOUT ===== */
-  #app { display: none; min-height: 100vh; flex-direction: column; }
+  #app { display: none; min-height: 100%; height: 100%; flex-direction: column; overflow-y: auto; }
   #app.active { display: flex; }
 
   /* ===== TOP NAV ===== */
@@ -2108,7 +2111,7 @@
         </div>
 
         <div class="progress-card">
-          <div class="progress-card-title">🏘️ Village Leaderboard — Live</div>
+          <div class="progress-card-title" id="lbCardTitle">🏘️ Village Leaderboard — Live</div>
           <div style="font-size:12px;color:var(--text-light);margin-bottom:10px;display:flex;align-items:center;gap:6px;">
             <span id="lbStatus" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#ccc;flex-shrink:0;"></span>
             <span id="lbStatusText">Connecting…</span>
@@ -2199,7 +2202,7 @@
 
   <!-- ===== VOLUNTEER PANEL (Grade 7-8 only) ===== -->
   <!-- This panel sits outside .main-content so it can use full width hero -->
-  <div id="panel-volunteer" class="panel" style="display:none;padding-bottom:80px;">
+  <div id="panel-volunteer" class="panel" style="padding-bottom:80px;">
 
     <!-- Hero Banner -->
     <div style="background:linear-gradient(135deg,#6B2D6B 0%,#C4648A 50%,#e07090 100%);padding:36px 28px 32px;position:relative;overflow:hidden;">
@@ -3805,8 +3808,9 @@ Vs. selling wood for ₹40,000 today.
     const splash = document.getElementById('splash');
     const app = document.getElementById('app');
     splash.classList.remove('active');
-    splash.style.display = 'none';
-    app.style.display = 'flex';
+    splash.style.removeProperty('display');
+    app.classList.add('active');
+    app.style.removeProperty('display');
     // Activate home panel
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
     document.getElementById('panel-home').classList.add('active');
@@ -3825,6 +3829,9 @@ Vs. selling wood for ₹40,000 today.
       const lbYN = document.getElementById('lbYouName');
       if (lbYN) lbYN.textContent = studentName;
       showToast('🌿', 'Khublei ' + studentName + '! Pyrthei ia Khasi!');
+      // Update leaderboard card title immediately (before Firebase even connects)
+      var _lbTitle = document.getElementById('lbCardTitle');
+      if (_lbTitle) _lbTitle.textContent = '🏘️ Grade ' + currentGrade + ' Leaderboard — Live';
       // Connect to Firebase leaderboard
       fbStartListening();
       fbPushScore();
@@ -3844,9 +3851,10 @@ Vs. selling wood for ₹40,000 today.
   function goHome() {
     const splash = document.getElementById('splash');
     const app = document.getElementById('app');
-    app.style.display = 'none';
-    splash.style.display = 'flex';
+    app.classList.remove('active');
+    app.style.removeProperty('display');
     splash.classList.add('active');
+    splash.style.removeProperty('display');
     // Reset all data-en so re-entry to app works cleanly
     document.querySelectorAll('[data-en]').forEach(el => el.removeAttribute('data-en'));
   }
@@ -3862,9 +3870,16 @@ Vs. selling wood for ₹40,000 today.
 
   // ===== NAVIGATION =====
   function showPanel(name, navEl, btbKey) {
-    document.querySelectorAll('.panel').forEach(p => { p.classList.remove('active'); p.style.display = 'none'; });
-    const target = document.getElementById('panel-' + name);
-    if (target) { target.classList.add('active'); target.style.display = ''; }
+    // Use only classList — never touch style.display (avoids inline override fighting CSS)
+    document.querySelectorAll('.panel').forEach(function(p) {
+      p.classList.remove('active');
+      p.style.removeProperty('display');
+    });
+    var target = document.getElementById('panel-' + name);
+    if (target) {
+      target.style.removeProperty('display');
+      target.classList.add('active');
+    }
     currentPanel = name;
 
     // Sync top nav tabs
@@ -4241,11 +4256,12 @@ Vs. selling wood for ₹40,000 today.
 
   function fbPushScore() {
     if (!window._fb || !window._fb.ready || !studentName) return;
-    var key = studentName.trim().toLowerCase().replace(/[^a-z0-9]/g, '_');
-    window._fb.ref('leaderboard/' + key).set({
-      name: studentName,
-      grade: currentGrade,
-      points: totalPoints,
+    var gradeKey   = 'grade_' + currentGrade.replace(/[^a-z0-9]/gi, '_');
+    var studentKey = studentName.trim().toLowerCase().replace(/[^a-z0-9]/g, '_');
+    window._fb.ref('leaderboard/' + gradeKey + '/' + studentKey).set({
+      name:      studentName,
+      grade:     currentGrade,
+      points:    totalPoints,
       updatedAt: window._fb.serverTimestamp
     }).catch(function(e) { console.warn('Firebase write failed:', e); });
   }
@@ -4262,12 +4278,19 @@ Vs. selling wood for ₹40,000 today.
     if (statusDot)  statusDot.style.background = '#F0C040';
     if (statusText) statusText.textContent = 'Connecting…';
 
+    var gradeKey = 'grade_' + currentGrade.replace(/[^a-z0-9]/gi, '_');
+
+    // Update leaderboard card title to show the grade
+    var lbCardTitle = document.getElementById('lbCardTitle');
+    if (lbCardTitle) lbCardTitle.textContent = '🏘️ Grade ' + currentGrade + ' Leaderboard — Live';
+
     window._fb.onValue(
-      window._fb.ref('leaderboard'),
+      window._fb.ref('leaderboard/' + gradeKey),
       function(snapshot) {
         var data = snapshot.val() || {};
+        var count = Object.keys(data).length;
         if (statusDot)  statusDot.style.background  = '#5A9E3A';
-        if (statusText) statusText.textContent = 'Live — ' + Object.keys(data).length + ' students';
+        if (statusText) statusText.textContent = 'Live · Grade ' + currentGrade + ' · ' + count + ' student' + (count !== 1 ? 's' : '');
 
         var entries = Object.values(data).sort(function(a, b) {
           return (b.points || 0) - (a.points || 0);
@@ -4737,4 +4760,3 @@ Vs. selling wood for ₹40,000 today.
 </script>
 </body>
 </html>
-
