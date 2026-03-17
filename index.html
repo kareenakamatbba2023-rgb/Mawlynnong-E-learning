@@ -3969,10 +3969,7 @@ Vs. selling wood for ₹40,000 today.
     }
 
     fbListenerAttached = true;
-    const { db, ref, onValue } = window._fb;
-    var statusDot  = document.getElementById('lbStatus');
-    var statusText = document.getElementById('lbStatusText');
-
+    
     onValue(ref(db, 'leaderboard'), (snapshot) => {
       const data = snapshot.val() || {};
 
