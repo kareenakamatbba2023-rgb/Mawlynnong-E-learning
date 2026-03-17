@@ -24,6 +24,7 @@
     messagingSenderId: "PASTE_YOUR_MESSAGING_SENDER_ID",
     appId:             "PASTE_YOUR_APP_ID"
   };
+  window._firebaseConfig = firebaseConfig; // expose for config check
   // ─────────────────────────────────────────────────────────────────────
 
   const app = initializeApp(firebaseConfig);
@@ -1448,8 +1449,57 @@
   @media (max-width: 640px) {
     .stats-row { grid-template-columns: repeat(2, 1fr); }
     .sim-controls { grid-template-columns: repeat(2, 1fr); }
-    .nav-center { display: none; }
+    .nav-center { display: none; }   /* hidden in top bar on mobile — shown as bottom bar instead */
     .top-nav { flex-wrap: wrap; }
+    .main-content { padding: 16px 12px 80px; } /* bottom padding for tab bar */
+  }
+
+  /* ===== MOBILE BOTTOM TAB BAR ===== */
+  .bottom-tab-bar {
+    display: none;
+  }
+  @media (max-width: 640px) {
+    .bottom-tab-bar {
+      display: flex;
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: rgba(247,244,239,0.98);
+      backdrop-filter: blur(12px);
+      border-top: 1px solid rgba(45,80,22,0.12);
+      box-shadow: 0 -4px 20px rgba(45,80,22,0.1);
+      z-index: 200;
+      padding: 6px 0 env(safe-area-inset-bottom, 6px);
+    }
+    .btb-btn {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      padding: 6px 2px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-family: 'Nunito', sans-serif;
+      color: var(--text-light);
+      font-size: 10px;
+      font-weight: 700;
+      transition: color 0.2s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .btb-btn .btb-icon {
+      font-size: 22px;
+      line-height: 1;
+      transition: transform 0.2s;
+    }
+    .btb-btn.active {
+      color: var(--pine-green);
+    }
+    .btb-btn.active .btb-icon {
+      transform: scale(1.15);
+    }
+    .btb-label { letter-spacing: 0.2px; }
   }
 </style>
 </head>
@@ -2093,6 +2143,31 @@
     </div>
 
   </div><!-- /main-content -->
+
+  <!-- MOBILE BOTTOM TAB BAR -->
+  <nav class="bottom-tab-bar" id="bottomTabBar">
+    <button class="btb-btn active" id="btb-home" onclick="showPanel('home', null, 'home')">
+      <span class="btb-icon">🏡</span>
+      <span class="btb-label">Home</span>
+    </button>
+    <button class="btb-btn" id="btb-subjects" onclick="showPanel('subjects', null, 'subjects')">
+      <span class="btb-icon">📚</span>
+      <span class="btb-label">Learn</span>
+    </button>
+    <button class="btb-btn" id="btb-game" onclick="showPanel('game', null, 'game')">
+      <span class="btb-icon">🎮</span>
+      <span class="btb-label">Games</span>
+    </button>
+    <button class="btb-btn" id="btb-oral" onclick="showPanel('oral', null, 'oral')">
+      <span class="btb-icon">🎙️</span>
+      <span class="btb-label">Elders</span>
+    </button>
+    <button class="btb-btn" id="btb-progress" onclick="showPanel('progress', null, 'progress')">
+      <span class="btb-icon">🌱</span>
+      <span class="btb-label">Growth</span>
+    </button>
+  </nav>
+
 </div><!-- /app -->
 
 <!-- ===== GAME OVERLAY ===== -->
@@ -3476,11 +3551,12 @@ Vs. selling wood for ₹40,000 today.
   }
 
   // ===== NAVIGATION =====
-  function showPanel(name, navEl) {
+  function showPanel(name, navEl, btbKey) {
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
     document.getElementById('panel-' + name).classList.add('active');
     currentPanel = name;
 
+    // Sync top nav tabs
     document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
     if (navEl) {
       navEl.classList.add('active');
@@ -3496,6 +3572,11 @@ Vs. selling wood for ₹40,000 today.
         }
       });
     }
+
+    // Sync bottom tab bar
+    document.querySelectorAll('.btb-btn').forEach(b => b.classList.remove('active'));
+    const btbEl = document.getElementById('btb-' + name);
+    if (btbEl) btbEl.classList.add('active');
   }
 
   // ===== LANGUAGE =====
@@ -3861,8 +3942,32 @@ Vs. selling wood for ₹40,000 today.
   function fbStartListening() {
     if (!window._fb || !window._fb.ready) return;
     if (fbListenerAttached) return;
-    fbListenerAttached = true;
 
+    // Detect if config was never filled in
+    const _cfg = window._firebaseConfig || {};
+    const configUnconfigured = !_cfg.apiKey || _cfg.apiKey === 'PASTE_YOUR_API_KEY' ||
+      !_cfg.databaseURL || _cfg.databaseURL.includes('PASTE');
+
+    const statusDot  = document.getElementById('lbStatus');
+    const statusText = document.getElementById('lbStatusText');
+    const lb = document.getElementById('liveLeaderboard');
+
+    if (configUnconfigured) {
+      if (statusDot)  { statusDot.style.background = '#D4A017'; }
+      if (statusText) statusText.textContent = 'Setup needed — see instructions below';
+      if (lb) lb.innerHTML = `
+        <div style="background:rgba(212,160,23,0.08);border-radius:14px;padding:16px;font-size:13px;color:var(--text-mid);line-height:1.8;">
+          <strong style="color:var(--earth-brown);">⚙️ Firebase not connected yet</strong><br>
+          To enable the live leaderboard:<br>
+          1. Go to <strong>console.firebase.google.com</strong><br>
+          2. Create project → Realtime Database (test mode)<br>
+          3. Copy your <code>firebaseConfig</code> into this file<br><br>
+          <em style="color:var(--text-light);">Until then, scores are saved locally only.</em>
+        </div>`;
+      return;
+    }
+
+    fbListenerAttached = true;
     const { db, ref, onValue } = window._fb;
     const statusDot  = document.getElementById('lbStatus');
     const statusText = document.getElementById('lbStatusText');
