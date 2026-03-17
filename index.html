@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,50 +7,39 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Shaphangj Jingialam — E-Learning Tablet</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Nunito:wght@300;400;600;700;800&family=Noto+Sans:wght@400;600&display=swap" rel="stylesheet">
-<!-- Firebase SDKs -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getDatabase, ref, set, onValue, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+<!-- Firebase Compat SDKs — must load BEFORE any JS that uses firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script>
+  var firebaseConfig = {
+    apiKey: "AIzaSyALYUgSj0e-giKyzwTYMGfpMtAo4E5Exsw",
+    authDomain: "mawlynnong-student-leaderboard.firebaseapp.com",
+    databaseURL: "https://mawlynnong-student-leaderboard-default-rtdb.firebaseio.com",
+    projectId: "mawlynnong-student-leaderboard",
+    storageBucket: "mawlynnong-student-leaderboard.firebasestorage.app",
+    messagingSenderId: "867733812591",
+    appId: "1:867733812591:web:8bc2add76b4ecfbbf5649a",
+    measurementId: "G-HS8JVH7WLB"
+  };
+  window._firebaseConfig = firebaseConfig;
 
-  // ── PASTE YOUR FIREBASE CONFIG HERE ──────────────────────────────────
-  // 1. Go to https://console.firebase.google.com
-  // 2. Create a project → Add Web App → copy the firebaseConfig object below
-  // 3. In your project: Build → Realtime Database → Create database (test mode)
- var firebaseConfig = {
-  apiKey: "AIzaSyALYUgSj0e-giKyzwTYMGfpMtAo4E5Exsw",
-  authDomain: "mawlynnong-student-leaderboard.firebaseapp.com",
-  databaseURL: "https://mawlynnong-student-leaderboard-default-rtdb.firebaseio.com",
-  projectId: "mawlynnong-student-leaderboard",
-  storageBucket: "mawlynnong-student-leaderboard.firebasestorage.app",
-  messagingSenderId: "867733812591",
-  appId: "1:867733812591:web:8bc2add76b4ecfbbf5649a",
-  measurementId: "G-HS8JVH7WLB"
-};
-  window._firebaseConfig = firebaseConfig; // expose for config check
-  // ─────────────────────────────────────────────────────────────────────
+  firebase.initializeApp(firebaseConfig);
+  var _fbDatabase = firebase.database();
 
- const app = firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
-
-// This line makes sure the bottom of the file can see the database
-window._fb = { 
-  db: db, 
-  ref: (path) => db.ref(path), 
-  onValue: (r, c) => r.on('value', c) 
-};
-
-  // Expose Firebase helpers to the global scope so the rest of the app can use them
+  // Single clean bridge — no duplicates
   window._fb = {
-    db,
-    ref,
-    set,
-    onValue,
-    serverTimestamp,
+    db:              _fbDatabase,
+    ref:             function(path) { return _fbDatabase.ref(path); },
+    set:             function(r, v) { return r.set(v); },
+    onValue:         function(r, cb, errCb) { r.on('value', cb, errCb); },
+    serverTimestamp: firebase.database.ServerValue.TIMESTAMP,
     ready: true
   };
 
-  // Once Firebase is ready, signal the app
-  window.dispatchEvent(new Event('firebaseReady'));
+  // Signal app that Firebase is ready after DOM loads
+  document.addEventListener('DOMContentLoaded', function() {
+    window.dispatchEvent(new Event('firebaseReady'));
+  });
 </script>
 <style>
   :root {
@@ -3937,100 +3927,67 @@ Vs. selling wood for ₹40,000 today.
 
   function fbPushScore() {
     if (!window._fb || !window._fb.ready || !studentName) return;
-    const { db, ref, set, serverTimestamp } = window._fb;
-    const key = studentName.trim().toLowerCase().replace(/[^a-z0-9]/g, '_');
-    set(ref(db, 'leaderboard/' + key), {
+    var key = studentName.trim().toLowerCase().replace(/[^a-z0-9]/g, '_');
+    window._fb.ref('leaderboard/' + key).set({
       name: studentName,
       grade: currentGrade,
       points: totalPoints,
-      updatedAt: serverTimestamp()
-    }).catch(e => console.warn('Firebase write failed:', e));
+      updatedAt: window._fb.serverTimestamp
+    }).catch(function(e) { console.warn('Firebase write failed:', e); });
   }
 
   function fbStartListening() {
     if (!window._fb || !window._fb.ready) return;
     if (fbListenerAttached) return;
-
-    // Detect if config was never filled in
-    const _cfg = window._firebaseConfig || {};
-    const configUnconfigured = !_cfg.apiKey || _cfg.apiKey === 'PASTE_YOUR_API_KEY' ||
-      !_cfg.databaseURL || _cfg.databaseURL.includes('PASTE');
-
-    const statusDot  = document.getElementById('lbStatus');
-    const statusText = document.getElementById('lbStatusText');
-    const lb = document.getElementById('liveLeaderboard');
-
-    if (configUnconfigured) {
-      if (statusDot)  { statusDot.style.background = '#D4A017'; }
-      if (statusText) statusText.textContent = 'Setup needed — see instructions below';
-      if (lb) lb.innerHTML = `
-        <div style="background:rgba(212,160,23,0.08);border-radius:14px;padding:16px;font-size:13px;color:var(--text-mid);line-height:1.8;">
-          <strong style="color:var(--earth-brown);">⚙️ Firebase not connected yet</strong><br>
-          To enable the live leaderboard:<br>
-          1. Go to <strong>console.firebase.google.com</strong><br>
-          2. Create project → Realtime Database (test mode)<br>
-          3. Copy your <code>firebaseConfig</code> into this file<br><br>
-          <em style="color:var(--text-light);">Until then, scores are saved locally only.</em>
-        </div>`;
-      return;
-    }
-
     fbListenerAttached = true;
 
- // --- DATABASE CONNECTION BRIDGE ---
-var db = firebase.database();
-var ref = (path) => firebase.database().ref(path);
-var onValue = (r, c) => r.on('value', c);
+    var statusDot  = document.getElementById('lbStatus');
+    var statusText = document.getElementById('lbStatusText');
+    var lb         = document.getElementById('liveLeaderboard');
 
-var statusDot = document.getElementById('lbStatus');
-var statusText = document.getElementById('lbStatusText');
+    if (statusDot)  statusDot.style.background = '#F0C040';
+    if (statusText) statusText.textContent = 'Connecting…';
 
-if (statusDot) statusDot.style.background = '#4CAF50'; 
-if (statusText) statusText.textContent = 'Live Connection Active';
-    
-    onValue(ref(db, 'leaderboard'), (snapshot) => {
-      const data = snapshot.val() || {};
+    window._fb.onValue(
+      window._fb.ref('leaderboard'),
+      function(snapshot) {
+        var data = snapshot.val() || {};
+        if (statusDot)  statusDot.style.background  = '#5A9E3A';
+        if (statusText) statusText.textContent = 'Live — ' + Object.keys(data).length + ' students';
 
-      // Set connected indicator
-      if (statusDot)  statusDot.style.background  = '#5A9E3A';
-      if (statusText) statusText.textContent = 'Live — ' + Object.keys(data).length + ' students';
+        var entries = Object.values(data).sort(function(a, b) {
+          return (b.points || 0) - (a.points || 0);
+        });
 
-      // Sort by points descending
-      const entries = Object.values(data).sort((a, b) => (b.points || 0) - (a.points || 0));
+        var avatars     = ['👧','👦','👩','👨','🧒','👱','🧑','👲'];
+        var rankClasses = ['gold','silver','bronze','',''];
 
-      const avatars = ['👧','👦','👩','👨','🧒','👱','🧑','👲'];
-      const rankClasses = ['gold','silver','bronze','',''];
+        var html = entries.slice(0, 10).map(function(entry, i) {
+          var isMe      = entry.name === studentName;
+          var rankClass = rankClasses[i] || '';
+          var avatar    = avatars[i % avatars.length];
+          return '<div class="leaderboard-item" style="' + (isMe ? 'background:rgba(212,160,23,0.08);border-radius:10px;padding:8px;' : '') + '">'
+            + '<div class="lb-rank ' + rankClass + '">' + (i + 1) + (isMe ? ' ←' : '') + '</div>'
+            + '<div class="lb-avatar">' + (isMe ? '🌿' : avatar) + '</div>'
+            + '<div>'
+            +   '<div class="lb-name" style="' + (isMe ? 'color:var(--pine-green);font-weight:800;' : '') + '">' + entry.name + (isMe ? ' (You)' : '') + '</div>'
+            +   '<div class="lb-village">Grade ' + (entry.grade || '?') + '</div>'
+            + '</div>'
+            + '<div class="lb-score">' + (entry.points || 0) + ' pts</div>'
+            + '</div>';
+        }).join('');
 
-      const myKey = studentName.trim().toLowerCase().replace(/[^a-z0-9]/g, '_');
+        if (lb) lb.innerHTML = html || '<div style="text-align:center;padding:20px;color:var(--text-light);font-size:13px;">No scores yet — be the first!</div>';
 
-      const html = entries.slice(0, 10).map((entry, i) => {
-        const isMe = entry.name === studentName;
-        const rankClass = rankClasses[i] || '';
-        const avatar = avatars[i % avatars.length];
-        return `
-          <div class="leaderboard-item" style="${isMe ? 'background:rgba(212,160,23,0.08);border-radius:10px;padding:8px;' : ''}">
-            <div class="lb-rank ${rankClass}">${i + 1}${isMe ? ' ←' : ''}</div>
-            <div class="lb-avatar">${isMe ? '🌿' : avatar}</div>
-            <div>
-              <div class="lb-name" style="${isMe ? 'color:var(--pine-green);font-weight:800;' : ''}">${entry.name}${isMe ? ' (You)' : ''}</div>
-              <div class="lb-village">Grade ${entry.grade || '?'}</div>
-            </div>
-            <div class="lb-score">${entry.points || 0} pts</div>
-          </div>`;
-      }).join('');
-
-      const lb = document.getElementById('liveLeaderboard');
-      if (lb) lb.innerHTML = html || '<div style="text-align:center;padding:20px;color:var(--text-light);font-size:13px;">No scores yet — be the first!</div>';
-
-      // Also update the home badge score
-      const lbYou = document.getElementById('lbYouScore');
-      if (lbYou) lbYou.textContent = totalPoints + ' pts';
-
-    }, (error) => {
-      console.warn('Firebase read error:', error);
-      if (statusDot)  statusDot.style.background  = '#e05050';
-      if (statusText) statusText.textContent = 'Offline — check Firebase config';
-    });
+        var lbYou = document.getElementById('lbYouScore');
+        if (lbYou) lbYou.textContent = totalPoints + ' pts';
+      },
+      function(error) {
+        console.warn('Firebase read error:', error);
+        if (statusDot)  statusDot.style.background  = '#e05050';
+        if (statusText) statusText.textContent = 'Offline — check Firebase config';
+      }
+    );
   }
 
   // Start listening once Firebase is ready
@@ -4209,19 +4166,26 @@ if (statusText) statusText.textContent = 'Live Connection Active';
 
   // ===== UTILITY =====
 
-  // On page load: apply Khasi to splash and mark language button active
-  document.addEventListener('DOMContentLoaded', () => {
-    // Apply Khasi translations to splash screen
+  // On page load: launch in Khasi, set language button label, apply translations to splash
+  document.addEventListener('DOMContentLoaded', function() {
+    // Force language button to show Khasi immediately
+    var langLabel = document.getElementById('langLabel');
+    var langFlag  = document.getElementById('langFlag');
+    if (langLabel) langLabel.textContent = 'Khasi';
+    if (langFlag)  langFlag.textContent  = '🗣️';
+
+    // Mark Khasi as active in dropdown
+    document.querySelectorAll('.lang-nav-opt').forEach(function(b) { b.classList.remove('active'); });
+    var khasiOpt = document.getElementById('langOpt-khasi');
+    if (khasiOpt) khasiOpt.classList.add('active');
+
+    // Apply Khasi translations to splash screen on first load
     markDataEn(document.getElementById('splash'), khasiMap);
     deepTranslate(document.getElementById('splash'), khasiMap);
-    document.querySelectorAll('[data-en]').forEach(el => {
-      const en = el.getAttribute('data-en');
+    document.querySelectorAll('[data-en]').forEach(function(el) {
+      var en = el.getAttribute('data-en');
       if (khasiMap[en]) el.textContent = khasiMap[en];
     });
-    // Ensure Khasi is marked active in the dropdown
-    document.querySelectorAll('.lang-nav-opt').forEach(b => b.classList.remove('active'));
-    const khasiOpt = document.getElementById('langOpt-khasi');
-    if (khasiOpt) khasiOpt.classList.add('active');
   });
 </script>
 </body>
