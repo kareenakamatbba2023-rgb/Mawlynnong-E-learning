@@ -28,8 +28,15 @@
   window._firebaseConfig = firebaseConfig; // expose for config check
   // ─────────────────────────────────────────────────────────────────────
 
-  const app = initializeApp(firebaseConfig);
-  const db  = getDatabase(app);
+ const app = firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+// This line makes sure the bottom of the file can see the database
+window._fb = { 
+  db: db, 
+  ref: (path) => db.ref(path), 
+  onValue: (r, c) => r.on('value', c) 
+};
 
   // Expose Firebase helpers to the global scope so the rest of the app can use them
   window._fb = {
