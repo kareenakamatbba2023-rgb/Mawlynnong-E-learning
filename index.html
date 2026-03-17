@@ -3970,13 +3970,16 @@ Vs. selling wood for ₹40,000 today.
 
     fbListenerAttached = true;
 
-    // This bridge connects the top config to the bottom logic
-const db = firebase.database();
-const ref = firebase.database().ref;
-const onValue = (r, c) => r.on('value', c);
+ // --- DATABASE CONNECTION BRIDGE ---
+var db = firebase.database();
+var ref = (path) => firebase.database().ref(path);
+var onValue = (r, c) => r.on('value', c);
 
-const statusDot = document.getElementById('lbStatus');
-const statusText = document.getElementById('lbStatusText');
+var statusDot = document.getElementById('lbStatus');
+var statusText = document.getElementById('lbStatusText');
+
+if (statusDot) statusDot.style.background = '#4CAF50'; 
+if (statusText) statusText.textContent = 'Live Connection Active';
     
     onValue(ref(db, 'leaderboard'), (snapshot) => {
       const data = snapshot.val() || {};
