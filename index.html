@@ -1559,6 +1559,7 @@
       <button class="nav-tab" onclick="showPanel('game', this)">🎮 Mawlynnong</button>
       <button class="nav-tab" onclick="showPanel('oral', this)">🎙️ Elder Stories</button>
       <button class="nav-tab" onclick="showPanel('progress', this)">🌱 My Growth</button>
+      <button class="nav-tab" id="navTabVolunteer" onclick="showPanel('volunteer', this)" style="display:none;background:linear-gradient(135deg,var(--orchid-pink),#e07090);color:white;">🤝 Volunteer</button>
     </div>
     <div class="nav-right">
       <div class="vine-progress">
@@ -2137,12 +2138,310 @@
             </div>
           </div>
         </div>
+
+        <!-- Volunteer Profile Card — Grade 7-8 only, hidden otherwise -->
+        <div class="progress-card" id="volunteerProfileCard" style="display:none;grid-column:1/-1">
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:18px">
+            <div class="progress-card-title" style="margin-bottom:0">🤝 My Volunteer Record</div>
+            <!-- Credit summary pills -->
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <div style="background:linear-gradient(135deg,#6B2D6B,var(--orchid-pink));color:white;border-radius:50px;padding:6px 16px;font-size:13px;font-weight:800;display:flex;align-items:center;gap:6px">
+                🏅 <span id="volTotalCC">0</span> CC Earned
+              </div>
+              <div style="background:rgba(45,80,22,0.1);border-radius:50px;padding:6px 16px;font-size:13px;font-weight:700;color:var(--pine-green);display:flex;align-items:center;gap:6px">
+                ✅ <span id="volCompletedCount">0</span> Completed
+              </div>
+              <div style="background:rgba(212,160,23,0.12);border-radius:50px;padding:6px 16px;font-size:13px;font-weight:700;color:var(--earth-brown);display:flex;align-items:center;gap:6px">
+                📅 <span id="volRegisteredCount">0</span> Registered
+              </div>
+            </div>
+          </div>
+
+          <!-- CC progress bar -->
+          <div style="margin-bottom:20px">
+            <div style="display:flex;justify-content:space-between;font-size:12px;font-weight:700;color:var(--text-light);margin-bottom:6px">
+              <span>Community Credits Progress</span>
+              <span><span id="volCCBar_val">0</span> / 100 CC for full bonus mark</span>
+            </div>
+            <div style="height:10px;background:rgba(196,100,138,0.15);border-radius:50px;overflow:hidden">
+              <div id="volCCBar" style="height:100%;background:linear-gradient(90deg,#6B2D6B,var(--orchid-pink),var(--turmeric-light));border-radius:50px;width:0%;transition:width 0.8s ease"></div>
+            </div>
+            <div style="font-size:11px;color:var(--text-light);margin-top:5px">10 CC = +1 mark in Social Studies assessment · Certificates issued by organiser</div>
+          </div>
+
+          <!-- Registered events list -->
+          <div id="volRegisteredSection" style="display:none;margin-bottom:18px">
+            <div style="font-size:13px;font-weight:800;color:var(--text-dark);margin-bottom:10px;display:flex;align-items:center;gap-8px">
+              📅 Upcoming Registered Activities
+            </div>
+            <div id="volRegisteredList" style="display:flex;flex-direction:column;gap:10px"></div>
+          </div>
+
+          <!-- Completed events list -->
+          <div id="volCompletedSection" style="display:none;margin-bottom:8px">
+            <div style="font-size:13px;font-weight:800;color:var(--text-dark);margin-bottom:10px">
+              ✅ Completed Activities
+            </div>
+            <div id="volCompletedList" style="display:flex;flex-direction:column;gap:10px"></div>
+          </div>
+
+          <!-- Empty state -->
+          <div id="volEmptyState" style="text-align:center;padding:28px 16px;color:var(--text-light)">
+            <div style="font-size:40px;margin-bottom:10px">🌱</div>
+            <div style="font-size:14px;font-weight:700;margin-bottom:6px">No volunteer activities yet</div>
+            <div style="font-size:13px;line-height:1.6">Go to the <strong>🤝 Volunteer</strong> tab to register for upcoming activities in your area.</div>
+          </div>
+        </div>
       </div>
     </div>
 
   </div><!-- /main-content -->
 
-  <!-- MOBILE BOTTOM TAB BAR -->
+  <!-- ===== VOLUNTEER PANEL (Grade 7-8 only) ===== -->
+  <!-- This panel sits outside .main-content so it can use full width hero -->
+  <div id="panel-volunteer" class="panel" style="display:none;padding-bottom:80px;">
+
+    <!-- Hero Banner -->
+    <div style="background:linear-gradient(135deg,#6B2D6B 0%,#C4648A 50%,#e07090 100%);padding:36px 28px 32px;position:relative;overflow:hidden;">
+      <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 20% 50%,rgba(255,255,255,0.08) 0%,transparent 60%)"></div>
+      <div style="position:absolute;right:24px;top:50%;transform:translateY(-50%);font-size:72px;opacity:0.15;letter-spacing:8px">🤝🌿🏡</div>
+      <div style="position:relative;z-index:2;max-width:680px">
+        <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.18);border:1px solid rgba(255,255,255,0.3);border-radius:50px;padding:5px 14px;font-size:12px;font-weight:800;color:white;letter-spacing:2px;text-transform:uppercase;margin-bottom:14px">
+          🎓 Grade 7–8 Exclusive
+        </div>
+        <h1 style="font-family:'Playfair Display',serif;font-size:30px;color:white;line-height:1.25;margin-bottom:10px">🤝 Volunteer Services</h1>
+        <p style="color:rgba(255,255,255,0.85);font-size:15px;line-height:1.65;max-width:520px">Real opportunities in your region — happening in the next 2 weeks. Join, serve, earn community credits, and make a difference beyond the classroom.</p>
+        <div style="display:flex;gap:10px;margin-top:18px;flex-wrap:wrap">
+          <div style="background:rgba(255,255,255,0.18);border:1px solid rgba(255,255,255,0.28);border-radius:50px;padding:7px 16px;font-size:13px;font-weight:700;color:white">📅 Next 14 Days</div>
+          <div style="background:rgba(255,255,255,0.18);border:1px solid rgba(255,255,255,0.28);border-radius:50px;padding:7px 16px;font-size:13px;font-weight:700;color:white">📍 Meghalaya Region</div>
+          <div style="background:rgba(255,255,255,0.18);border:1px solid rgba(255,255,255,0.28);border-radius:50px;padding:7px 16px;font-size:13px;font-weight:700;color:white">🏅 Community Credits</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="padding:28px 24px;max-width:1100px;margin:0 auto;width:100%">
+
+      <!-- Info bar -->
+      <div style="background:rgba(196,100,138,0.08);border:1px solid rgba(196,100,138,0.2);border-radius:16px;padding:16px 20px;margin-bottom:28px;display:flex;align-items:flex-start;gap:14px">
+        <div style="font-size:24px;flex-shrink:0">💡</div>
+        <div>
+          <div style="font-weight:800;font-size:14px;color:var(--orchid-pink);margin-bottom:4px">How Community Credits Work</div>
+          <div style="font-size:13px;color:var(--text-mid);line-height:1.6">Each activity awards <strong>Community Credits (CC)</strong> which go on your school record. 10 CC = 1 extra mark in Social Studies assessment. Certificates issued by the organiser on completion. Parental consent required for activities outside school.</div>
+        </div>
+      </div>
+
+      <!-- Activity Cards Grid -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:22px">
+
+        <!-- ── ACTIVITY 1: Sacred Grove Clean-Up ── -->
+        <div style="background:var(--card-bg);border-radius:24px;overflow:hidden;box-shadow:var(--shadow);border:2px solid transparent;transition:all 0.3s ease" onmouseover="this.style.transform='translateY(-6px)';this.style.borderColor='rgba(45,80,22,0.2)'" onmouseout="this.style.transform='';this.style.borderColor='transparent'">
+          <!-- Image -->
+          <div style="position:relative;height:200px;overflow:hidden;background:#1A2E10">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/79/Sacred_grove_Meghalaya.jpg/800px-Sacred_grove_Meghalaya.jpg"
+                 onerror="this.onerror=null;this.src='';this.parentElement.style.background='linear-gradient(135deg,#1A2E10,#5A9E3A)';this.parentElement.innerHTML='<div style=\'display:flex;align-items:center;justify-content:center;height:100%;font-size:72px\'>🌳</div>'"
+                 style="width:100%;height:100%;object-fit:cover;opacity:0.9" alt="Sacred Grove clean-up">
+            <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(26,46,16,0.7) 0%,transparent 50%)"></div>
+            <div style="position:absolute;bottom:12px;left:14px;right:14px;display:flex;justify-content:space-between;align-items:flex-end">
+              <div style="background:rgba(255,255,255,0.15);backdrop-filter:blur(6px);border-radius:8px;padding:5px 10px;font-size:11px;font-weight:800;color:white;border:1px solid rgba(255,255,255,0.25)">🌿 Environmental</div>
+              <div style="background:var(--turmeric);border-radius:8px;padding:5px 10px;font-size:11px;font-weight:800;color:var(--forest-dark)">+15 CC</div>
+            </div>
+          </div>
+          <!-- Body -->
+          <div style="padding:20px 22px 22px">
+            <div style="font-size:11px;font-weight:800;letter-spacing:2px;color:var(--text-light);text-transform:uppercase;margin-bottom:6px">Activity 01 · Open Registration</div>
+            <div style="font-family:'Playfair Display',serif;font-size:19px;color:var(--text-dark);line-height:1.3;margin-bottom:6px">Ka Law Lyngdoh Sacred Grove Clean-Up Drive</div>
+            <div style="font-size:12px;font-weight:700;color:var(--pine-mid);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px">Mawlynnong Heritage Area</div>
+            <div style="font-size:14px;color:var(--text-mid);line-height:1.65;margin-bottom:14px">Join the East Khasi Hills Youth Network to clear invasive species, replant native ferns, and document biodiversity around the sacred grove. Work alongside forest rangers and elders.</div>
+            <!-- Details chips -->
+            <div style="display:flex;flex-direction:column;gap:7px;margin-bottom:16px">
+              <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-mid)">
+                <span style="font-size:16px">📅</span><strong style="color:var(--text-dark)">28 March 2026</strong><span style="color:var(--text-light)">(Saturday)</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-mid)">
+                <span style="font-size:16px">⏰</span><strong style="color:var(--text-dark)">7:00 AM – 12:00 PM</strong><span style="color:var(--text-light)">(5 hrs)</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-mid)">
+                <span style="font-size:16px">📍</span><span>Mawlynnong Village Entry Gate, East Khasi Hills</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-mid)">
+                <span style="font-size:16px">👥</span><span>Max <strong style="color:var(--text-dark)">30 volunteers</strong> — 12 spots left</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-mid)">
+                <span style="font-size:16px">🏅</span><span><strong style="color:var(--pine-green)">15 Community Credits</strong> + Certificate</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-mid)">
+                <span style="font-size:16px">🎒</span><span>Bring: water bottle, closed shoes, sunscreen</span>
+              </div>
+            </div>
+            <div style="background:rgba(45,80,22,0.06);border-radius:12px;padding:10px 14px;font-size:12px;color:var(--text-mid);margin-bottom:14px;line-height:1.5">
+              <strong style="color:var(--pine-green)">Organiser:</strong> East Khasi Hills Youth Forest Network<br>
+              <strong style="color:var(--pine-green)">Contact:</strong> +91 94363 12045 · ekhyfn@gmail.com
+            </div>
+            <button onclick="volunteerRegister('sacred-grove')" style="width:100%;background:linear-gradient(135deg,var(--pine-green),var(--pine-mid));color:white;border:none;border-radius:14px;padding:13px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:800;cursor:pointer;transition:0.2s;letter-spacing:0.5px" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
+              🌿 Register to Volunteer
+            </button>
+          </div>
+        </div>
+
+        <!-- ── ACTIVITY 2: River Clean-Up Umngot ── -->
+        <div style="background:var(--card-bg);border-radius:24px;overflow:hidden;box-shadow:var(--shadow);border:2px solid transparent;transition:all 0.3s ease" onmouseover="this.style.transform='translateY(-6px)';this.style.borderColor='rgba(123,175,196,0.35)'" onmouseout="this.style.transform='';this.style.borderColor='transparent'">
+          <div style="position:relative;height:200px;overflow:hidden;background:#1A4A6B">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Dawki_River.jpg/800px-Dawki_River.jpg"
+                 onerror="this.onerror=null;this.src='';this.parentElement.style.background='linear-gradient(135deg,#1A4A6B,#7BAFC4)';this.parentElement.innerHTML='<div style=\'display:flex;align-items:center;justify-content:center;height:100%;font-size:72px\'>🏞️</div>'"
+                 style="width:100%;height:100%;object-fit:cover;opacity:0.9" alt="Umngot River Dawki">
+            <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(26,74,107,0.7) 0%,transparent 50%)"></div>
+            <div style="position:absolute;bottom:12px;left:14px;right:14px;display:flex;justify-content:space-between;align-items:flex-end">
+              <div style="background:rgba(255,255,255,0.15);backdrop-filter:blur(6px);border-radius:8px;padding:5px 10px;font-size:11px;font-weight:800;color:white;border:1px solid rgba(255,255,255,0.25)">💧 Water & Rivers</div>
+              <div style="background:var(--turmeric);border-radius:8px;padding:5px 10px;font-size:11px;font-weight:800;color:var(--forest-dark)">+20 CC</div>
+            </div>
+          </div>
+          <div style="padding:20px 22px 22px">
+            <div style="font-size:11px;font-weight:800;letter-spacing:2px;color:var(--text-light);text-transform:uppercase;margin-bottom:6px">Activity 02 · Spots Available</div>
+            <div style="font-family:'Playfair Display',serif;font-size:19px;color:var(--text-dark);line-height:1.3;margin-bottom:6px">Umngot River Plastic-Free Campaign</div>
+            <div style="font-size:12px;font-weight:700;color:#1A4A6B;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px">Dawki, West Jaintia Hills</div>
+            <div style="font-size:14px;color:var(--text-mid);line-height:1.65;margin-bottom:14px">Help collect plastic waste along the Umngot River banks — Asia's clearest river — before peak tourist season. Includes a guided boat survey to map dumping points.</div>
+            <div style="display:flex;flex-direction:column;gap:7px;margin-bottom:16px">
+              <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-mid)">
+                <span style="font-size:16px">📅</span><strong style="color:var(--text-dark)">29–30 March 2026</strong><span style="color:var(--text-light)">(Sat–Sun)</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-mid)">
+                <span style="font-size:16px">⏰</span><strong style="color:var(--text-dark)">6:30 AM – 1:00 PM</strong><span style="color:var(--text-light)">both days</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-mid)">
+                <span style="font-size:16px">📍</span><span>Dawki Suspension Bridge Base, Jaintia Hills</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-mid)">
+                <span style="font-size:16px">👥</span><span>Max <strong style="color:var(--text-dark)">50 volunteers</strong> — 18 spots left</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-mid)">
+                <span style="font-size:16px">🏅</span><span><strong style="color:var(--pine-green)">20 Community Credits</strong> (2-day) + Certificate</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-mid)">
+                <span style="font-size:16px">🚌</span><span>Free transport from Shillong City Bus Stand at 5:45 AM</span>
+              </div>
+            </div>
+            <div style="background:rgba(123,175,196,0.1);border-radius:12px;padding:10px 14px;font-size:12px;color:var(--text-mid);margin-bottom:14px;line-height:1.5">
+              <strong style="color:#1A4A6B;">Organiser:</strong> Meghalaya River Watch · WWF Meghalaya Chapter<br>
+              <strong style="color:#1A4A6B;">Contact:</strong> +91 98630 77812 · riverwatch.meg@gmail.com
+            </div>
+            <button onclick="volunteerRegister('umngot-river')" style="width:100%;background:linear-gradient(135deg,#1A4A6B,#7BAFC4);color:white;border:none;border-radius:14px;padding:13px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:800;cursor:pointer;transition:0.2s" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
+              💧 Register to Volunteer
+            </button>
+          </div>
+        </div>
+
+        <!-- ── ACTIVITY 3: Digital Literacy Teaching ── -->
+        <div style="background:var(--card-bg);border-radius:24px;overflow:hidden;box-shadow:var(--shadow);border:2px solid transparent;transition:all 0.3s ease" onmouseover="this.style.transform='translateY(-6px)';this.style.borderColor='rgba(212,160,23,0.3)'" onmouseout="this.style.transform='';this.style.borderColor='transparent'">
+          <div style="position:relative;height:200px;overflow:hidden;background:#3D2A10">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Single_teacher_school_Meghalaya.jpg/800px-Single_teacher_school_Meghalaya.jpg"
+                 onerror="this.onerror=null;this.src='';this.parentElement.style.background='linear-gradient(135deg,#3D2A10,#D4A017)';this.parentElement.innerHTML='<div style=\'display:flex;align-items:center;justify-content:center;height:100%;font-size:72px\'>📱</div>'"
+                 style="width:100%;height:100%;object-fit:cover;opacity:0.9" alt="Digital literacy teaching">
+            <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(61,42,16,0.75) 0%,transparent 50%)"></div>
+            <div style="position:absolute;bottom:12px;left:14px;right:14px;display:flex;justify-content:space-between;align-items:flex-end">
+              <div style="background:rgba(255,255,255,0.15);backdrop-filter:blur(6px);border-radius:8px;padding:5px 10px;font-size:11px;font-weight:800;color:white;border:1px solid rgba(255,255,255,0.25)">📱 Education</div>
+              <div style="background:var(--turmeric);border-radius:8px;padding:5px 10px;font-size:11px;font-weight:800;color:var(--forest-dark)">+25 CC</div>
+            </div>
+          </div>
+          <div style="padding:20px 22px 22px">
+            <div style="font-size:11px;font-weight:800;letter-spacing:2px;color:var(--text-light);text-transform:uppercase;margin-bottom:6px">Activity 03 · High Impact</div>
+            <div style="font-family:'Playfair Display',serif;font-size:19px;color:var(--text-dark);line-height:1.3;margin-bottom:6px">Peer Digital Literacy — Teach Grade 3–4 Students</div>
+            <div style="font-size:12px;font-weight:700;color:var(--earth-brown);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px">Mawphlang Government School, East Khasi Hills</div>
+            <div style="font-size:14px;color:var(--text-mid);line-height:1.65;margin-bottom:14px">You are Grade 7–8 — you can teach! Run fun 45-min digital literacy sessions for younger students: how to use a tablet safely, type in Khasi, and find learning resources online.</div>
+            <div style="display:flex;flex-direction:column;gap:7px;margin-bottom:16px">
+              <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-mid)">
+                <span style="font-size:16px">📅</span><strong style="color:var(--text-dark)">1 April 2026</strong><span style="color:var(--text-light)">(Wednesday)</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-mid)">
+                <span style="font-size:16px">⏰</span><strong style="color:var(--text-dark)">9:00 AM – 12:30 PM</strong><span style="color:var(--text-light)">(3.5 hrs)</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-mid)">
+                <span style="font-size:16px">📍</span><span>Mawphlang Govt. School, 28 km from Shillong</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-mid)">
+                <span style="font-size:16px">👥</span><span>Max <strong style="color:var(--text-dark)">16 peer-teachers</strong> — 7 spots left</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-mid)">
+                <span style="font-size:16px">🏅</span><span><strong style="color:var(--pine-green)">25 Community Credits</strong> + Teaching Certificate</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-mid)">
+                <span style="font-size:16px">📚</span><span>Pre-session training kit provided by email</span>
+              </div>
+            </div>
+            <div style="background:rgba(212,160,23,0.08);border-radius:12px;padding:10px 14px;font-size:12px;color:var(--text-mid);margin-bottom:14px;line-height:1.5">
+              <strong style="color:var(--earth-brown);">Organiser:</strong> MSSDS Digital India Cell, Meghalaya<br>
+              <strong style="color:var(--earth-brown);">Contact:</strong> +91 97741 56230 · digital.mssds@nic.in
+            </div>
+            <button onclick="volunteerRegister('digital-literacy')" style="width:100%;background:linear-gradient(135deg,var(--earth-brown),var(--turmeric));color:white;border:none;border-radius:14px;padding:13px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:800;cursor:pointer;transition:0.2s" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
+              📱 Register to Volunteer
+            </button>
+          </div>
+        </div>
+
+        <!-- ── ACTIVITY 4: Elder Care & Oral History ── -->
+        <div style="background:var(--card-bg);border-radius:24px;overflow:hidden;box-shadow:var(--shadow);border:2px solid transparent;transition:all 0.3s ease" onmouseover="this.style.transform='translateY(-6px)';this.style.borderColor='rgba(196,100,138,0.3)'" onmouseout="this.style.transform='';this.style.borderColor='transparent'">
+          <div style="position:relative;height:200px;overflow:hidden;background:#4A1A30">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/66/Khasi_elder_woman.jpg/800px-Khasi_elder_woman.jpg"
+                 onerror="this.onerror=null;this.src='';this.parentElement.style.background='linear-gradient(135deg,#4A1A30,#C4648A)';this.parentElement.innerHTML='<div style=\'display:flex;align-items:center;justify-content:center;height:100%;font-size:72px\'>🧓</div>'"
+                 style="width:100%;height:100%;object-fit:cover;opacity:0.9" alt="Elder care oral history">
+            <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(74,26,48,0.75) 0%,transparent 50%)"></div>
+            <div style="position:absolute;bottom:12px;left:14px;right:14px;display:flex;justify-content:space-between;align-items:flex-end">
+              <div style="background:rgba(255,255,255,0.15);backdrop-filter:blur(6px);border-radius:8px;padding:5px 10px;font-size:11px;font-weight:800;color:white;border:1px solid rgba(255,255,255,0.25)">🧓 Heritage</div>
+              <div style="background:var(--turmeric);border-radius:8px;padding:5px 10px;font-size:11px;font-weight:800;color:var(--forest-dark)">+18 CC</div>
+            </div>
+          </div>
+          <div style="padding:20px 22px 22px">
+            <div style="font-size:11px;font-weight:800;letter-spacing:2px;color:var(--text-light);text-transform:uppercase;margin-bottom:6px">Activity 04 · Cultural Preservation</div>
+            <div style="font-family:'Playfair Display',serif;font-size:19px;color:var(--text-dark);line-height:1.3;margin-bottom:6px">Record & Preserve Elder Stories — Oral History Archive</div>
+            <div style="font-size:12px;font-weight:700;color:var(--orchid-pink);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px">Smit Village, East Khasi Hills</div>
+            <div style="font-size:14px;color:var(--text-mid);line-height:1.65;margin-bottom:14px">Use your phone to interview and record Khasi elders at the Smit community centre. You will transcribe stories, translate fragments, and help build a digital oral history library for future generations.</div>
+            <div style="display:flex;flex-direction:column;gap:7px;margin-bottom:16px">
+              <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-mid)">
+                <span style="font-size:16px">📅</span><strong style="color:var(--text-dark)">5–6 April 2026</strong><span style="color:var(--text-light)">(Sat–Sun)</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-mid)">
+                <span style="font-size:16px">⏰</span><strong style="color:var(--text-dark)">10:00 AM – 3:00 PM</strong><span style="color:var(--text-light)">each day</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-mid)">
+                <span style="font-size:16px">📍</span><span>Smit Community Hall, 10 km from Shillong</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-mid)">
+                <span style="font-size:16px">👥</span><span>Max <strong style="color:var(--text-dark)">20 volunteers</strong> — 9 spots left</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-mid)">
+                <span style="font-size:16px">🏅</span><span><strong style="color:var(--pine-green)">18 Community Credits</strong> + Archive Contributor Badge</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-mid)">
+                <span style="font-size:16px">🗣️</span><span>Basic Khasi speaking ability helpful but not required</span>
+              </div>
+            </div>
+            <div style="background:rgba(196,100,138,0.08);border-radius:12px;padding:10px 14px;font-size:12px;color:var(--text-mid);margin-bottom:14px;line-height:1.5">
+              <strong style="color:var(--orchid-pink);">Organiser:</strong> Khasi Hills Autonomous District Council Cultural Cell<br>
+              <strong style="color:var(--orchid-pink);">Contact:</strong> +91 94361 88024 · khadc.culture@gmail.com
+            </div>
+            <button onclick="volunteerRegister('oral-history')" style="width:100%;background:linear-gradient(135deg,#6B2D6B,var(--orchid-pink));color:white;border:none;border-radius:14px;padding:13px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:800;cursor:pointer;transition:0.2s" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
+              🧓 Register to Volunteer
+            </button>
+          </div>
+        </div>
+
+      </div><!-- /grid -->
+
+      <!-- Bottom Note -->
+      <div style="background:var(--card-bg);border-radius:20px;padding:22px 24px;margin-top:28px;box-shadow:var(--shadow);display:flex;gap:16px;align-items:flex-start">
+        <div style="font-size:28px;flex-shrink:0">📋</div>
+        <div>
+          <div style="font-weight:800;font-size:15px;color:var(--text-dark);margin-bottom:6px">Before You Register</div>
+          <div style="font-size:13px;color:var(--text-mid);line-height:1.7">
+            1. Get <strong>written consent from a parent or guardian</strong> before registering for any activity outside school premises.<br>
+            2. Inform your <strong>class teacher</strong> — they will verify and log your CC in the school register.<br>
+            3. Bring your <strong>student ID card</strong> to all activities.<br>
+            4. Activities marked <em>spots left</em> fill up fast — register early via the organiser contact above.
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /inner padding -->
+  </div><!-- /panel-volunteer -->
   <nav class="bottom-tab-bar" id="bottomTabBar">
     <button class="btb-btn active" id="btb-home" onclick="showPanel('home', null, 'home')">
       <span class="btb-icon">🏡</span>
@@ -2163,6 +2462,10 @@
     <button class="btb-btn" id="btb-progress" onclick="showPanel('progress', null, 'progress')">
       <span class="btb-icon">🌱</span>
       <span class="btb-label">Growth</span>
+    </button>
+    <button class="btb-btn" id="btb-volunteer" onclick="showPanel('volunteer', null, 'volunteer')" style="display:none;color:var(--orchid-pink)">
+      <span class="btb-icon">🤝</span>
+      <span class="btb-label">Volunteer</span>
     </button>
   </nav>
 
@@ -3525,6 +3828,15 @@ Vs. selling wood for ₹40,000 today.
       // Connect to Firebase leaderboard
       fbStartListening();
       fbPushScore();
+      // Show volunteer tab only for Grade 7-8
+      const isGrade78 = (currentGrade === '7-8');
+      const navV  = document.getElementById('navTabVolunteer');
+      const btbV  = document.getElementById('btb-volunteer');
+      if (navV) navV.style.display = isGrade78 ? '' : 'none';
+      if (btbV) btbV.style.display = isGrade78 ? '' : 'none';
+      if (isGrade78) showToast('🤝', 'Grade 7–8 unlocked: Volunteer Services!');
+      // Render volunteer profile card (shows only for 7-8)
+      renderVolunteerProfile();
     }, 400);
   }
 
@@ -3550,8 +3862,9 @@ Vs. selling wood for ₹40,000 today.
 
   // ===== NAVIGATION =====
   function showPanel(name, navEl, btbKey) {
-    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-    document.getElementById('panel-' + name).classList.add('active');
+    document.querySelectorAll('.panel').forEach(p => { p.classList.remove('active'); p.style.display = 'none'; });
+    const target = document.getElementById('panel-' + name);
+    if (target) { target.classList.add('active'); target.style.display = ''; }
     currentPanel = name;
 
     // Sync top nav tabs
@@ -3561,11 +3874,12 @@ Vs. selling wood for ₹40,000 today.
     } else {
       document.querySelectorAll('.nav-tab').forEach(t => {
         const txt = (t.getAttribute('data-en') || t.textContent).toLowerCase();
-        if ((name === 'home' && txt.includes('home')) ||
-            (name === 'subjects' && txt.includes('subject')) ||
-            (name === 'game' && txt.includes('mawly')) ||
-            (name === 'oral' && txt.includes('elder')) ||
-            (name === 'progress' && txt.includes('growth'))) {
+        if ((name === 'home'      && (txt.includes('home') || txt.includes('ïing'))) ||
+            (name === 'subjects'  && (txt.includes('subject') || txt.includes('pyrthei'))) ||
+            (name === 'game'      && txt.includes('mawly')) ||
+            (name === 'oral'      && (txt.includes('elder') || txt.includes('rangbah'))) ||
+            (name === 'progress'  && (txt.includes('growth') || txt.includes('jingkyrkhu'))) ||
+            (name === 'volunteer' && (txt.includes('volunteer') || txt.includes('🤝')))) {
           t.classList.add('active');
         }
       });
@@ -4046,6 +4360,9 @@ Vs. selling wood for ₹40,000 today.
 
     // Orchid display
     updateOrchids(subjectPct);
+
+    // Volunteer profile card
+    renderVolunteerProfile();
   }
 
   function updateOrchids(pct) {
@@ -4155,6 +4472,236 @@ Vs. selling wood for ₹40,000 today.
     if (label) label.textContent = Math.round(next) + '%';
   }
 
+  // ===== VOLUNTEER TRACKING SYSTEM =====
+
+  // All activity metadata in one place
+  const volunteerActivities = {
+    'sacred-grove': {
+      name:     'Ka Law Lyngdoh Sacred Grove Clean-Up',
+      date:     '28 March 2026',
+      day:      'Saturday',
+      time:     '7:00 AM – 12:00 PM',
+      venue:    'Mawlynnong Village Entry Gate, East Khasi Hills',
+      credits:  15,
+      icon:     '🌳',
+      color:    'var(--pine-green)',
+      bg:       'rgba(45,80,22,0.07)',
+      border:   'rgba(45,80,22,0.2)',
+      org:      'East Khasi Hills Youth Forest Network'
+    },
+    'umngot-river': {
+      name:     'Umngot River Plastic-Free Campaign',
+      date:     '29–30 March 2026',
+      day:      'Sat–Sun',
+      time:     '6:30 AM – 1:00 PM',
+      venue:    'Dawki Suspension Bridge Base, Jaintia Hills',
+      credits:  20,
+      icon:     '💧',
+      color:    '#1A4A6B',
+      bg:       'rgba(123,175,196,0.1)',
+      border:   'rgba(123,175,196,0.3)',
+      org:      'Meghalaya River Watch · WWF Meghalaya'
+    },
+    'digital-literacy': {
+      name:     'Peer Digital Literacy Teaching',
+      date:     '1 April 2026',
+      day:      'Wednesday',
+      time:     '9:00 AM – 12:30 PM',
+      venue:    'Mawphlang Govt. School, East Khasi Hills',
+      credits:  25,
+      icon:     '📱',
+      color:    'var(--earth-brown)',
+      bg:       'rgba(212,160,23,0.08)',
+      border:   'rgba(212,160,23,0.25)',
+      org:      'MSSDS Digital India Cell, Meghalaya'
+    },
+    'oral-history': {
+      name:     'Elder Oral History Archive',
+      date:     '5–6 April 2026',
+      day:      'Sat–Sun',
+      time:     '10:00 AM – 3:00 PM',
+      venue:    'Smit Community Hall, East Khasi Hills',
+      credits:  18,
+      icon:     '🧓',
+      color:    'var(--orchid-pink)',
+      bg:       'rgba(196,100,138,0.08)',
+      border:   'rgba(196,100,138,0.25)',
+      org:      'KHADC Cultural Cell'
+    }
+  };
+
+  // State arrays
+  var volRegistered  = []; // array of activityIds
+  var volCompleted   = []; // array of activityIds
+  var volTotalCredits = 0;
+
+  function volunteerRegister(activityId) {
+    const act = volunteerActivities[activityId];
+    if (!act) return;
+
+    // Prevent double-registration
+    if (volRegistered.includes(activityId) || volCompleted.includes(activityId)) {
+      showToast('ℹ️', 'You\'re already registered for this activity!');
+      return;
+    }
+
+    // Add to registered list
+    volRegistered.push(activityId);
+
+    // Award initiative points
+    awardPoints(null, 5, false);
+
+    // Refresh the volunteer profile card
+    renderVolunteerProfile();
+
+    // Confirmation overlay
+    const overlay = document.createElement('div');
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(26,46,16,0.75);backdrop-filter:blur(6px);z-index:500;display:flex;align-items:center;justify-content:center;padding:24px';
+    overlay.innerHTML = `
+      <div style="background:var(--cloud-white);border-radius:28px;padding:32px 28px;max-width:420px;width:100%;text-align:center;animation:fadeUp 0.3s ease">
+        <div style="font-size:56px;margin-bottom:16px">${act.icon}</div>
+        <div style="font-family:'Playfair Display',serif;font-size:20px;color:var(--pine-green);margin-bottom:10px">Registered! 🎉</div>
+        <div style="background:${act.bg};border:1px solid ${act.border};border-radius:14px;padding:14px;margin-bottom:16px;text-align:left;font-size:13px;color:var(--text-mid);line-height:1.7">
+          <strong style="color:${act.color};font-size:14px">${act.name}</strong><br>
+          📅 ${act.date} · ${act.time}<br>
+          📍 ${act.venue}<br>
+          🏅 <strong>${act.credits} Community Credits</strong> on completion
+        </div>
+        <div style="font-size:13px;color:var(--text-mid);line-height:1.7;margin-bottom:20px">
+          📋 <strong>Next steps:</strong><br>
+          1. Get parental consent from your teacher<br>
+          2. Contact the organiser to confirm your spot<br>
+          3. Bring your student ID on the day<br><br>
+          <span style="color:var(--pine-green);font-weight:700">+5 pts awarded for showing initiative! 🌟</span><br>
+          <span style="font-size:12px;color:var(--text-light)">After attending, mark it complete in <strong>🌱 My Growth</strong> to claim your ${act.credits} CC.</span>
+        </div>
+        <button onclick="this.closest('div[style*=fixed]').remove()" style="background:linear-gradient(135deg,var(--pine-green),var(--pine-mid));color:white;border:none;border-radius:50px;padding:13px 32px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:800;cursor:pointer">
+          Got it! ✓
+        </button>
+      </div>`;
+    document.body.appendChild(overlay);
+    overlay.addEventListener('click', function(e){ if(e.target===overlay) overlay.remove(); });
+
+    showToast('🤝', 'Registered for ' + act.name + '!');
+  }
+
+  function volunteerMarkComplete(activityId) {
+    const act = volunteerActivities[activityId];
+    if (!act) return;
+    if (volCompleted.includes(activityId)) return;
+
+    // Move from registered to completed
+    volRegistered = volRegistered.filter(function(id) { return id !== activityId; });
+    volCompleted.push(activityId);
+    volTotalCredits += act.credits;
+
+    // Award school points for completing (1 CC = roughly 2 pts)
+    awardPoints(null, act.credits * 2, false);
+
+    renderVolunteerProfile();
+
+    showToast('🏅', '+' + act.credits + ' CC earned! ' + act.name + ' complete!');
+
+    // Celebration overlay
+    const overlay = document.createElement('div');
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(26,46,16,0.82);backdrop-filter:blur(8px);z-index:500;display:flex;align-items:center;justify-content:center;padding:24px';
+    overlay.innerHTML = `
+      <div style="background:var(--cloud-white);border-radius:28px;padding:36px 28px;max-width:400px;width:100%;text-align:center;animation:fadeUp 0.3s ease">
+        <div style="font-size:64px;margin-bottom:12px">🏅</div>
+        <div style="font-family:'Playfair Display',serif;font-size:22px;color:var(--pine-green);margin-bottom:8px">Activity Complete!</div>
+        <div style="font-size:14px;color:var(--text-mid);line-height:1.7;margin-bottom:8px"><strong>${act.name}</strong></div>
+        <div style="background:linear-gradient(135deg,#6B2D6B,var(--orchid-pink));border-radius:16px;padding:18px;color:white;margin:16px 0">
+          <div style="font-size:36px;font-weight:800">+${act.credits} CC</div>
+          <div style="font-size:13px;opacity:0.9;margin-top:4px">Community Credits Earned</div>
+          <div style="font-size:12px;opacity:0.75;margin-top:6px">Total: ${volTotalCredits} CC · ${Math.floor(volTotalCredits/10)} bonus mark${Math.floor(volTotalCredits/10)!==1?'s':''} in Social Studies</div>
+        </div>
+        <div style="font-size:13px;color:var(--text-light);margin-bottom:20px">Ask your organiser for the official certificate. Your teacher will log the CC in your school record.</div>
+        <button onclick="this.closest('div[style*=fixed]').remove()" style="background:linear-gradient(135deg,#6B2D6B,var(--orchid-pink));color:white;border:none;border-radius:50px;padding:13px 32px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:800;cursor:pointer">
+          Awesome! 🌟
+        </button>
+      </div>`;
+    document.body.appendChild(overlay);
+    overlay.addEventListener('click', function(e){ if(e.target===overlay) overlay.remove(); });
+  }
+
+  function renderVolunteerProfile() {
+    const card = document.getElementById('volunteerProfileCard');
+    if (!card) return;
+
+    // Show card only for grade 7-8
+    if (currentGrade !== '7-8') { card.style.display = 'none'; return; }
+    card.style.display = '';
+
+    const total     = volRegistered.length + volCompleted.length;
+    const completed = volCompleted.length;
+    const cc        = volTotalCredits;
+    const ccPct     = Math.min(100, Math.round((cc / 100) * 100));
+
+    // Update summary pills
+    document.getElementById('volTotalCC').textContent        = cc;
+    document.getElementById('volCompletedCount').textContent = completed;
+    document.getElementById('volRegisteredCount').textContent= volRegistered.length;
+    document.getElementById('volCCBar_val').textContent      = cc;
+    document.getElementById('volCCBar').style.width          = ccPct + '%';
+
+    // Empty state
+    const emptyEl = document.getElementById('volEmptyState');
+    if (emptyEl) emptyEl.style.display = total === 0 ? '' : 'none';
+
+    // ── Registered (upcoming) ──
+    const regSection = document.getElementById('volRegisteredSection');
+    const regList    = document.getElementById('volRegisteredList');
+    if (regSection) regSection.style.display = volRegistered.length > 0 ? '' : 'none';
+    if (regList) {
+      regList.innerHTML = volRegistered.map(function(id) {
+        const a = volunteerActivities[id];
+        if (!a) return '';
+        return `<div style="background:${a.bg};border:1px solid ${a.border};border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+          <div style="font-size:28px;flex-shrink:0">${a.icon}</div>
+          <div style="flex:1;min-width:180px">
+            <div style="font-weight:800;font-size:14px;color:${a.color}">${a.name}</div>
+            <div style="font-size:12px;color:var(--text-light);margin-top:3px">📅 ${a.date} &nbsp;·&nbsp; ⏰ ${a.time}</div>
+            <div style="font-size:12px;color:var(--text-light);margin-top:2px">📍 ${a.venue}</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0">
+            <div style="background:rgba(212,160,23,0.15);border-radius:50px;padding:4px 12px;font-size:12px;font-weight:800;color:var(--earth-brown)">
+              🏅 ${a.credits} CC pending
+            </div>
+            <button onclick="volunteerMarkComplete('${id}')"
+              style="background:linear-gradient(135deg,var(--pine-green),var(--pine-mid));color:white;border:none;border-radius:50px;padding:7px 16px;font-family:'Nunito',sans-serif;font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap">
+              ✓ Mark Complete
+            </button>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    // ── Completed ──
+    const compSection = document.getElementById('volCompletedSection');
+    const compList    = document.getElementById('volCompletedList');
+    if (compSection) compSection.style.display = volCompleted.length > 0 ? '' : 'none';
+    if (compList) {
+      compList.innerHTML = volCompleted.map(function(id) {
+        const a = volunteerActivities[id];
+        if (!a) return '';
+        return `<div style="background:rgba(45,80,22,0.06);border:1px solid rgba(45,80,22,0.15);border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+          <div style="font-size:28px;flex-shrink:0">${a.icon}</div>
+          <div style="flex:1;min-width:180px">
+            <div style="font-weight:800;font-size:14px;color:var(--pine-green)">${a.name}</div>
+            <div style="font-size:12px;color:var(--text-light);margin-top:3px">📅 ${a.date} &nbsp;·&nbsp; 📍 ${a.venue}</div>
+            <div style="font-size:12px;color:var(--text-light);margin-top:2px">🏢 ${a.org}</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0">
+            <div style="background:linear-gradient(135deg,#6B2D6B,var(--orchid-pink));color:white;border-radius:50px;padding:5px 14px;font-size:12px;font-weight:800">
+              ✅ +${a.credits} CC
+            </div>
+            <div style="font-size:11px;color:var(--text-light);font-weight:600">Certificate due</div>
+          </div>
+        </div>`;
+      }).join('');
+    }
+  }
+
   // ===== TOAST =====
   function showToast(icon, msg) {
     const toast = document.getElementById('toast');
@@ -4190,3 +4737,4 @@ Vs. selling wood for ₹40,000 today.
 </script>
 </body>
 </html>
+
