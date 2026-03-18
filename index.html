@@ -35,6 +35,13 @@
     serverTimestamp: firebase.database.ServerValue.TIMESTAMP,
     ready: true
   };
+  // Extend ref objects with .once() for one-time reads
+  var _origRef = window._fb.ref;
+  window._fb.ref = function(path) {
+    var r = _origRef(path);
+    if (!r.once) r.once = function(evt, cb, errCb) { return _fbDatabase.ref(path).once(evt, cb, errCb); };
+    return r;
+  };
 
   // Signal app that Firebase is ready after DOM loads
   document.addEventListener('DOMContentLoaded', function() {
@@ -1567,8 +1574,8 @@
     <div class="nav-right">
       <div class="vine-progress">
         🌺
-        <div class="vine-bar"><div class="vine-fill" id="vineFill" style="width:38%"></div></div>
-        <span id="vinePercent">38%</span>
+        <div class="vine-bar"><div class="vine-fill" id="vineFill" style="width:0%"></div></div>
+        <span id="vinePercent">0%</span>
       </div>
       <!-- Single language selector - top right only -->
       <div class="lang-nav-wrap" data-skip-translate="true">
@@ -1624,22 +1631,22 @@
       <div class="stats-row">
         <div class="stat-card">
           <div class="stat-emoji">📖</div>
-          <div class="stat-value" id="homeLessons">12</div>
+          <div class="stat-value" id="homeLessons">0</div>
           <div class="stat-label">Lessons Done</div>
         </div>
         <div class="stat-card">
           <div class="stat-emoji">⭐</div>
-          <div class="stat-value" id="homePoints">340</div>
+          <div class="stat-value" id="homePoints">0</div>
           <div class="stat-label">Total Points</div>
         </div>
         <div class="stat-card">
           <div class="stat-emoji">🔥</div>
-          <div class="stat-value">7</div>
+          <div class="stat-value" id="homeStreak">7</div>
           <div class="stat-label">Day Streak</div>
         </div>
         <div class="stat-card">
           <div class="stat-emoji">🏆</div>
-          <div class="stat-value">#3</div>
+          <div class="stat-value" id="homeRank">—</div>
           <div class="stat-label">Village Rank</div>
         </div>
       </div>
@@ -1651,8 +1658,8 @@
           <div class="subject-name">Khasi Language</div>
           <div class="subject-sub">Phawar & Grammar</div>
           <div class="subject-progress">
-            <div class="mini-bar"><div class="mini-fill" id="miniFill_khasi" style="width:65%"></div></div>
-            <div class="mini-label" id="miniLabel_khasi">65% complete</div>
+            <div class="mini-bar"><div class="mini-fill" id="miniFill_khasi" style="width:0%"></div></div>
+            <div class="mini-label" id="miniLabel_khasi">0% complete</div>
           </div>
         </div>
         <div class="subject-card" style="--card-accent:#D4A017" onclick="openLessonModule('math')">
@@ -1660,8 +1667,8 @@
           <div class="subject-name">Mathematics</div>
           <div class="subject-sub">Ryndia Geometry</div>
           <div class="subject-progress">
-            <div class="mini-bar"><div class="mini-fill" id="miniFill_math" style="width:40%; background:#D4A017"></div></div>
-            <div class="mini-label" id="miniLabel_math">40% complete</div>
+            <div class="mini-bar"><div class="mini-fill" id="miniFill_math" style="width:0%; background:#D4A017"></div></div>
+            <div class="mini-label" id="miniLabel_math">0% complete</div>
           </div>
         </div>
         <div class="subject-card" style="--card-accent:#7BAFC4" onclick="openLessonModule('science')">
@@ -1669,8 +1676,8 @@
           <div class="subject-name">Science & EVS</div>
           <div class="subject-sub">Sacred Groves & Ecology</div>
           <div class="subject-progress">
-            <div class="mini-bar"><div class="mini-fill" id="miniFill_science" style="width:55%; background:#7BAFC4"></div></div>
-            <div class="mini-label" id="miniLabel_science">55% complete</div>
+            <div class="mini-bar"><div class="mini-fill" id="miniFill_science" style="width:0%; background:#7BAFC4"></div></div>
+            <div class="mini-label" id="miniLabel_science">0% complete</div>
           </div>
         </div>
         <div class="subject-card" style="--card-accent:#C4648A" onclick="openLessonModule('social')">
@@ -1678,8 +1685,8 @@
           <div class="subject-name">Social Studies</div>
           <div class="subject-sub">Three Tribes & Dorbar</div>
           <div class="subject-progress">
-            <div class="mini-bar"><div class="mini-fill" id="miniFill_social" style="width:30%; background:#C4648A"></div></div>
-            <div class="mini-label" id="miniLabel_social">30% complete</div>
+            <div class="mini-bar"><div class="mini-fill" id="miniFill_social" style="width:0%; background:#C4648A"></div></div>
+            <div class="mini-label" id="miniLabel_social">0% complete</div>
           </div>
         </div>
         <div class="subject-card" style="--card-accent:#6B4C2A" onclick="openLessonModule('art')">
@@ -1687,8 +1694,8 @@
           <div class="subject-name">Art & Values</div>
           <div class="subject-sub">Bamboo Craft</div>
           <div class="subject-progress">
-            <div class="mini-bar"><div class="mini-fill" id="miniFill_art" style="width:20%; background:#6B4C2A"></div></div>
-            <div class="mini-label" id="miniLabel_art">20% complete</div>
+            <div class="mini-bar"><div class="mini-fill" id="miniFill_art" style="width:0%; background:#6B4C2A"></div></div>
+            <div class="mini-label" id="miniLabel_art">0% complete</div>
           </div>
         </div>
         <div class="subject-card" style="--card-accent:#3D7022" onclick="showPanel('game')">
@@ -2059,28 +2066,28 @@
         <div class="progress-card">
           <div class="progress-card-title">📊 Subject Progress</div>
           <div class="progress-bar-row">
-            <div class="progress-bar-label"><span>🗣️ Khasi</span><span id="progressPct_khasi">65%</span></div>
-            <div class="progress-bar"><div class="progress-fill" id="progressBar_khasi" style="width:65%"></div></div>
+            <div class="progress-bar-label"><span>🗣️ Khasi</span><span id="progressPct_khasi">0%</span></div>
+            <div class="progress-bar"><div class="progress-fill" id="progressBar_khasi" style="width:0%"></div></div>
           </div>
           <div class="progress-bar-row">
             <div class="progress-bar-label"><span>📖 English</span><span>58%</span></div>
             <div class="progress-bar"><div class="progress-fill" style="width:58%"></div></div>
           </div>
           <div class="progress-bar-row">
-            <div class="progress-bar-label"><span>🧮 Math</span><span id="progressPct_math">40%</span></div>
-            <div class="progress-bar"><div class="progress-fill" id="progressBar_math" style="width:40%"></div></div>
+            <div class="progress-bar-label"><span>🧮 Math</span><span id="progressPct_math">0%</span></div>
+            <div class="progress-bar"><div class="progress-fill" id="progressBar_math" style="width:0%"></div></div>
           </div>
           <div class="progress-bar-row">
-            <div class="progress-bar-label"><span>🌿 Science</span><span id="progressPct_science">55%</span></div>
-            <div class="progress-bar"><div class="progress-fill" id="progressBar_science" style="width:55%"></div></div>
+            <div class="progress-bar-label"><span>🌿 Science</span><span id="progressPct_science">0%</span></div>
+            <div class="progress-bar"><div class="progress-fill" id="progressBar_science" style="width:0%"></div></div>
           </div>
           <div class="progress-bar-row">
-            <div class="progress-bar-label"><span>🏔️ Social</span><span id="progressPct_social">30%</span></div>
-            <div class="progress-bar"><div class="progress-fill" id="progressBar_social" style="width:30%"></div></div>
+            <div class="progress-bar-label"><span>🏔️ Social</span><span id="progressPct_social">0%</span></div>
+            <div class="progress-bar"><div class="progress-fill" id="progressBar_social" style="width:0%"></div></div>
           </div>
           <div class="progress-bar-row">
-            <div class="progress-bar-label"><span>🎋 Art & Values</span><span id="progressPct_art">20%</span></div>
-            <div class="progress-bar"><div class="progress-fill" id="progressBar_art" style="width:20%"></div></div>
+            <div class="progress-bar-label"><span>🎋 Art & Values</span><span id="progressPct_art">0%</span></div>
+            <div class="progress-bar"><div class="progress-fill" id="progressBar_art" style="width:0%"></div></div>
           </div>
         </div>
 
@@ -2278,7 +2285,7 @@
             </div>
             <div style="background:rgba(45,80,22,0.06);border-radius:12px;padding:10px 14px;font-size:12px;color:var(--text-mid);margin-bottom:14px;line-height:1.5">
               <strong style="color:var(--pine-green)">Organiser:</strong> East Khasi Hills Youth Forest Network<br>
-              <strong style="color:var(--pine-green)">Contact:</strong> +91 94363 12045 · ekhyfn@gmail.com
+              <strong style="color:var(--pine-green)">Contact:</strong> +91 94363 12045 · <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="e88d8380918e86a88f85898184c68b8785">[email&#160;protected]</a>
             </div>
             <button onclick="volunteerRegister('sacred-grove')" style="width:100%;background:linear-gradient(135deg,var(--pine-green),var(--pine-mid));color:white;border:none;border-radius:14px;padding:13px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:800;cursor:pointer;transition:0.2s;letter-spacing:0.5px" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
               🌿 Register to Volunteer
@@ -2325,7 +2332,7 @@
             </div>
             <div style="background:rgba(123,175,196,0.1);border-radius:12px;padding:10px 14px;font-size:12px;color:var(--text-mid);margin-bottom:14px;line-height:1.5">
               <strong style="color:#1A4A6B;">Organiser:</strong> Meghalaya River Watch · WWF Meghalaya Chapter<br>
-              <strong style="color:#1A4A6B;">Contact:</strong> +91 98630 77812 · riverwatch.meg@gmail.com
+              <strong style="color:#1A4A6B;">Contact:</strong> +91 98630 77812 · <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="c3b1aab5a6b1b4a2b7a0abedaea6a483a4aea2aaafeda0acae">[email&#160;protected]</a>
             </div>
             <button onclick="volunteerRegister('umngot-river')" style="width:100%;background:linear-gradient(135deg,#1A4A6B,#7BAFC4);color:white;border:none;border-radius:14px;padding:13px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:800;cursor:pointer;transition:0.2s" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
               💧 Register to Volunteer
@@ -2372,7 +2379,7 @@
             </div>
             <div style="background:rgba(212,160,23,0.08);border-radius:12px;padding:10px 14px;font-size:12px;color:var(--text-mid);margin-bottom:14px;line-height:1.5">
               <strong style="color:var(--earth-brown);">Organiser:</strong> MSSDS Digital India Cell, Meghalaya<br>
-              <strong style="color:var(--earth-brown);">Contact:</strong> +91 97741 56230 · digital.mssds@nic.in
+              <strong style="color:var(--earth-brown);">Contact:</strong> +91 97741 56230 · <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="701419171904111c5e1d03031403301e19135e191e">[email&#160;protected]</a>
             </div>
             <button onclick="volunteerRegister('digital-literacy')" style="width:100%;background:linear-gradient(135deg,var(--earth-brown),var(--turmeric));color:white;border:none;border-radius:14px;padding:13px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:800;cursor:pointer;transition:0.2s" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
               📱 Register to Volunteer
@@ -2419,7 +2426,7 @@
             </div>
             <div style="background:rgba(196,100,138,0.08);border-radius:12px;padding:10px 14px;font-size:12px;color:var(--text-mid);margin-bottom:14px;line-height:1.5">
               <strong style="color:var(--orchid-pink);">Organiser:</strong> Khasi Hills Autonomous District Council Cultural Cell<br>
-              <strong style="color:var(--orchid-pink);">Contact:</strong> +91 94361 88024 · khadc.culture@gmail.com
+              <strong style="color:var(--orchid-pink);">Contact:</strong> +91 94361 88024 · <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="9af1f2fbfef9b4f9eff6eeefe8ffdafdf7fbf3f6b4f9f5f7">[email&#160;protected]</a>
             </div>
             <button onclick="volunteerRegister('oral-history')" style="width:100%;background:linear-gradient(135deg,#6B2D6B,var(--orchid-pink));color:white;border:none;border-radius:14px;padding:13px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:800;cursor:pointer;transition:0.2s" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
               🧓 Register to Volunteer
@@ -2547,7 +2554,7 @@
   <span id="toastMsg">Keep growing!</span>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
   // ===== GAME SYSTEM =====
   let currentGame = null;
   let gameState = {};
@@ -3432,12 +3439,13 @@ Vs. selling wood for ₹40,000 today.
   let currentQuizData = [];
   let currentQuizSubject = null;
   let playingAudio = null;
+  let hasPlayedQuiz = false;  // true only after first quiz answer — gates Village Rank display
 
   // Points & progress tracking
   const subjectPoints = { khasi: 0, math: 0, science: 0, social: 0, art: 0 };
-  const subjectMaxPoints = { khasi: 40, math: 40, science: 40, social: 40, art: 40 };
-  let totalPoints = 340; // starting points shown in UI
-  let lessonsCompleted = 12;
+  const subjectMaxPoints = { khasi: 60, math: 60, science: 60, social: 60, art: 60 };
+  let totalPoints = 0;       // set on launch (300 default or Firebase saved)
+  let lessonsCompleted = 0;  // set on launch
 
   // ===== KHASI TRANSLATIONS — Complete page coverage =====
   const khasiMap = {
@@ -3560,6 +3568,68 @@ Vs. selling wood for ₹40,000 today.
     'Khasi oral comprehension — scoring 85%+': 'Ka Jingïap Ktien Khasi — 85%+',
     'Suggested Next': 'Kynmaw Khynmaw',
     'Complete Water Cycle lesson for Science boost': 'Thoh ka Lesson Water Cycle sha ka Saïens',
+    // SPLASH SCREEN
+    'Shaphangj Jingialam': 'Shaphangj Jingialam',
+    'E-Learning Tablet': 'Ka Tablet Jingkynmaw',
+    '"for the path of learning"': '"sha ka jingpyrthei jingkynmaw"',
+    '👤 Enter Your Name': '👤 Pynïait Ka Jingmut Jong Phi',
+    // HOME WELCOME
+    'Lessons Done': 'Ki Lesson Ba Thoh',
+    'Total Points': 'Ki Point Katba',
+    'Day Streak': 'Sngi Phah Noh',
+    'Village Rank': 'Nambor sha ka Shnong',
+    // SUBJECTS — lesson titles
+    '🗣️ Khasi: Phawar (Oral Chants) — Unit 1': '🗣️ Khasi: Phawar (Ki Kyntiew Ktien) — Unit 1',
+    '🗣️ Khasi: Tri-lingual Grammar — Noun Structures': '🗣️ Khasi: Ka Jingkyrkhu Ktien Lai — Ki Jingmut',
+    '📖 English: ESL — Describing the Living Root Bridge': '📖 Inglang: ESL — Shaphang Ka Jingkieng Dieng Lawei',
+    '🧮 Math: Geometry through Ryndia Weaving Patterns': '🧮 Nambornai: Ka Geometry ha Ki Ktiah Ryndia',
+    '🧮 Math: Profit & Loss — Bamboo Craft Market': '🧮 Nambornai: Pynlait bad Shim — Ka Bazar Jingkren',
+    '🌿 EVS: Water Cycle in Sohra (Cherrapunji)': '🌿 EVS: Ka Jingthap Doh ha Sohra (Cherrapunji)',
+    '🪴 EVS: Pitcher Plants & Sacred Groves Biodiversity': '🪴 EVS: Ki Dieng Sinteng bad Ki Law Lyngdoh',
+    '🏔️ Social: The Three Tribes — Khasi, Garo & Jaintia': '🏔️ Social: Lai Kur — Khasi, Garo bad Jaintia',
+    '🏛️ Social: Dorbar Shnong — Village Democracy': '🏛️ Social: Ka Dorbar Shnong — Ka Jingpang Shnong',
+    '🎋 Art: Bamboo Craft — Design Your Own Khoh Basket': '🎋 Pyrkhat: Jingkren Dieng Saw — Pyrkhat Ka Khoh Jong Phi',
+    'Start': 'Thoh',
+    // LESSON action buttons
+    'Aro Dekha': 'Neng Leh',
+    // GAME PANEL
+    '🏡 Mawlynnong Business Lab': '🏡 Ka Lab Biz Mawlynnong',
+    '🧹 Village Cleanliness': '🧹 Ka Jingdaplar Shnong',
+    '🧺 Bamboo Handicrafts': '🧺 Ki Jingkren Dieng Saw',
+    '🗣️ Tourism Ambassador': '🗣️ Nongïai Thma Balang',
+    '🌳 Root Bridge Investment': '🌳 Ka Jingïoh Jingkieng Dieng',
+    // ORAL PANEL
+    'Elder Kong Bah': 'Rangbah Kong Bah',
+    'Elder Mei Lapdiang': 'Rangbah Mei Lapdiang',
+    'Elder U Bah Nongkynmaw': 'Rangbah U Bah Nongkynmaw',
+    // PROGRESS PANEL
+    'Khasi ✓': 'Khasi ✓',
+    'English ✓': 'Inglang ✓',
+    'Math...': 'Nambornai...',
+    'Science': 'Saïens',
+    'Social': 'Social',
+    'Art': 'Pyrkhat',
+    'Biz Lab': 'Lab Biz',
+    '🏆 Skills & Badges Earned': '🏆 Ki Skill bad Badge Ba Ïoh',
+    'Eco Reader': 'Nongioh Kynmaw Eco',
+    'Math Weaver': 'Nongkren Nambornai',
+    'Khasi Speaker': 'Nongktien Khasi',
+    'Village Builder': 'Nongshong Shnong',
+    'Bridge Grower 🔒': 'Nongdang Jingkieng 🔒',
+    // LEADERBOARD
+    '⏳ Loading scores…': '⏳ Ki Score Ba Ioh…',
+    'No scores yet — be the first!': 'Kumno ki score — phi la ka syntiew!',
+    'Connecting…': 'Jingpynkynmaw…',
+    // VOLUNTEER (Grade 7-8)
+    '🤝 Volunteer Services': '🤝 Ki Sohphang Jingïoh',
+    '🎓 Grade 7–8 Exclusive': '🎓 Klas 7–8 Khlaiñ',
+    'How Community Credits Work': 'Kumno Ki Community Credits Ba Shim',
+    // NAV tabs
+    '🏡 Home': '🏡 Ïing',
+    '📚 Subjects': '📚 Pyrthei',
+    '🎙️ Elder Stories': '🎙️ Ki Kyntiew Rangbah',
+    '🌱 My Growth': '🌱 Ka Jingkyrkhu Jong Nga',
+    '🤝 Volunteer': '🤝 Sohphang',
   };
 
   // Garo stub (brief translation of key terms)
@@ -3736,7 +3806,7 @@ Vs. selling wood for ₹40,000 today.
 
   function deepTranslate(root, map) {
     if (!root) return;
-    const skipTags = new Set(['SCRIPT','STYLE','IFRAME','INPUT','TEXTAREA','SVG','PATH','CIRCLE','TEXT','BUTTON']);
+    const skipTags = new Set(['SCRIPT','STYLE','IFRAME','INPUT','TEXTAREA','SVG','PATH','CIRCLE','TEXT']);
     const walk = (node) => {
       if (node.nodeType === 3) {
         // Skip if any ancestor has data-skip-translate
@@ -3801,17 +3871,146 @@ Vs. selling wood for ₹40,000 today.
     el.classList.add('selected');
   }
 
+  // Default "day-1" state shown to every new student
+  var DEFAULT_PROGRESS = {
+    totalPoints:      300,
+    lessonsCompleted: 5,
+    streak:           7,
+    subjectPoints: { khasi: 24, math: 15, science: 21, social: 12, art: 18 }
+  };
+
+  function applyProgressToUI(data) {
+    totalPoints      = data.totalPoints      || 0;
+    lessonsCompleted = data.lessonsCompleted || 0;
+    Object.keys(subjectPoints).forEach(function(k) {
+      subjectPoints[k] = (data.subjectPoints && data.subjectPoints[k]) ? data.subjectPoints[k] : 0;
+    });
+
+    // Stat cards
+    var hPts    = document.getElementById('homePoints');
+    var hLes    = document.getElementById('homeLessons');
+    var hStreak = document.getElementById('homeStreak');
+    var hBadge  = document.getElementById('homeBadgePoints');
+    var lbYou   = document.getElementById('lbYouScore');
+    if (hPts)    hPts.textContent    = totalPoints;
+    if (hLes)    hLes.textContent    = lessonsCompleted;
+    if (hStreak) hStreak.textContent = data.streak || 7;
+    if (hBadge)  hBadge.textContent  = '⭐ ' + totalPoints + ' Points';
+    if (lbYou)   lbYou.textContent   = totalPoints + ' pts';
+
+    // Village Rank — only show if student has played (hasPlayedQuiz)
+    var hRank = document.getElementById('homeRank');
+    if (hRank) hRank.textContent = hasPlayedQuiz ? (data.rank || '—') : '—';
+
+    // Subject bars
+    var subjects = ['khasi','math','science','social','art'];
+    subjects.forEach(function(s) {
+      var pct  = Math.min(100, Math.round(((subjectPoints[s] || 0) / subjectMaxPoints[s]) * 100));
+      var mini = document.getElementById('miniFill_' + s);
+      var lbl  = document.getElementById('miniLabel_' + s);
+      var bar  = document.getElementById('progressBar_' + s);
+      var pctEl = document.getElementById('progressPct_' + s);
+      if (mini)  mini.style.width  = pct + '%';
+      if (lbl)   lbl.textContent   = pct + '% complete';
+      if (bar)   bar.style.width   = pct + '%';
+      if (pctEl) pctEl.textContent = pct + '%';
+    });
+
+    // Vine (overall average)
+    var overall = Math.round(subjects.reduce(function(sum, s) {
+      return sum + Math.min(100, Math.round(((subjectPoints[s] || 0) / subjectMaxPoints[s]) * 100));
+    }, 0) / subjects.length);
+    var vine  = document.getElementById('vineFill');
+    var vineP = document.getElementById('vinePercent');
+    if (vine)  vine.style.width   = overall + '%';
+    if (vineP) vineP.textContent  = overall + '%';
+  }
+
+  // Save full progress snapshot to Firebase
+  function fbSaveProgress() {
+    if (!window._fb || !window._fb.ready || !studentName) return;
+    var gradeKey   = 'grade_' + currentGrade.replace(/[^a-z0-9]/gi, '_');
+    var studentKey = studentName.trim().toLowerCase().replace(/[^a-z0-9]/g, '_');
+    var snapshot = {
+      totalPoints:      totalPoints,
+      lessonsCompleted: lessonsCompleted,
+      streak:           7,
+      subjectPoints:    Object.assign({}, subjectPoints),
+      updatedAt:        window._fb.serverTimestamp
+    };
+    window._fb.ref('progress/' + gradeKey + '/' + studentKey)
+      .set(snapshot)
+      .catch(function(e) { console.warn('Firebase progress save failed:', e); });
+  }
+
+  // Load saved progress from Firebase, then call callback(data or null)
+  function fbLoadProgress(callback) {
+    if (!window._fb || !window._fb.ready) { callback(null); return; }
+    var gradeKey   = 'grade_' + currentGrade.replace(/[^a-z0-9]/gi, '_');
+    var studentKey = studentName.trim().toLowerCase().replace(/[^a-z0-9]/g, '_');
+    window._fb.ref('progress/' + gradeKey + '/' + studentKey).once('value',
+      function(snap) { callback(snap.val()); },
+      function()     { callback(null); }
+    );
+  }
+
+  // Show Continue / Start Fresh dialog if saved progress found
+  function showContinueDialog(savedData, onContinue, onFresh) {
+    var pts  = savedData.totalPoints || 0;
+    var les  = savedData.lessonsCompleted || 0;
+    var subjects = ['khasi','math','science','social','art'];
+    var overall  = Math.round(subjects.reduce(function(sum, s) {
+      var sp = (savedData.subjectPoints && savedData.subjectPoints[s]) ? savedData.subjectPoints[s] : 0;
+      return sum + Math.min(100, Math.round((sp / subjectMaxPoints[s]) * 100));
+    }, 0) / subjects.length);
+
+    var overlay = document.createElement('div');
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(26,46,16,0.82);backdrop-filter:blur(8px);z-index:600;display:flex;align-items:center;justify-content:center;padding:24px';
+    overlay.innerHTML = '<div style="background:var(--cloud-white);border-radius:28px;padding:36px 28px;max-width:420px;width:100%;text-align:center;animation:fadeUp 0.3s ease">'
+      + '<div style="font-size:52px;margin-bottom:12px">🌱</div>'
+      + '<div style="font-family:&quot;Playfair Display&quot;,serif;font-size:22px;color:var(--pine-green);margin-bottom:6px">Khublei wan leh, ' + studentName + '!</div>'
+      + '<div style="font-size:14px;color:var(--text-mid);margin-bottom:20px">We found your saved progress:</div>'
+      + '<div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:24px">'
+      +   '<div style="background:rgba(45,80,22,0.08);border-radius:14px;padding:12px 18px;min-width:80px">'
+      +     '<div style="font-size:24px;font-weight:800;color:var(--pine-green)">' + pts + '</div>'
+      +     '<div style="font-size:11px;color:var(--text-light);font-weight:700;margin-top:2px">POINTS</div>'
+      +   '</div>'
+      +   '<div style="background:rgba(45,80,22,0.08);border-radius:14px;padding:12px 18px;min-width:80px">'
+      +     '<div style="font-size:24px;font-weight:800;color:var(--pine-green)">' + les + '</div>'
+      +     '<div style="font-size:11px;color:var(--text-light);font-weight:700;margin-top:2px">LESSONS</div>'
+      +   '</div>'
+      +   '<div style="background:rgba(45,80,22,0.08);border-radius:14px;padding:12px 18px;min-width:80px">'
+      +     '<div style="font-size:24px;font-weight:800;color:var(--pine-green)">' + overall + '%</div>'
+      +     '<div style="font-size:11px;color:var(--text-light);font-weight:700;margin-top:2px">PROGRESS</div>'
+      +   '</div>'
+      + '</div>'
+      + '<div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">'
+      +   '<button id="btnContinue" style="background:linear-gradient(135deg,var(--pine-green),var(--pine-mid));color:white;border:none;border-radius:50px;padding:14px 28px;font-family:Nunito,sans-serif;font-size:15px;font-weight:800;cursor:pointer;flex:1;min-width:130px">'
+      +     '▶ Continue'
+      +   '</button>'
+      +   '<button id="btnFresh" style="background:rgba(45,80,22,0.1);color:var(--pine-green);border:2px solid rgba(45,80,22,0.2);border-radius:50px;padding:14px 28px;font-family:Nunito,sans-serif;font-size:15px;font-weight:800;cursor:pointer;flex:1;min-width:130px">'
+      +     '🔄 Start Fresh'
+      +   '</button>'
+      + '</div>'
+      + '</div>';
+
+    document.body.appendChild(overlay);
+    document.getElementById('btnContinue').onclick = function() { overlay.remove(); onContinue(); };
+    document.getElementById('btnFresh').onclick    = function() { overlay.remove(); onFresh(); };
+  }
+
   function launchApp() {
     const nameInput = document.getElementById('studentNameInput');
     studentName = (nameInput && nameInput.value.trim()) ? nameInput.value.trim() : 'Young Eagle';
+    hasPlayedQuiz = false;
 
+    // Transition to app shell first (so dialog appears over app)
     const splash = document.getElementById('splash');
     const app = document.getElementById('app');
     splash.classList.remove('active');
     splash.style.removeProperty('display');
     app.classList.add('active');
     app.style.removeProperty('display');
-    // Activate home panel
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
     document.getElementById('panel-home').classList.add('active');
     document.getElementById('welcomeMsg').textContent = 'Khublei, ' + studentName + '! 🌿';
@@ -3819,30 +4018,52 @@ Vs. selling wood for ₹40,000 today.
     document.getElementById('gradeBadge').textContent = '🎓 Grade ' + currentGrade;
     const gpEl = document.getElementById('gameGradePill');
     if (gpEl) gpEl.textContent = '🎓 Grade ' + currentGrade;
-    // Update leaderboard "You" entry with student name
     const lbYouName = document.getElementById('lbYouName');
     if (lbYouName) lbYouName.textContent = studentName;
-    setTimeout(() => {
+
+    // Apply default progress immediately so UI looks right while Firebase loads
+    applyProgressToUI(DEFAULT_PROGRESS);
+
+    // Now check Firebase for saved progress
+    fbLoadProgress(function(savedData) {
+      if (savedData && savedData.totalPoints > DEFAULT_PROGRESS.totalPoints) {
+        // Student has real saved progress beyond defaults — ask continue or fresh
+        showContinueDialog(savedData,
+          function() { // Continue
+            applyProgressToUI(savedData);
+            _finishLaunch();
+          },
+          function() { // Start Fresh
+            applyProgressToUI(DEFAULT_PROGRESS);
+            fbSaveProgress(); // overwrite Firebase with defaults
+            _finishLaunch();
+          }
+        );
+      } else {
+        // No meaningful saved data — apply defaults silently
+        applyProgressToUI(DEFAULT_PROGRESS);
+        _finishLaunch();
+      }
+    });
+  }
+
+  function _finishLaunch() {
+    setTimeout(function() {
       applyKhasi();
-      // Re-apply name after translation (skip-translate protects welcomeMsg)
       document.getElementById('welcomeMsg').textContent = 'Khublei, ' + studentName + '! 🌿';
       const lbYN = document.getElementById('lbYouName');
       if (lbYN) lbYN.textContent = studentName;
       showToast('🌿', 'Khublei ' + studentName + '! Pyrthei ia Khasi!');
-      // Update leaderboard card title immediately (before Firebase even connects)
       var _lbTitle = document.getElementById('lbCardTitle');
       if (_lbTitle) _lbTitle.textContent = '🏘️ Grade ' + currentGrade + ' Leaderboard — Live';
-      // Connect to Firebase leaderboard
       fbStartListening();
       fbPushScore();
-      // Show volunteer tab only for Grade 7-8
       const isGrade78 = (currentGrade === '7-8');
       const navV  = document.getElementById('navTabVolunteer');
       const btbV  = document.getElementById('btb-volunteer');
       if (navV) navV.style.display = isGrade78 ? '' : 'none';
       if (btbV) btbV.style.display = isGrade78 ? '' : 'none';
       if (isGrade78) showToast('🤝', 'Grade 7–8 unlocked: Volunteer Services!');
-      // Render volunteer profile card (shows only for 7-8)
       renderVolunteerProfile();
     }, 400);
   }
@@ -3857,6 +4078,17 @@ Vs. selling wood for ₹40,000 today.
     splash.style.removeProperty('display');
     // Reset all data-en so re-entry to app works cleanly
     document.querySelectorAll('[data-en]').forEach(el => el.removeAttribute('data-en'));
+    // Reset Firebase listener so a new student login re-attaches fresh
+    if (window._fb && window._fb.ready) {
+      try { window._fb.ref('leaderboard').off(); } catch(e) {}
+    }
+    fbListenerAttached = false;
+    hasPlayedQuiz = false;
+    // Reset student state
+    studentName = '';
+    totalPoints = 0;
+    lessonsCompleted = 0;
+    Object.keys(subjectPoints).forEach(function(k){ subjectPoints[k]=0; });
   }
 
   // ===== OPEN THEORY SCROLL DIRECTLY FROM GAME PANEL =====
@@ -4232,6 +4464,7 @@ Vs. selling wood for ₹40,000 today.
   }
 
   function awardPoints(subject, pts, isCompletion) {
+    hasPlayedQuiz = true; // unlock Village Rank display
     if (pts > 0) {
       totalPoints += pts;
       if (subject && subjectPoints[subject] !== undefined) {
@@ -4246,8 +4479,8 @@ Vs. selling wood for ₹40,000 today.
       }
     }
     refreshAllDashboard();
-    // Push updated score to Firebase
     fbPushScore();
+    fbSaveProgress(); // persist progress to Firebase
   }
 
   // ── FIREBASE LEADERBOARD ─────────────────────────────────────────────
@@ -4271,6 +4504,9 @@ Vs. selling wood for ₹40,000 today.
     if (fbListenerAttached) return;
     fbListenerAttached = true;
 
+    // Capture grade at launch time — prevents stale grade if anything changes later
+    var sessionGrade = currentGrade;
+
     var statusDot  = document.getElementById('lbStatus');
     var statusText = document.getElementById('lbStatusText');
     var lb         = document.getElementById('liveLeaderboard');
@@ -4278,11 +4514,11 @@ Vs. selling wood for ₹40,000 today.
     if (statusDot)  statusDot.style.background = '#F0C040';
     if (statusText) statusText.textContent = 'Connecting…';
 
-    var gradeKey = 'grade_' + currentGrade.replace(/[^a-z0-9]/gi, '_');
+    var gradeKey = 'grade_' + sessionGrade.replace(/[^a-z0-9]/gi, '_');
 
-    // Update leaderboard card title to show the grade
+    // Update leaderboard card title to show the correct grade
     var lbCardTitle = document.getElementById('lbCardTitle');
-    if (lbCardTitle) lbCardTitle.textContent = '🏘️ Grade ' + currentGrade + ' Leaderboard — Live';
+    if (lbCardTitle) lbCardTitle.textContent = '🏘️ Grade ' + sessionGrade + ' Leaderboard — Live';
 
     window._fb.onValue(
       window._fb.ref('leaderboard/' + gradeKey),
@@ -4290,7 +4526,8 @@ Vs. selling wood for ₹40,000 today.
         var data = snapshot.val() || {};
         var count = Object.keys(data).length;
         if (statusDot)  statusDot.style.background  = '#5A9E3A';
-        if (statusText) statusText.textContent = 'Live · Grade ' + currentGrade + ' · ' + count + ' student' + (count !== 1 ? 's' : '');
+        // Always show sessionGrade — never read grade from Firebase entries
+        if (statusText) statusText.textContent = 'Live · Grade ' + sessionGrade + ' · ' + count + ' student' + (count !== 1 ? 's' : '');
 
         var entries = Object.values(data).sort(function(a, b) {
           return (b.points || 0) - (a.points || 0);
@@ -4308,7 +4545,7 @@ Vs. selling wood for ₹40,000 today.
             + '<div class="lb-avatar">' + (isMe ? '🌿' : avatar) + '</div>'
             + '<div>'
             +   '<div class="lb-name" style="' + (isMe ? 'color:var(--pine-green);font-weight:800;' : '') + '">' + entry.name + (isMe ? ' (You)' : '') + '</div>'
-            +   '<div class="lb-village">Grade ' + (entry.grade || '?') + '</div>'
+            +   '<div class="lb-village">Grade ' + sessionGrade + '</div>'
             + '</div>'
             + '<div class="lb-score">' + (entry.points || 0) + ' pts</div>'
             + '</div>';
@@ -4318,6 +4555,13 @@ Vs. selling wood for ₹40,000 today.
 
         var lbYou = document.getElementById('lbYouScore');
         if (lbYou) lbYou.textContent = totalPoints + ' pts';
+
+        // Update Village Rank on home panel — only show after student has played
+        if (hasPlayedQuiz) {
+          var myRank = entries.findIndex(function(e) { return e.name === studentName; });
+          var rankEl = document.getElementById('homeRank');
+          if (rankEl) rankEl.textContent = myRank >= 0 ? '#' + (myRank + 1) : '—';
+        }
       },
       function(error) {
         console.warn('Firebase read error:', error);
@@ -4327,12 +4571,8 @@ Vs. selling wood for ₹40,000 today.
     );
   }
 
-  // Start listening once Firebase is ready
-  window.addEventListener('firebaseReady', () => {
-    fbStartListening();
-    // Push initial score if already logged in
-    if (studentName) fbPushScore();
-  });
+  // Firebase connects ONLY inside launchApp() after grade is set by user.
+  // Do NOT auto-connect on firebaseReady — grade must be known first.
 
   // ── END FIREBASE LEADERBOARD ─────────────────────────────────────────
 
@@ -4351,11 +4591,10 @@ Vs. selling wood for ₹40,000 today.
 
     // Subject progress bars and mini-bars in home grid
     const subjectPct = {};
-    const base = { khasi: 65, math: 40, science: 55, social: 30, art: 20 };
-    Object.keys(base).forEach(s => {
+    Object.keys(subjectMaxPoints).forEach(s => {
       const earned = subjectPoints[s] || 0;
       const max = subjectMaxPoints[s];
-      subjectPct[s] = Math.min(100, base[s] + Math.round((earned / max) * 30));
+      subjectPct[s] = Math.min(100, Math.round((earned / max) * 100));
     });
 
     // Update progress panel subject bars
@@ -4745,18 +4984,19 @@ Vs. selling wood for ₹40,000 today.
     if (langFlag)  langFlag.textContent  = '🗣️';
 
     // Mark Khasi as active in dropdown
-    document.querySelectorAll('.lang-nav-opt').forEach(function(b) { b.classList.remove('active'); });
-    var khasiOpt = document.getElementById('langOpt-khasi');
-    if (khasiOpt) khasiOpt.classList.add('active');
+    var langOptKhasi = document.getElementById('langOpt-khasi');
+    if (langOptKhasi) langOptKhasi.classList.add('active');
 
-    // Apply Khasi translations to splash screen on first load
+    // Apply Khasi translations to splash screen immediately on load
     markDataEn(document.getElementById('splash'), khasiMap);
     deepTranslate(document.getElementById('splash'), khasiMap);
-    document.querySelectorAll('[data-en]').forEach(function(el) {
+    document.querySelectorAll('#splash [data-en]').forEach(function(el) {
       var en = el.getAttribute('data-en');
       if (khasiMap[en]) el.textContent = khasiMap[en];
     });
   });
+
 </script>
 </body>
 </html>
+
